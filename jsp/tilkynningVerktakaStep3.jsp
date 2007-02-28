@@ -1,41 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jsp:root version="1.2" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:h="http://java.sun.com/jsf/html"ƒ
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:ui="http://www.sun.com/web/ui"
-	xmlns:x="http://myfaces.apache.org/extensions">
+	xmlns:x="http://myfaces.apache.org/extensions"
+	xmlns:wf="http://xmlns.idega.com/com.idega.webface">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"
 		pageEncoding="UTF-8" />
 	<f:view>
-		<html id="html1">
-		<head id="head1">
-		<jsp:include page="head.jsp" />
-		</head>
-		<body id="body1">
-		<br />
-		<jsp:include page="top.jsp" />
+	
 		<h:form id="form1">
-			<!--div class="generalContent"-->
-			<h1 class="applicationHeading">Thjonustubeidni</h1>
-			<div class="header">
-			<h1>1. Upplysingar um neisluveitu</h1>
-			<div class="phases">
+			
+			<f:verbatim><h1>Thjonustubeidni</h1></f:verbatim>
+			
+			<wf:container styleClass="header">
+			
+			<f:verbatim><h1>1. Upplysingar um neisluveitu
+			</h1></f:verbatim>
+			
+			<!-- phases -->
+			<wf:container styleClass="phases">
+			
+			<f:verbatim>
+			<!-- ul -->
 			<ul>
-				<li>1</li>
-				<li>2</li>
-				<li class="current">3</li>
+				<li>1
+				</li>
+				<li>2
+				</li>
+				<li class="current">3
+				</li>
 			</ul>
-			</div>
-			</div>
-			<div class="info">
-			<div class="personInfo" id="name">Jon Jonsson</div>
-			</div>
-			<h1 class="subHeader topSubHeader">Tilkynning um rafverktoku</h1>
-			<div class="formSection">
+			<!-- end of ul -->
+			</f:verbatim>
+			
+			</wf:container>
+			<!-- end of phases -->
+			
+			</wf:container>
+			<!-- end of header -->
+
+			<!-- form section -->
+			<wf:container styleClass="info">
+			
+			<wf:container styleClass="personInfo" id="name">
+			<f:verbatim>
+			Jon Jonsson
+			</f:verbatim>
+			</wf:container>
+					
+			</wf:container>
+			<!-- end of  formsection-->
+			
+			<f:verbatim>
+			<h1 class="subHeader topSubHeader">Tilkynning um rafverktoku
+			</h1>
+			</f:verbatim>
+			
+			<!-- form section -->
+			<wf:container styleClass="formSection">
 		
 			
 			<!--  taka  -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Taka mæli..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['taka']}" var="maelir">
 				<h:column>
@@ -52,7 +79,8 @@
 				<h:inputText 
 				id="taka" 
 				value="#{maelir.numer}"
-				rendered="#{maelir.valid}"/>
+				rendered="#{maelir.valid}"
+				/>
 				<h:outputLabel 
 				for="taka" 
 				value="mæli numer"
@@ -60,10 +88,10 @@
 				<h:message for="taka"></h:message>
 				</h:column>
 			</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!-- fyrir -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Fyrir er..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['fyrir']}" var="maelir">
 				<h:column>
@@ -88,10 +116,10 @@
 				<h:message for="fyrir"></h:message>
 				</h:column>
 			</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!-- setja maeli -->	
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Setja mæli..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['setja']}" var="maelir">
 				<h:column>
@@ -129,16 +157,15 @@
 				value="Taxti"
 				rendered="#{maelir.valid}"/>
 				<h:inputText 
-				size="4" 
 				id="setjaT" 
 				value="#{maelir.taxti}"
 				rendered="#{maelir.valid}"/>
 				</h:column>
 				</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!--  flutt a  -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Flutt á..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['fluttA']}" var="maelir">
 				<h:column>
@@ -163,10 +190,10 @@
 				<h:message for="fluttA"></h:message>
 				</h:column>
 			</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!-- flutt af -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Flutt af..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['fluttAf']}" var="maelir">
 				<h:column>
@@ -191,10 +218,10 @@
 				<h:message for="fluttAf"></h:message>
 				</h:column>
 			</h:dataTable>
-			</fieldset>
+			</wf:container>
 
 			<!-- hjalpataeki -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Setja hjálpatæki..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['hjalpataeki']}" var="maelir">
 				<h:column>
@@ -214,10 +241,10 @@
 				rendered="#{maelir.valid}"/>
 				</h:column>
 			</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!-- setja maeli -->
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<h:outputText value="Setja straumspennamæli..."/>
 			<h:dataTable value="#{TilkynningVertakaBean.list['straumspenna']}" var="maelir">
 				<h:column>
@@ -250,37 +277,36 @@
 				value="Taxti"
 				rendered="#{maelir.valid}"/>
 				<h:inputText 
-				size="4" 
 				id="straumspennaT" 
 				value="#{maelir.taxti}"
 				rendered="#{maelir.valid}"/>
 				</h:column>
 				</h:dataTable>
-			</fieldset>
+			</wf:container>
 			
 			<!--  26  -->
-			<div class="formItem">
-				<h:outputLabel for="skyringar">Skyringar</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skyringar" value="Skyringar"/>
 			<h:inputTextarea id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}"/>
-			</div>
+			</wf:container>
 			
-			<div class="button">
+			<wf:container styleClass="button">
 				<h:commandButton 
 				action="back" 
 				value="til baka"/>
+				
+				<h:outputText value=" "/>
+				
 				<h:commandButton 
 				action="#{TilkynningVertakaBean.store}" 
 				value="geyma"/>
 				<h:commandButton 
 				action="#{TilkynningVertakaBean.send}" 
 				value="senda"/>
-			</div>
-			<!--/div-->
-			<br />
-			</div>
+			</wf:container>
+
+			</wf:container>
 		</h:form>
-		<jsp:include page="bottom.jsp" />
-		</body>
-		</html>
+
 	</f:view>
 </jsp:root>

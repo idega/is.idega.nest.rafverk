@@ -178,6 +178,12 @@
 				id="tilkynningVertaka" 
 				action="next" 
 				value="afram"/>
+				
+				<h:outputText value=" "/>
+				
+				<h:commandButton 
+				action="#{TilkynningVertakaBean.store}" 
+				value="geyma"/>
 			</wf:container>
 		</h:form>
 	</f:view>
