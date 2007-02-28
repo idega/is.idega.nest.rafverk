@@ -1,161 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jsp:root version="1.2" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:h="http://java.sun.com/jsf/html"ƒ
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:ui="http://www.sun.com/web/ui"
-	xmlns:x="http://myfaces.apache.org/extensions">
+	xmlns:x="http://myfaces.apache.org/extensions"
+	xmlns:wf="http://xmlns.idega.com/com.idega.webface">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"
 		pageEncoding="UTF-8" />
 	<f:view>
-		<html id="html1">
-		<head id="head1">
-		<jsp:include page="head.jsp" />
-		</head>
-		<body id="body1">
-		<br />
-		<jsp:include page="top.jsp" />
 		<h:form id="form1">
-			<h1 class="applicationHeading">Skyrsla</h1>
-			<div class="header">
-			<h1>1. Upplysingar um neisluveitu</h1>
-			<div class="phases">
+			<!--div class="generalContent"-->
+			
+			<f:verbatim><h1 class="applicationHeading">Skyrsla</h1></f:verbatim>
+			
+			<wf:container styleClass="header">
+			
+			<f:verbatim><h1>1. Upplysingar um neisluveitu
+			</h1></f:verbatim>
+			
+			<!-- phases -->
+			<wf:container styleClass="phases">
+			
+			<f:verbatim>
+			<!-- ul -->
 			<ul>
-				<li>1</li>
-				<li class="current">2</li>
-				<li>3</li>
+				<li>1
+				</li>
+				<li class="current">2
+				</li>
+				<li>3
+				</li>
 			</ul>
-			</div>
-			</div>
+			<!-- end of ul -->
+			</f:verbatim>
 			
-			<div class="info">
-			<div class="personInfo" id="name">Jon Jonsson</div>
-			</div>
+			</wf:container>
+			<!-- end of phases -->
 			
-			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu</h1>
+			</wf:container>
+			<!-- end of header -->
+
+			<!-- form section -->
+			<wf:container styleClass="info">
 			
-			<div class="formSection">
+			<wf:container styleClass="personInfo" id="name">
+			<f:verbatim>
+			Jon Jonsson
+			</f:verbatim>
+			</wf:container>
+					
+			</wf:container>
+			<!-- end of  formsection-->
 			
-			<fieldset>
-			<div class="formItem required">
-				<h:outputLabel for="tilkynnt">Tilkynnt er</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<f:verbatim>
+			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu
+			</h1>
+			</f:verbatim>
+			
+			<!-- form section -->
+			<wf:container styleClass="formSection">				
+
+			
+			<wf:container styleClass="fieldsetContainer">
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="tilkynnt" value="Tilkynnt er"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 				<h:selectOneRadio  id="tilkynnt" value="#{TilkynningLokVerksBean.tilkynnt}">
 					<f:selectItems value="#{RafverktakaInitialdata.tilkynntListiSelects}"/>
 				</h:selectOneRadio>
-			</div>
-			<div class="formItem">
-				<h:outputLabel for="annadTilkynnt">Annað</h:outputLabel>
+			</wf:container>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="annadTilkynnt" value="Annað"/>
 				<h:inputText size="24" id="annadTilkynnt" value="#{TilkynningLokVerksBean.tilkynntAnnad}"/>
-			</div>
-			</fieldset> 
+			</wf:container>
+			</wf:container> 
 		
-			<fieldset>
-			<div class="formItem required">
-				<h:outputLabel for="husnaedis">Notkun húsnæðis</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<wf:container styleClass="fieldsetContainer">
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="husnaedis" value="Notkun húsnæðis"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 				<h:selectOneMenu  id="notkunarflokkar" value="#{TilkynningLokVerksBean.notkunarflokkur}">
 					<f:selectItems value="#{RafverktakaInitialdata.notkunarflokkurListiSelects}"/>
 				</h:selectOneMenu>
-			</div>
+			</wf:container>
 			
-			<div class="formItem">
-				<h:outputLabel for="starfsemi">Starfsemi hver</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="starfsemi" value="Starfsemi hver"/>
 				<h:inputText size="8" id="starfsemi" value="#{TilkynningLokVerksBean.starfsemi}" />
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
-			<div class="formItem">
-				<h:outputLabel for="skyringLokVerks">Nánari skyring á þvi sem tilkynnt er</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skyringLokVerks" value="Nánari skyring á þvi sem tilkynnt er"/>
 			<h:inputTextarea id="skyringLokVerks" value="#{TilkynningLokVerksBean.skyring}" rows="3" cols="60"/>
-			</div>
+			</wf:container>
 			
 			 
-			<fieldset>
-			<div class="formItem required">
-				<h:outputLabel for="veitukerfi">Veitukerfi</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<wf:container styleClass="fieldsetContainer">
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="veitukerfi" value="Veitukerfi"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 				<h:selectOneRadio  id="veitukerfi" value="#{TilkynningLokVerksBean.spennukerfi}">
 					<f:selectItems value="#{RafverktakaInitialdata.spennukerfiListiSelects}"/>
 				</h:selectOneRadio>
-			</div>
+			</wf:container>
 			
-			<div class="formItem">
-				<h:outputLabel for="annadVeitukerfi">Annað</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="annadVeitukerfi" value="Annað"/>
 				<h:inputText size="8" id="annadVeitukerfi" value="#{TilkynningLokVerksBean.annad}"/>
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
 			
-			<div class="formItem required">
-				<h:outputLabel for="varnarradstoefunLokVerks">Varnarráðstöfun</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="varnarradstoefunLokVerks" value="Varnarráðstöfun"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 				<h:selectManyCheckbox  id="varnarradstoefunLokVerks" value="#{TilkynningLokVerksBean.varnarradstoefun}">
 					<f:selectItems value="#{RafverktakaInitialdata.varnarradstoefunListiSelects}"/>
 				</h:selectManyCheckbox>
-			</div>
+			</wf:container>
 			
-			<fieldset>
-			<div class="formItem">
-				<h:outputLabel for="jardskaut">Jarðskaut/sp.jöfnun</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<wf:container styleClass="fieldsetContainer">
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="jardskaut" value="Jarðskaut/sp.jöfnun"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 				<h:selectManyCheckbox  id="jardskaut" value="#{TilkynningLokVerksBean.jardskaut}">
 					<f:selectItems value="#{RafverktakaInitialdata.jardskautListiSelects}"/>
 				</h:selectManyCheckbox>
-			</div>
+			</wf:container>
 			
 
-			<div class="formItem">
-				<h:outputLabel for="annadJardskaut">Annað</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="annadJardskaut" value="Annað"/>
 				<h:inputText size="8" id="annadJardskaut" value="#{TilkynningLokVerksBean.jardskautAnnad}" />
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			
 
-			<div class="formItem">
-				<h:outputLabel for="maelisNumerLokVerks">Númer mælis rafveitu</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="maelisNumerLokVerks" value="Númer mælis rafveitu"/>
 				<h:inputText id="maelisNumerLokVerks" value="#{TilkynningLokVerksBean.maelir.numer}"/>
 				<h:message for="maelisNumerLokVerks"></h:message>
-			</div>	
+			</wf:container>	
 						
 
-			<div class="formItem">
-				<h:outputLabel for="stadurMaelisLokVerks">Staður mælis</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="stadurMaelisLokVerks" value="Staður mælis"/>
 				<h:inputText size="8" id="stadurMaelisLokVerks" value="#{TilkynningLokVerksBean.maelir.stadur}"/>
-			</div>	
-			</fieldset>		
+			</wf:container>	
+			</wf:container>		
 			
 
-			<div class="formItem">
-				<h:outputLabel for="skyringarLokVerks">Skyringar</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skyringarLokVerks" value="Skyringar"/>
 			<h:inputTextarea 
 			id="skyringarLoksVerks" 
 			value="#{TilkynningLokVerksBean.skyringar}"
 			rows="3" 
 			cols="60"/>
-			</div>
+			</wf:container>
 			
-			</div>
+			</wf:container>
 				
-			<div class="button">
+			<wf:container styleClass="button">
 				<h:commandButton 
 				action="back" 
 				value="til baka"/>
 				<h:commandButton 
 				action="next" 
 				value="afram"/>
-			</div>
+				
+				<h:outputText value=" "/>
+			
+				<h:commandButton 
+				action="#{TilkynningLokVerksBean.store}" 
+				value="geyma"/>
+				
+			</wf:container>
 
 			
 		</h:form>
-		<jsp:include page="bottom.jsp" />
-		</body>
-		</html>
+
 	</f:view>
 </jsp:root>

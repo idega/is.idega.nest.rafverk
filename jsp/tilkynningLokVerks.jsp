@@ -1,39 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jsp:root version="1.2" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:h="http://java.sun.com/jsf/html"ƒ
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:ui="http://www.sun.com/web/ui"
-	xmlns:x="http://myfaces.apache.org/extensions">
+	xmlns:x="http://myfaces.apache.org/extensions"
+	xmlns:wf="http://xmlns.idega.com/com.idega.webface">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"
 		pageEncoding="UTF-8" />
 	<f:view>
-		<html id="html1">
-		<head id="head1">
-		<jsp:include page="head.jsp" />
-		</head>
-		<body id="body1">
-		<br />
-		<jsp:include page="top.jsp" />
 		<h:form id="form1">
-			<h1 class="applicationHeading">Skyrsla</h1>
-			<div class="header">
-			<h1>1. Upplysingar um neisluveitu</h1>
-			<div class="phases">
+			<!--div class="generalContent"-->
+			
+			<f:verbatim><h1 class="applicationHeading">Skyrsla</h1></f:verbatim>
+			
+			<wf:container styleClass="header">
+			
+			<f:verbatim><h1>1. Upplysingar um neisluveitu
+			</h1></f:verbatim>
+			
+			<!-- phases -->
+			<wf:container styleClass="phases">
+			
+			<f:verbatim>
+			<!-- ul -->
 			<ul>
-				<li class="current">1</li>
-				<li>2</li>
-				<li>3</li>
+				<li class="current">1
+				</li>
+				<li>2
+				</li>
+				<li>3
+				</li>
 			</ul>
-			</div>
-			</div>
-			<div class="info">
-			<div class="personInfo" id="name">Jon Jonsson</div>
-			</div>
-			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu</h1>
-			<div class="formSection">
-				<div class="helperText">Veldu rafverktoku</div>
-				<div class="formItem required">
-					<label for="verktokuDrop">Veitustadur</label>
+			<!-- end of ul -->
+			</f:verbatim>
+			
+			</wf:container>
+			<!-- end of phases -->
+			
+			</wf:container>
+			<!-- end of header -->
+
+			<!-- form section -->
+			<wf:container styleClass="info">
+			
+			<wf:container styleClass="personInfo" id="name">
+			<f:verbatim>
+			Jon Jonsson
+			</f:verbatim>
+			</wf:container>
+					
+			</wf:container>
+			<!-- end of  formsection-->
+			
+			<f:verbatim>
+			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu
+			</h1>
+			</f:verbatim>
+			
+			<!-- form section -->
+			<wf:container styleClass="formSection">				
+
+			<wf:container styleClass="helperText">
+			<f:verbatim>
+			Veldu rafverktoku			
+			</f:verbatim>
+			</wf:container>
+			
+			<wf:container styleClass="formItem required">
+					<h:outputLabel for="verktokuDrop" value="Veitustadur"/>
 					<x:selectOneMenu onchange="this.form.submit()" id="verktokuDrop" valueChangeListener="#{SkyrslaRafverktaka.onChangeRafverktaka}">
 					<f:selectItem itemLabel="Veldu:" itemValue=""/>
 					<f:selectItems value="#{RafverktokuListi.raferktokuListiSelects}">
@@ -41,84 +75,90 @@
 					<f:selectItem itemLabel="Hitaveita Sudurnesja" itemValue="HS"/-->
 					</f:selectItems>
 					</x:selectOneMenu>
-				</div>
-			</div>
-
-			<div class="formSection">
-				<h:outputText value="Valid: #{SkyrslaRafverktaka.rafverktaka.id}"/>
-				<h:outputText value="Rafverktaki: #{SkyrslaRafverktaka.rafverktaka.rafverktaki.nafn}"/>
-			</div>
+				</wf:container>
+			</wf:container>
 			
-			<div class="formSection">
-			<div class="helperText">Upplysingar um rafverktaka</div>
-			<div class="formItem required">
-				<label for="rafverktakaFyrirtaeki">Rafverktakafyrirtaeki</label>
-				<x:inputText id="rafverktakaFyrirtaeki" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.nafnFyrirtaekis}" disabled="true"/>
-			</div>
-			<div class="formItem required">
-				<label for="loggilturRafverktaki">Loggiltur rafverktaki</label>
-				<x:inputText id="loggilturRafverktaki" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.nafn}" disabled="true"/>
-			</div>
-			<div class="formItem required">
-				<label for="heimilisfangRafverktaka">Heimilisfang</label>
-				<x:inputText id="heimilisfangRafverktaka" disabled="true"/>
-			</div>
-			<div class="formItem required">
-				<label for="kennitalaRafverktaka">Kennitala rafverktaka</label>
-				<x:inputText id="kennitalaRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.kennitala}" disabled="true"/>
-			</div>
-			<div class="formItem required">
-				<label for="heimasimiRafverktaka">Heimasimi</label>
-				<x:inputText id="heimasimiRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.heimasimi}" disabled="true"/>
-			</div>
-			<div class="formItem required">
-				<label for="vinnusimiRafverktaka">Vinnusimi</label>
-				<x:inputText id="vinnusimiRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.vinnusimi}" disabled="true" />
-			</div>
-			</div>
-			<div class="formSection">
-			<div class="helperText">Upplysingar um veitustad</div>
-			<div class="formItem required">
-				<h:outputLabel for="postnumerDrop">Postnumer</h:outputLabel>
+			<wf:container styleClass="formSection">
+			<wf:container styleClass="helperText">
+			<f:verbatim>
+			Upplysingar um rafverktaka
+			</f:verbatim>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="rafverktakaFyrirtaeki" value="Rafverktakafyrirtaeki"/>
+				<h:inputText id="rafverktakaFyrirtaeki" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.nafnFyrirtaekis}" disabled="true"/>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="loggilturRafverktaki" value="Loggiltur rafverktaki"/>
+				<h:inputText id="loggilturRafverktaki" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.nafn}" disabled="true"/>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="heimilisfangRafverktaka" value="Heimilisfang"/>
+				<h:inputText id="heimilisfangRafverktaka" disabled="true"/>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="kennitalaRafverktaka" value="Kennitala rafverktaka"/>
+				<h:inputText id="kennitalaRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.kennitala}" disabled="true"/>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="heimasimiRafverktaka" value="Heimasimi"/>
+				<h:inputText id="heimasimiRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.heimasimi}" disabled="true"/>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="vinnusimiRafverktaka" value="Vinnusimi"/>
+				<h:inputText id="vinnusimiRafverktaka" value="#{SkyrslaRafverktaka.rafverktaka.rafverktaki.vinnusimi}" disabled="true" />
+			</wf:container>
+			</wf:container>
+			<wf:container styleClass="formSection">
+			<wf:container styleClass="helperText">
+			<f:verbatim>
+			Upplysingar um veitustad
+			</f:verbatim>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="postnumerDrop" value="Postnumer" />
 				<h:selectOneMenu id="postnumerDrop" value="#{TilkynningLokVerksBean.postnumer}">
 					<f:selectItems value="#{RafverktakaInitialdata.postnumeraListiSelects}"/>
 				</h:selectOneMenu>
-				<h:outputLabel for="gotuDrop">Gata</h:outputLabel>
+				<h:outputLabel for="gotuDrop" value="Gata"/>
 				<h:selectOneMenu id="gotuDrop" value="#{TilkynningLokVerksBean.gata}">
 					<f:selectItems value="#{RafverktakaInitialdata.gotuListiSelects}"/>
 				</h:selectOneMenu>
-				<h:outputLabel for="gotunumer">Gotunumer</h:outputLabel>
+				<h:outputLabel for="gotunumer" value="Gotunumer"/>
 				<h:inputText id="gotunumer" value="#{TilkynningLokVerksBean.gotunumer}"/>
-				<h:outputLabel for="husHluti">Hushluti/Haed</h:outputLabel>
+				<h:outputLabel for="husHluti" value="Hushluti/Haed"/>
 				<h:inputText id="husHluti" value="#{TilkynningLokVerksBean.haed}"/>
-			</div>
-			<div class="formItem required">
-				<h:outputLabel for="orkukaupandi">Nafn orkukaupanda</h:outputLabel>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="orkukaupandi" value="Nafn orkukaupanda"/>
 				<h:inputText id="orkukaupandi" value="#{TilkynningLokVerksBean.nafnOrkukaupanda}"/>
-			</div>
-			<div class="formItem required">
-				<h:outputLabel for="kennitalaOrkukaupanda">Kennitala</h:outputLabel>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="kennitalaOrkukaupanda" value="Kennitala"/>
 				<h:inputText id="kennitalaOrkukaupanda" value="#{TilkynningLokVerksBean.kennitalaOrkukaupanda}"/>
-			</div>
-			<div class="formItem required">
-				<h:outputLabel for="heimasimiOrkukaupanda">Heimasimi</h:outputLabel>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="heimasimiOrkukaupanda" value="Heimasimi"/>
 				<h:inputText id="heimasimiOrkukaupanda" value="#{TilkynningLokVerksBean.heimasimiOrkukaupanda}"/>
-			</div>
-			<div class="formItem required">
-				<h:outputLabel for="vinnusimiOrkukaupanda">Vinnusimi</h:outputLabel>
+			</wf:container>
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="vinnusimiOrkukaupanda" value="Vinnusimi"/>
 				<h:inputText id="vinnusimiOrkukaupanda" value="#{TilkynningLokVerksBean.vinnusimiOrkukaupanda}"/>
-			</div>
-			</div>
+			</wf:container>
+			</wf:container>
 				
-			<div class="button">
+			<wf:container styleClass="button">
 			<h:commandButton 
 			action="next" 
 			value="afram"/>
-			</div>
+			
+			<h:outputText value=" "/>
+			
+			<h:commandButton 
+			action="#{TilkynningLokVerksBean.store}" 
+			value="geyma"/>
+			</wf:container>
 			
 		</h:form>
-		<jsp:include page="bottom.jsp" />
-		</body>
-		</html>
 	</f:view>
 </jsp:root>
