@@ -1,184 +1,209 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jsp:root version="1.2" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:h="http://java.sun.com/jsf/html"ƒ
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:ui="http://www.sun.com/web/ui"
-	xmlns:x="http://myfaces.apache.org/extensions">
+	xmlns:x="http://myfaces.apache.org/extensions"
+	xmlns:wf="http://xmlns.idega.com/com.idega.webface">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"
 		pageEncoding="UTF-8" />
 	<f:view>
-		<html id="html1">
-		<head id="head1">
-		<jsp:include page="head.jsp" />
-		</head>
-		<body id="body1">
-		<br />
-		<jsp:include page="top.jsp" />
 		<h:form id="form1">
-			<h1 class="applicationHeading">Skyrsla</h1>
-			<div class="header">
-			<h1>1. Upplysingar um neisluveitu</h1>
-			<div class="phases">
+			
+			<f:verbatim><h1 class="applicationHeading">Skyrsla</h1></f:verbatim>
+			
+			<wf:container styleClass="header">
+			
+			<f:verbatim><h1>1. Upplysingar um neisluveitu
+			</h1></f:verbatim>
+			
+			<!-- phases -->
+			<wf:container styleClass="phases">
+			
+			<f:verbatim>
+			<!-- ul -->
 			<ul>
-				<li>1</li>
-				<li>2</li>
-				<li class="current">3</li>
+				<li>1
+				</li>
+				<li>2
+				</li>
+				<li class="current">3
+				</li>
 			</ul>
-			</div>
-			</div>
+			<!-- end of ul -->
+			</f:verbatim>
 			
-			<div class="info">
-			<div class="personInfo" id="name">Jon Jonsson</div>
-			</div>
+			</wf:container>
+			<!-- end of phases -->
 			
-			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu</h1>
+			</wf:container>
+			<!-- end of header -->
+
+			<!-- form section -->
+			<wf:container styleClass="info">
 			
-			<div class="formSection">
+			<wf:container styleClass="personInfo" id="name">
+			<f:verbatim>
+			Jon Jonsson
+			</f:verbatim>
+			</wf:container>
+					
+			</wf:container>
+			<!-- end of  formsection-->
 			
-			<fieldset>
+			<f:verbatim>
+			<h1 class="subHeader topSubHeader">Skyrsla um neysluveitu
+			</h1>
+			</f:verbatim>
+			
+			<!-- form section -->
+			<wf:container styleClass="formSection">				
+			
+			<wf:container styleClass="fieldsetContainer">
 			<!-- 16 -->
-			<div class="formItem">
-				<h:outputLabel for="hringrasarvidnam">Hringrásarviðnám aðal-/greinitöflu</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="hringrasarvidnam" value="Hringrásarviðnám aðal-/greinitöflu"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText id="hringrasarvidnam" value="#{TilkynningLokVerksBean.hringrasarvidam}" />
-				<h:outputLabel for="hringrasarvidnam">&#937;</h:outputLabel>
+				<h:outputLabel for="hringrasarvidnam" value="&#937;"/>
 				<h:message for="hringrasarvidnam"></h:message>
-			</div>	
+			</wf:container>	
 						
 			<!-- 17 -->
-			<div class="formItem">
-				<h:outputLabel for="skammhlaupsstraumur">Skammhlaupsstraumur aðal-/greinitöflu</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skammhlaupsstraumur" value="Skammhlaupsstraumur aðal-/greinitöflu"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="skammhlaupsstraumur" value="#{TilkynningLokVerksBean.skammhlaupsstraumur}" />
-				<h:outputLabel for="skammhlaupsstraumur">A</h:outputLabel>
+				<h:outputLabel for="skammhlaupsstraumur" value="A"/>
 				<h:message for="skammhlaupsstraumur"></h:message>
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<!-- 19 -->
-			<div class="formItem">
-				<h:outputLabel for="einangrunNeysluveitu">Einangrun neysluveitu</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="einangrunNeysluveitu" value="Einangrun neysluveitu"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="einangrunNeysluveitu" value="#{TilkynningLokVerksBean.einangrunNeysluveitu}"/>
-				<h:outputLabel for="einangrunNeysluveitu">M&#937;</h:outputLabel>
+				<h:outputLabel for="einangrunNeysluveitu" value="M&#937;"/>
 				<h:message for="einangrunNeysluveitu"></h:message>
-			</div>
+			</wf:container>
 			<!-- 20 -->
-			<div class="formItem">
-				<h:outputLabel for="hringrasarvidnamJardskaut">Hringrásarviðnámsmæling jarðskauts/sp.jöfnunar</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="hringrasarvidnamJardskaut" value="Hringrásarviðnámsmæling jarðskauts/sp.jöfnunar"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="hringrasarvidnamJardskaut" value="#{TilkynningLokVerksBean.hringrasarvidnamJardskaut}"/>
-				<h:outputLabel for="hringrasarvidnamJardskaut">&#937;</h:outputLabel>
+				<h:outputLabel for="hringrasarvidnamJardskaut" value="&#937;"/>
 				<h:message for="hringrasarvidnamJardskaut"></h:message>
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<!-- 21 -->
-			<div class="formItem">
-				<h:outputLabel for="skammhlaupsstraumurNeysluveitu">Skammhlaupsstraumur neysluveitu</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skammhlaupsstraumurNeysluveitu" value="Skammhlaupsstraumur neysluveitu"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="skammhlaupsstraumurNeysluveitu" value="#{TilkynningLokVerksBean.skammhlaupsstraumurNeysluveitu}"/>
-				<h:outputLabel for="skammhlaupsstraumurNeysluveitu">A</h:outputLabel>
+				<h:outputLabel for="skammhlaupsstraumurNeysluveitu" value="A"/>
 				<h:message for="skammhlaupsstraumurNeysluveitu"></h:message>
-			</div>	
+			</wf:container>	
 			<!-- 22 -->
-			<div class="formItem">
-				<h:outputLabel for="hringrasarvidnamNeysluveitu">Hringrásarviðnámsmæling neysluveitu</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="hringrasarvidnamNeysluveitu" value="Hringrásarviðnámsmæling neysluveitu"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="hringrasarvidnamNeysluveitu" value="#{TilkynningLokVerksBean.hringrasarvidnamNeysluveitu}"/>
-				<h:outputLabel for="hringrasarvidnamNeysluveitu">&#937;</h:outputLabel>
+				<h:outputLabel for="hringrasarvidnamNeysluveitu" value="&#937;"/>
 				<h:message for="hringrasarvidnamNeysluveitu"></h:message>
-			</div>	
-			</fieldset>
+			</wf:container>	
+			</wf:container>
 			
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<!-- 23 -->
-			<div class="formItem">
-				<h:outputLabel for="maeldSpennaFasiN">Maeld spenna Fasi-N</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="maeldSpennaFasiN" value="Maeld spenna Fasi-N" />
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="maeldSpennaFasiN" value="#{TilkynningLokVerksBean.maeldSpennaFasiN}"/>
-				<h:outputLabel for="maeldSpennaFasiN">V</h:outputLabel>
+				<h:outputLabel for="maeldSpennaFasiN" value="V"/>
 				<h:message for="maeldSpennaFasiN"></h:message>
-			</div>	
+			</wf:container>	
 			<!-- 24 -->
-			<div class="formItem">
-				<h:outputLabel for="maeldSpennaFasiFasi">Maeld spenna Fasi-Fasi</h:outputLabel>
-			</div>
-			<div>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="maeldSpennaFasiFasi" value="Maeld spenna Fasi-Fasi"/>
+			</wf:container>
+			<wf:container>
 				<h:inputText size="8" id="maeldSpennaFasiFasi" value="#{TilkynningLokVerksBean.maeldSpennaFasiFasi}"/>
-				<h:outputLabel for="maeldSpennaFasiFasi">V</h:outputLabel>
+				<h:outputLabel for="maeldSpennaFasiFasi" value="V"/>
 				<h:message for="maeldSpennaFasiFasi"></h:message>
-			</div>
-			</fieldset>
+			</wf:container>
+			</wf:container>
 			
-			<fieldset>
+			<wf:container styleClass="fieldsetContainer">
 			<!-- 25  -->
-			<div class="formItem required">
-				<h:outputLabel for="lekastraumsrofi">Lekastraumsrofi</h:outputLabel>
-			</div>
-			<div class="checkboxItem">
+			<wf:container styleClass="formItem required">
+				<h:outputLabel for="lekastraumsrofi" value="Lekastraumsrofi"/>
+			</wf:container>
+			<wf:container styleClass="checkboxItem">
 			<h:selectOneRadio id="lekastraumsrofi" value="#{TilkynningLokVerksBean.lekastraumsrofi}">
 				<f:selectItems value="#{RafverktakaInitialdata.lekastraumsrofiListiSelects}"/>
 			</h:selectOneRadio>
-			</div>
+			</wf:container>
 			
 			<!-- 27 -->
-			<div>
+			<wf:container>
 				<h:inputText size="4" id="spennuhaekkunUtleysingVolt" 
 				value="#{TilkynningLokVerksBean.spennuhaekkunUtleysingVolt}"/>
-				<h:outputLabel for="spennuhaekkunUtleysingVolt">V</h:outputLabel>
+				<h:outputLabel for="spennuhaekkunUtleysingVolt" value="V" />
 				<h:message for="spennuhaekkunUtleysingVolt"></h:message>
-			</div>
+			</wf:container>
 			
 			<!-- 29 -->
-			<div>
+			<wf:container>
 				<h:inputText size="4" id="lekastraumsrofaUtleysingMillisecond" 
 				value="#{TilkynningLokVerksBean.lekastraumsrofaUtleysingMillisecond}"/>
-				<h:outputLabel for="lekastraumsrofaUtleysingMillisecond">ms</h:outputLabel>
+				<h:outputLabel for="lekastraumsrofaUtleysingMillisecond" value="ms"/>
 				<h:message for="lekastraumsrofaUtleysingMillisecond"></h:message>
-			</div>
-			</fieldset>
+			</wf:container>
+			</wf:container>
 			
 			
 			<!--  30  -->
-			<div class="formItem">
-				<h:outputLabel for="skyringarMaelingarLokVerks">Skyringar</h:outputLabel>
+			<wf:container styleClass="formItem">
+				<h:outputLabel for="skyringarMaelingarLokVerks" value="Skyringar"/>
 			<h:inputTextarea 
 				id="skyringarMaelingarLoksVerks" 
 				rows="3" 
 				cols="60"
 				value="#{TilkynningLokVerksBean.skyringarMaelingar}"/>
-			</div>
+			</wf:container>
 			
 			
 			<!-- formsection ends -->
-			</div>
+			</wf:container>
 				
-			<div class="button">
+			<wf:container styleClass="button">
 				<h:commandButton 
 				action="back" 
 				value="til baka"/>
+				
+				<h:outputText value=" "/>
+				
 				<h:commandButton 
 				action="#{TilkynningLokVerksBean.store}" 
 				value="geyma"/>
 				<h:commandButton 
 				action="#{TilkynningLokVerksBean.send}" 
 				value="senda"/>
-			</div>
+			</wf:container>
 
 			
 		</h:form>
-		<jsp:include page="bottom.jsp" />
-		</body>
-		</html>
+
 	</f:view>
 </jsp:root>

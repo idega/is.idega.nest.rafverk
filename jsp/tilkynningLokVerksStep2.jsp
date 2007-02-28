@@ -86,10 +86,6 @@
 				</h:selectOneMenu>
 			</wf:container>
 			
-			<wf:container styleClass="formItem">
-				<h:outputLabel for="starfsemi" value="Starfsemi hver"/>
-				<h:inputText size="8" id="starfsemi" value="#{TilkynningLokVerksBean.starfsemi}" />
-			</wf:container>	
 			</wf:container>
 			
 			<wf:container styleClass="formItem">
