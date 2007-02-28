@@ -11,7 +11,7 @@
 		<h:form id="form1">
 			<!--div class="generalContent"-->
 			
-			<f:verbatim><h1>Thjonustubeidni</h1></f:verbatim>
+			<f:verbatim><h1 class="applicationHeading">Thjonustubeidni</h1></f:verbatim>
 			
 			<wf:container styleClass="header">
 			
