@@ -76,7 +76,7 @@
 			</wf:container>
 			</wf:container> 
 		
-			<wf:container styleClass="fieldsetContainer">
+
 			<wf:container styleClass="formItem required">
 				<h:outputLabel for="husnaedis" value="Notkun húsnæðis"/>
 			</wf:container>
@@ -86,7 +86,7 @@
 				</h:selectOneMenu>
 			</wf:container>
 			
-			</wf:container>
+
 			
 			<wf:container styleClass="formItem">
 				<h:outputLabel for="skyringLokVerks" value="Nánari skyring á þvi sem tilkynnt er"/>

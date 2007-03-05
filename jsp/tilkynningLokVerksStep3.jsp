@@ -65,7 +65,7 @@
 				<h:outputLabel for="hringrasarvidnam" value="Hringrásarviðnám aðal-/greinitöflu"/>
 			</wf:container>
 			<wf:container>
-				<h:inputText id="hringrasarvidnam" value="#{TilkynningLokVerksBean.hringrasarvidam}" />
+				<h:inputText size="8" id="hringrasarvidnam" value="#{TilkynningLokVerksBean.hringrasarvidam}" />
 				<h:outputLabel for="hringrasarvidnam" value="&#937;"/>
 				<h:message for="hringrasarvidnam"></h:message>
 			</wf:container>	

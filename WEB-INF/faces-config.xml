@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All Rights Reserved.
+ 
+ Redistribution and use in source and binary forms, with or
+ without modification, are permitted provided that the following
+ conditions are met:
+ 
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ 
+ - Redistribution in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials
+   provided with the distribution.
+    
+ Neither the name of Sun Microsystems, Inc. or the names of
+ contributors may be used to endorse or promote products derived
+ from this software without specific prior written permission.
+  
+ This software is provided "AS IS," without a warranty of any
+ kind. ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND
+ WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY
+ EXCLUDED. SUN AND ITS LICENSORS SHALL NOT BE LIABLE FOR ANY
+ DAMAGES OR LIABILITIES SUFFERED BY LICENSEE AS A RESULT OF OR
+ RELATING TO USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE OR
+ ITS DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE
+ FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT,
+ SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER
+ CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF
+ THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF SUN HAS
+ BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+  
+ You acknowledge that this software is not designed, licensed or
+ intended for use in the design, construction, operation or
+ maintenance of any nuclear facility.
+-->
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config>
+
+  <application>
+    <locale-config>
+      <default-locale>en</default-locale>
+    </locale-config>
+     <message-bundle>resources.application</message-bundle>
+  </application>
+  <managed-bean>
+  	<managed-bean-name>RafverktakaListi</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.RafverktakaListi</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>SkyrslaRafverktaka</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.SkyrslaRafverktaka</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>SkyrslaSkodunarstodvar</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.SkyrslaSkodunarstodvar</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>RafverktokuListi</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.RafverktokuListi</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>RafverktakaInitialdata</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.InitialData</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>YfirlitRafverktaka</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.YfirlitRafverktaka</managed-bean-class>
+  	<managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
+  	<managed-bean-name>UpphafstilkynningRafverktoku</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.UpphafstilkynningRafverktoku</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+   <managed-bean>
+  	<managed-bean-name>TilkynningVertakaBean</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.TilkynningVertakaBean</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+ <managed-bean>
+  	<managed-bean-name>TilkynningLokVerksBean</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.TilkynningLokVerksBean</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+
+  
+  <navigation-rule>
+    	<description>
+  		Select rafverktaki
+  	</description>
+  	<from-view-id>/pages/rafverktakaListi.jsp</from-view-id>
+  	<navigation-case>
+  		<from-outcome>selectRafverktaki</from-outcome>
+  		<to-view-id>/pages/yfirlitRafverktaka.jsp</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+  
+   <navigation-rule>
+  	<description>
+  		Tilkynning vertaka step 1
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref2/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+  
+  <navigation-rule>
+    	<description>
+  		Tilkynning vertaka step 2
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref2/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref3/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>back</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>
+  	</navigation-case>
+    	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+  
+    <navigation-rule>
+    	<description>
+  		Tilkynning vertaka step 3
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref3/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>back</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref2/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	 <navigation-case>
+  		<from-outcome>nextwizard</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+
+ 
+   <navigation-rule>
+  	<description>
+  		Tilkynning lok verks  step 1
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</to-view-id>
+  	</navigation-case>
+    	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	  	 <navigation-case>
+  		<from-outcome>nextwizard</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+  
+  <navigation-rule>
+    	<description>
+  		Tilkynning vertaka step 2
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref3/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>back</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  	</navigation-case>
+    	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  </navigation-rule>
+  
+    <navigation-rule>
+    	<description>
+  		Tilkynning vertaka step 3
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref3/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>back</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>store</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>send</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	 <navigation-case>
+  		<from-outcome>nextwizard</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	 </navigation-rule>
+  
+  </faces-config>

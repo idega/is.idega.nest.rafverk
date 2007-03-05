@@ -102,7 +102,7 @@
 			<wf:container styleClass="formItem required">
 				<h:outputLabel for="stofnKvisl1" value="Stofn/kvisl" />
 			</wf:container>
-				<wf:container>
+				<wf:container styleClass="stofninput">
 				<h:inputText size="4" id="stofnKvisl1" value="#{TilkynningVertakaBean.stofn1}"/>
 				<h:outputLabel for="stofnKvisl1" value="x"/>
 				<h:message for="stofnKvisl1"></h:message>
@@ -139,7 +139,7 @@
 			<wf:container styleClass="formItem required">
 				<h:outputLabel for="beidni" value="Beiðni um" />
 			</wf:container>
-			<wf:container styleClass="checkboxItem">
+			<wf:container styleClass="rafverkcheck">
 				<h:selectManyCheckbox  id="beidni" value="#{TilkynningVertakaBean.beidniUm}">
 					<f:selectItems value="#{RafverktakaInitialdata.beidniListiSelects}"/>
 				</h:selectManyCheckbox>
