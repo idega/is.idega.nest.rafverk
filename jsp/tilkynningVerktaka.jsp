@@ -99,8 +99,9 @@
 			</wf:container>
 			
 			<wf:container styleClass="formItem required">
-				<h:outputLabel for="heimilisfangRafverktaka" value="Heimilisfangbel"/>
-				<h:inputText id="heimilisfangRafverktaka" disabled="true"/>
+				<h:outputLabel for="heimilisfangRafverktaka" value="Heimilisfang"/>
+				<h:inputText id="heimilisfangRafverktaka" value="#{UpphafstilkynningRafverktoku.rafverktaka.rafverktaki.heimilisfang.display}"
+				disabled="true"/>
 			</wf:container>
 			
 			<wf:container styleClass="formItem required">
