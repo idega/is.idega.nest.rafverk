@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.2 2007/03/07 13:19:29 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.3 2007/03/07 15:08:50 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import org.apache.myfaces.custom.datalist.HtmlDataList;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/07 13:19:29 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/07 15:08:50 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -75,17 +75,17 @@ public class TilkynningLokVerksBean {
     
     // third step
     
-    private Integer hringrasarvidam = null;
+    private String hringrasarvidam = null;
     
     private Integer skammhlaupsstraumur = null;
     
-    private Integer einangrunNeysluveitu = null;
+    private String einangrunNeysluveitu = null;
     
-    private Integer hringrasarvidnamJardskaut = null;
+    private String hringrasarvidnamJardskaut = null;
     
     private Integer skammhlaupsstraumurNeysluveitu = null;
     
-    private Integer hringrasarvidnamNeysluveitu = null;
+    private String hringrasarvidnamNeysluveitu = null;
     
     private Integer maeldSpennaFasiN = null;
     
@@ -93,7 +93,7 @@ public class TilkynningLokVerksBean {
     
     private String lekastraumsrofi = null;
     
-    private Integer spennuhaekkunUtleysingVolt = null;
+    private String spennuhaekkunUtleysingVolt = null;
     
     private Integer lekastraumsrofaUtleysingMillisecond = null;
     
@@ -107,6 +107,7 @@ public class TilkynningLokVerksBean {
 	private void initialize() {
 		// initialize maelir
 		maelir = new Maelir();
+		
 	}
 	
 	public String store() {
@@ -116,6 +117,7 @@ public class TilkynningLokVerksBean {
 	public String send() {
 		return "send";
 	}
+	
 
 	// generated getter and setter methods
 	
@@ -309,42 +311,42 @@ public class TilkynningLokVerksBean {
 	}
 
 	
-	public Integer getEinangrunNeysluveitu() {
+	public String getEinangrunNeysluveitu() {
 		return einangrunNeysluveitu;
 	}
 
 	
-	public void setEinangrunNeysluveitu(Integer einangrunNeysluveitu) {
+	public void setEinangrunNeysluveitu(String einangrunNeysluveitu) {
 		this.einangrunNeysluveitu = einangrunNeysluveitu;
 	}
 
 	
-	public Integer getHringrasarvidam() {
+	public String getHringrasarvidam() {
 		return hringrasarvidam;
 	}
 
 	
-	public void setHringrasarvidam(Integer hringrasarvidam) {
+	public void setHringrasarvidam(String hringrasarvidam) {
 		this.hringrasarvidam = hringrasarvidam;
 	}
 
 	
-	public Integer getHringrasarvidnamJardskaut() {
+	public String getHringrasarvidnamJardskaut() {
 		return hringrasarvidnamJardskaut;
 	}
 
 	
-	public void setHringrasarvidnamJardskaut(Integer hringrasarvidnamJardskaut) {
+	public void setHringrasarvidnamJardskaut(String hringrasarvidnamJardskaut) {
 		this.hringrasarvidnamJardskaut = hringrasarvidnamJardskaut;
 	}
 
 	
-	public Integer getHringrasarvidnamNeysluveitu() {
+	public String getHringrasarvidnamNeysluveitu() {
 		return hringrasarvidnamNeysluveitu;
 	}
 
 	
-	public void setHringrasarvidnamNeysluveitu(Integer hringrasarvidnamNeysluveitu) {
+	public void setHringrasarvidnamNeysluveitu(String hringrasarvidnamNeysluveitu) {
 		this.hringrasarvidnamNeysluveitu = hringrasarvidnamNeysluveitu;
 	}
 
@@ -419,12 +421,12 @@ public class TilkynningLokVerksBean {
 	}
 
 	
-	public Integer getSpennuhaekkunUtleysingVolt() {
+	public String getSpennuhaekkunUtleysingVolt() {
 		return spennuhaekkunUtleysingVolt;
 	}
 
 	
-	public void setSpennuhaekkunUtleysingVolt(Integer spennuhaekkunUtleysingVolt) {
+	public void setSpennuhaekkunUtleysingVolt(String spennuhaekkunUtleysingVolt) {
 		this.spennuhaekkunUtleysingVolt = spennuhaekkunUtleysingVolt;
 	}
 
