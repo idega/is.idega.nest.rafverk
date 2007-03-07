@@ -8,16 +8,16 @@ import javax.faces.el.ValueBinding;
 public class BaseBean implements Serializable{
 
 	public static InitialData getInitialData() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		ValueBinding binding = context.getApplication().createValueBinding("#{RafverktakaInitialdata}");
-		Object bean = binding.getValue(context);
-		return (InitialData) bean;
+		return (InitialData) getBean("#{RafverktakaInitialdata}");
 	}
 
-	public RafverktokuListi getRafverktokuListi(){
+	public static RafverktokuListi getRafverktokuListi(){
+		return (RafverktokuListi) getBean("#{RafverktokuListi}");
+	}
+	
+	public static Object getBean(String bean) {
 		FacesContext context = FacesContext.getCurrentInstance();
-		ValueBinding binding = context.getApplication().createValueBinding("#{RafverktokuListi}");
-		Object bean = binding.getValue(context);
-		return (RafverktokuListi) bean;
+		ValueBinding binding = context.getApplication().createValueBinding(bean);
+		return binding.getValue(context);
 	}
 }
