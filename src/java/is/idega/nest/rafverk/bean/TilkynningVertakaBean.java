@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.2 2007/03/07 13:19:29 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.3 2007/03/07 15:41:09 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/07 13:19:29 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/07 15:41:09 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TilkynningVertakaBean {
 	
@@ -122,6 +122,28 @@ public class TilkynningVertakaBean {
 	
 	public String send() {
 		return "send";
+	}
+	
+	public String goToTilkynningLokVerks() {
+		initializeTilkynningLokVerks();
+		return "nextwizard";
+	}
+	
+	private void initializeTilkynningLokVerks() {
+		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
+		// first step
+		tilkynningLokVersBean.setNafnOrkukaupanda(getNafnOrkukaupanda());
+		tilkynningLokVersBean.setKennitalaOrkukaupanda(getKennitalaOrkukaupanda());
+		tilkynningLokVersBean.setHeimasimiOrkukaupanda(getHeimasimiOrkukaupanda());
+		tilkynningLokVersBean.setVinnusimiOrkukaupanda(getVinnusimiOrkukaupanda());
+		// second step
+		tilkynningLokVersBean.setNotkunarflokkur(getNotkunarflokkur());
+		// spennu fields...
+		tilkynningLokVersBean.setSpennukerfi(getSpennukerfi());
+		tilkynningLokVersBean.setAnnad(getAnnad());
+		// ...spennu fields
+		tilkynningLokVersBean.setVarnarradstoefun(getVarnarradstoefun());
+		
 	}
 
 	// generated getter and setter methods
