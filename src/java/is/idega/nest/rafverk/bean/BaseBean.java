@@ -15,6 +15,10 @@ public class BaseBean implements Serializable{
 		return (RafverktokuListi) getBean("#{RafverktokuListi}");
 	}
 	
+	public static TilkynningLokVerksBean getTilkynningLokVerksBean() {
+		return (TilkynningLokVerksBean) getBean("#{TilkynningLokVerksBean}");
+	}
+	
 	public static Object getBean(String bean) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ValueBinding binding = context.getApplication().createValueBinding(bean);
