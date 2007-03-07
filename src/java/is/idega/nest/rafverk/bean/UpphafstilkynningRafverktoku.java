@@ -2,6 +2,7 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.idega.nest.rafverk.domain.Rafverktaki;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class UpphafstilkynningRafverktoku extends BaseBean {
 	public UpphafstilkynningRafverktoku(){
 		
 		Rafverktaka verktaka = new Rafverktaka();
-		verktaka.setRafverktaki(getInitialData().getRafverktakiJon());
+		verktaka.setRafverktaki(new Rafverktaki());
 		setRafverktaka(verktaka);
 		
 	}

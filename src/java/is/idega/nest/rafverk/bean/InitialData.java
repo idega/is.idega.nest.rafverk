@@ -9,20 +9,20 @@ import is.idega.nest.rafverk.domain.Postnumer;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.idega.nest.rafverk.domain.Veitustadur;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
+import com.idega.idegaweb.IWResourceBundle;
+import com.idega.presentation.IWContext;
 
 public class InitialData extends BaseBean {
 	
-
+	public static final String BUNDLE_IDENTIFIER = "is.idega.nest.rafverk";
+	
+	private IWResourceBundle resourceBundle = null;
 	
 	// first step
 	
@@ -59,6 +59,9 @@ public class InitialData extends BaseBean {
 		"Lekastraumsrofvörn", "LEKASTRAUMSROFVOERN",
 		"Önnur", "OENNUR"
 		};
+	
+	
+	
 	
 	// second step
 	
@@ -649,20 +652,31 @@ public class InitialData extends BaseBean {
 	public List getLekastraumsrofiListiSelects() {
 		return getSelectItemList(getLekastraumsrofiListi());
 	}
-	
-
+	                      
 	
 	private List getSelectItemList(List myList) {
+		IWResourceBundle localResourceBundle = getResourceBundle();
 		ArrayList selects = new ArrayList();
 		for (Iterator iter = myList.iterator(); iter.hasNext();) {
 			String label = (String) iter.next();
 			String value = (String) iter.next();
+			// use value as key
+			// label = localResourceBundle.getLocalizedString(value, label);
 			SelectItem item = new SelectItem();
 			item.setLabel(label);
 			item.setValue(value);
 			selects.add(item);
 		}
 		return selects;
+	}
+	
+	private IWResourceBundle getResourceBundle() {
+		if (resourceBundle == null) {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			IWContext context = IWContext.getIWContext(facesContext);
+			resourceBundle = context.getIWMainApplication().getBundle(BUNDLE_IDENTIFIER).getResourceBundle(context);
+		}
+		return resourceBundle;
 	}
 
 }

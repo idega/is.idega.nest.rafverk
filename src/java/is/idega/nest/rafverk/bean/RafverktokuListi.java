@@ -12,7 +12,7 @@ public class RafverktokuListi extends BaseBean {
 	
 	String selectedStatus;
 
-	public List getRaferktokuListiSelects(){
+	public List getRafverktokuListiSelects(){
 		ArrayList selects = new ArrayList();
 		List verktokur = getInitialData().getAllRafverktokurListi();
 		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {

@@ -4,7 +4,7 @@
   <extend>${base.project.dir}/base-dependencies.xml</extend>
   <name>idega rafverk</name>
   <artifactId>is.idega.nest.rafverk</artifactId>
-  <currentVersion>3.1.0</currentVersion>
+  <currentVersion>SNAPSHOT</currentVersion>
   <inceptionYear>2007</inceptionYear>
   <shortDescription>rafverk</shortDescription>
   <description>rafverk</description>
@@ -31,6 +31,16 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
       <version>3.1.0</version>
+      <type>jar</type>
+      <url>http://www.idega.com/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+     <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>com.idega.builder</artifactId>
+      <version>3.1.2</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>

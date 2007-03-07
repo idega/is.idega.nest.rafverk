@@ -1,5 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
+import com.idega.util.StringHandler;
+
 public class Heimilisfang extends BaseBean{
 	
 	String id;
@@ -32,8 +34,21 @@ public class Heimilisfang extends BaseBean{
 		this.id = id;
 	}
 	
-	public String getHeimilisfang(){
-		return getGata().getNafn()+" "+getHusnumer()+" "+getHushluti()+" "+getGata().getPostnumer().getName();
+	public String getDisplay(){
+		String name = StringHandler.replaceIfEmpty(getGata().getNafn(), "");
+		String tempHusnumer = StringHandler.replaceIfEmpty(getHusnumer(), "");
+		String tempHushluti = StringHandler.replaceIfEmpty(getHushluti(), "");
+		Gata tempGata = getGata();
+		String tempPostnumer = null;
+		if (tempGata != null) {
+			Postnumer tempPostnumer2 = tempGata.getPostnumer();
+			if (tempPostnumer2 != null) {
+				tempPostnumer = tempPostnumer2.getName();
+			}
+		}
+		tempPostnumer = StringHandler.replaceIfEmpty(tempPostnumer, "");
+		return name + " " + tempHusnumer +" "+ tempHushluti + " " + tempPostnumer;
 	}
+	
 	
 }

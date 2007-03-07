@@ -2,12 +2,26 @@ package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.BaseBean;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.faces.context.FacesContext;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
+import com.idega.core.contact.data.Phone;
+import com.idega.core.location.data.Address;
+import com.idega.core.location.data.PostalCode;
+import com.idega.idegaweb.IWApplicationContext;
+import com.idega.presentation.IWContext;
+import com.idega.user.business.NoPhoneFoundException;
+import com.idega.user.business.UserBusiness;
+import com.idega.user.data.User;
 
 public class Rafverktaki extends BaseBean{
 
+	public static final String EMPTY_STRING = "";
 	
 	public static String STADA_VIRKUR="VIRKUR";
 	public static String STADA_OVIRKUR="OVIRKUR";
@@ -23,6 +37,73 @@ public class Rafverktaki extends BaseBean{
 	String tegund;
 	String stada=STADA_VIRKUR;
 	
+	public Rafverktaki() {
+		initialize();
+	}
+	
+	public void initialize() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		IWContext context = IWContext.getIWContext(facesContext);
+		User user = context.getCurrentUser();
+		nafn = user.getDisplayName();
+		kennitala = user.getPersonalID();
+		UserBusiness userBusiness = getUserBusiness(context);
+		initializeHeimilisfang(user, userBusiness);
+		initializeSimi(user, userBusiness);
+		
+	}
+
+	private void initializeHeimilisfang(User user, UserBusiness userBusiness) {
+		try {
+			// co address is actually work address
+			Address address = userBusiness.getUsersCoAddress(user);
+			if (address == null) {
+				return;
+			}
+			String streetName = address.getStreetNameOriginal();
+			String streetNumber = address.getStreetNumber();
+			Gata gata = new Gata();
+			gata.setNafn(streetName);
+			PostalCode postalCode = address.getPostalCode();
+			if (postalCode != null) {
+				String zipCode = postalCode.getPostalCode();
+				String zipName = postalCode.getName();
+				Postnumer postnumer = new Postnumer();
+				postnumer.setNumer(zipCode);
+				postnumer.setName(zipName);
+				gata.setPostnumer(postnumer);
+			}
+			heimilisfang = new Heimilisfang();
+			heimilisfang.setHusnumer(streetNumber);
+			heimilisfang.setGata(gata);
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException(e);
+		}
+	}
+	
+	private void initializeSimi(User user, UserBusiness userBusiness) {
+		try {
+			Phone phone = userBusiness.getUsersHomePhone(user);
+			heimasimi = (phone == null) ? EMPTY_STRING : phone.getNumber();
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException(e);
+		}
+		catch (NoPhoneFoundException e) {
+			heimasimi = EMPTY_STRING;
+		}
+		try {
+			Phone phone = userBusiness.getUsersWorkPhone(user);
+			vinnusimi = (phone == null) ? EMPTY_STRING : phone.getNumber();
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException(e);
+		}
+		catch (NoPhoneFoundException e) {
+			vinnusimi = EMPTY_STRING;
+		}
+	}
 	
 	public String getHeimasimi() {
 		return heimasimi;
@@ -105,6 +186,15 @@ public class Rafverktaki extends BaseBean{
 	
 	public void update(){
 		
+	}
+	
+	private UserBusiness getUserBusiness(IWApplicationContext iwac) {	
+		try {
+			return (UserBusiness) IBOLookup.getServiceInstance(iwac,UserBusiness.class);
+		}
+		catch (IBOLookupException e) {
+			throw new IBORuntimeException(e);
+		}
 	}
 	
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.1 2007/02/21 11:19:30 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.2 2007/03/07 13:19:29 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import org.apache.myfaces.custom.datalist.HtmlDataList;
 
 /**
  * 
- *  Last modified: $Date: 2007/02/21 11:19:30 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/07 13:19:29 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -56,8 +56,6 @@ public class TilkynningLokVerksBean {
     private String tilkynntAnnad = null;
     
     private String notkunarflokkur = null;
-    
-    private String starfsemi = null;
     
     private String skyring = null;
     
@@ -268,16 +266,6 @@ public class TilkynningLokVerksBean {
 	
 	public void setSpennukerfi(String spennukerfi) {
 		this.spennukerfi = spennukerfi;
-	}
-
-	
-	public String getStarfsemi() {
-		return starfsemi;
-	}
-
-	
-	public void setStarfsemi(String starfsemi) {
-		this.starfsemi = starfsemi;
 	}
 
 	

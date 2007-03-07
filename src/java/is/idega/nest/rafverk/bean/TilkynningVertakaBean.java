@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.1 2007/02/21 11:19:30 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.2 2007/03/07 13:19:29 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,7 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.domain.Rafverktaki;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,17 +20,22 @@ import javax.faces.component.html.HtmlSelectOneListbox;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.component.html.HtmlSelectOneRadio;
 import javax.faces.component.html.HtmlSelectManyCheckbox;
+import javax.faces.context.FacesContext;
 import org.apache.myfaces.custom.datalist.HtmlDataList;
+import com.idega.presentation.IWContext;
+import com.idega.user.data.User;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/02/21 11:19:30 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/07 13:19:29 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TilkynningVertakaBean {
+	
+	private Rafverktaki rafverktaka = null;
 	
 	// first step 
 	

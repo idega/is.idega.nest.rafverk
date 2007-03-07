@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.idega.nest.rafverk.domain.Rafverktaki;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,15 @@ public class SkyrslaRafverktaka extends BaseBean{
 
 	Rafverktaka rafverktaka;
 
+	public SkyrslaRafverktaka()	{
+		
+		Rafverktaka verktaka = new Rafverktaka();
+		verktaka.setRafverktaki(new Rafverktaki());
+		setRafverktaka(verktaka);
+	}
+	
+	
+	
 	public Rafverktaka getRafverktaka() {
 		return rafverktaka;
 	}
