@@ -121,11 +121,11 @@
   	</navigation-case>
    	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	  	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   </navigation-rule>
   
@@ -144,11 +144,11 @@
   	</navigation-case>
     	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	  	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   </navigation-rule>
   
@@ -163,15 +163,15 @@
   	</navigation-case>
    	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   	 <navigation-case>
   		<from-outcome>nextwizard</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</to-view-id>
   	</navigation-case>
   </navigation-rule>
 
@@ -187,11 +187,11 @@
   	</navigation-case>
     	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	  	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   	  	  	 <navigation-case>
   		<from-outcome>nextwizard</from-outcome>
@@ -214,11 +214,11 @@
   	</navigation-case>
     	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	  	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   </navigation-rule>
   
@@ -233,11 +233,11 @@
   	</navigation-case>
    	<navigation-case>
   		<from-outcome>store</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/geymt/</to-view-id>
   	</navigation-case>
   	  	 <navigation-case>
   		<from-outcome>send</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
   	 <navigation-case>
   		<from-outcome>nextwizard</from-outcome>
