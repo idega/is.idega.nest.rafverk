@@ -36,6 +36,14 @@ public class Rafverktaka extends BaseBean{
 	Orkukaupandi orkukaupandi;
 	String stada=STADA_MOTTEKIN;
 	
+    private String notkunarflokkur = null;
+    
+    private String spennukerfi = null;
+    
+    private String annad = null;
+    
+    private List varnarradstoefun = null;
+	
 	public Rafverktaka(){
 		//initializeDummyData();
 	}
@@ -86,6 +94,54 @@ public class Rafverktaka extends BaseBean{
 
 	public void setStada(String stada) {
 		this.stada = stada;
+	}
+
+
+	
+	public String getAnnad() {
+		return annad;
+	}
+
+
+	
+	public void setAnnad(String annad) {
+		this.annad = annad;
+	}
+
+
+	
+	public String getNotkunarflokkur() {
+		return notkunarflokkur;
+	}
+
+
+	
+	public void setNotkunarflokkur(String notkunarflokkur) {
+		this.notkunarflokkur = notkunarflokkur;
+	}
+
+
+	
+	public String getSpennukerfi() {
+		return spennukerfi;
+	}
+
+
+	
+	public void setSpennukerfi(String spennukerfi) {
+		this.spennukerfi = spennukerfi;
+	}
+
+
+	
+	public List getVarnarradstoefun() {
+		return varnarradstoefun;
+	}
+
+
+	
+	public void setVarnarradstoefun(List varnarradstoefun) {
+		this.varnarradstoefun = varnarradstoefun;
 	}
 	
 }

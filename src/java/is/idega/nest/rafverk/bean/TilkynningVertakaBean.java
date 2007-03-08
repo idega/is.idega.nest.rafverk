@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.7 2007/03/08 17:37:56 tryggvil Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.8 2007/03/08 22:54:32 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,9 +12,13 @@ package is.idega.nest.rafverk.bean;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
+import is.idega.nest.rafverk.domain.Heimilisfang;
+import is.idega.nest.rafverk.domain.Orkukaupandi;
+import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
+import is.postur.Postnumer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +31,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 17:37:56 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/03/08 22:54:32 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TilkynningVertakaBean {
 	
@@ -67,11 +71,11 @@ public class TilkynningVertakaBean {
     
     private String heimtaugTengist = null;
     
-    private Integer stofn1;
+    private String stofn1;
     
-    private Integer stofn2;
+    private String stofn2;
     
-    private Integer stofn3;
+    private String stofn3;
     
     private String adaltafla = null;
     
@@ -79,11 +83,11 @@ public class TilkynningVertakaBean {
     
     private List beidniUm = null;
     
-    private Integer uppsett = null;
+    private String uppsett = null;
     
     private Maelir stadurMaelir = null;
     
-    private Integer numerToeflu = null;
+    private String numerToeflu = null;
     
     private String spennukerfi = null;
     
@@ -100,6 +104,33 @@ public class TilkynningVertakaBean {
     }
 	
 	private void initialize() {
+	    orkuveitufyrirtaeki = null;
+	    postnumer = null;
+	    gata = null;
+	    gotunumer = null;
+	    haed = null;
+	    nafnOrkukaupanda = null;
+	    kennitalaOrkukaupanda = null;
+	    heimasimiOrkukaupanda = null;
+	    vinnusimiOrkukaupanda = null;
+	    // second step 
+	    notkunarflokkur = null;
+	    heimtaug = null;
+	    heimtaugTengist = null;
+	    stofn1 = null;
+	    stofn2 = null;
+	    stofn3 = null;
+	    adaltafla = null;
+	    varnarradstoefun = null;
+	    beidniUm = null;
+	    uppsett = null;
+	    stadurMaelir = null;
+	    numerToeflu = null;
+	    spennukerfi = null;
+	    annad = null;
+	    // third step
+	    maelirListMap = null;
+	    skyringar = null;
 		// initialize maelir
 		stadurMaelir = new Maelir();
 		// initialize list of maelir
@@ -112,7 +143,33 @@ public class TilkynningVertakaBean {
 		}
 	}
 	
-	
+	private void storeRafvertaka() {
+		Orkukaupandi orkukaupandi = new Orkukaupandi();
+		orkukaupandi.setNafn(getNafnOrkukaupanda());
+		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
+		orkukaupandi.setHeimasimi(getHeimasimiOrkukaupanda());
+		orkukaupandi.setVinnusimi(getVinnusimiOrkukaupanda());
+		
+		Heimilisfang heimilisfang = new Heimilisfang();
+		Gata gataObject = new Gata();
+		gataObject.setNafn(getGata());
+		Postnumer postnumerObject = new Postnumer();
+		postnumerObject.setNumer(getPostnumer());
+		gataObject.setPostnumer(postnumerObject);
+		heimilisfang.setGata(gataObject);
+		heimilisfang.setHusnumer(getGotunumer());
+		heimilisfang.setHushluti(getHaed());
+		
+		orkukaupandi.setHeimilisfang(heimilisfang);
+		
+		// second step
+		
+		Rafverktaka rafverktaka = new Rafverktaka();
+		rafverktaka.setOrkukaupandi(orkukaupandi);
+		
+
+		
+	}
 
 	public Map getList() {
 		return maelirListMap;
@@ -131,6 +188,11 @@ public class TilkynningVertakaBean {
 		return "nextwizard";
 	}
 	
+	public String goToTilkynningVertaka() {
+		initialize();
+		return "tilkynningvertaka";
+	}
+	
 	private void initializeTilkynningLokVerks() {
 		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
 		// first step
@@ -138,6 +200,11 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.setKennitalaOrkukaupanda(getKennitalaOrkukaupanda());
 		tilkynningLokVersBean.setHeimasimiOrkukaupanda(getHeimasimiOrkukaupanda());
 		tilkynningLokVersBean.setVinnusimiOrkukaupanda(getVinnusimiOrkukaupanda());
+		
+		tilkynningLokVersBean.setPostnumer(getPostnumer());
+		tilkynningLokVersBean.setGata(getGata());
+		tilkynningLokVersBean.setGotunumer(getGotunumer());
+		tilkynningLokVersBean.setHaed(getHaed());
 		// second step
 		tilkynningLokVersBean.setNotkunarflokkur(getNotkunarflokkur());
 		// spennu fields...
@@ -147,6 +214,7 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.setVarnarradstoefun(getVarnarradstoefun());
 		
 	}
+	
 
 	// generated getter and setter methods
 	
@@ -346,7 +414,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getNumerToeflu() {
+	public String getNumerToeflu() {
 		return numerToeflu;
 	}
 
@@ -354,7 +422,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setNumerToeflu(Integer numerToeflu) {
+	public void setNumerToeflu(String numerToeflu) {
 		this.numerToeflu = numerToeflu;
 	}
 
@@ -410,7 +478,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn1() {
+	public String getStofn1() {
 		return stofn1;
 	}
 
@@ -418,7 +486,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn1(Integer stofn1) {
+	public void setStofn1(String stofn1) {
 		this.stofn1 = stofn1;
 	}
 
@@ -426,7 +494,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn2() {
+	public String getStofn2() {
 		return stofn2;
 	}
 
@@ -434,7 +502,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn2(Integer stofn2) {
+	public void setStofn2(String stofn2) {
 		this.stofn2 = stofn2;
 	}
 
@@ -442,7 +510,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn3() {
+	public String getStofn3() {
 		return stofn3;
 	}
 
@@ -450,7 +518,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn3(Integer stofn3) {
+	public void setStofn3(String stofn3) {
 		this.stofn3 = stofn3;
 	}
 
@@ -458,7 +526,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getUppsett() {
+	public String getUppsett() {
 		return uppsett;
 	}
 
@@ -466,7 +534,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setUppsett(Integer uppsett) {
+	public void setUppsett(String uppsett) {
 		this.uppsett = uppsett;
 	}
 
