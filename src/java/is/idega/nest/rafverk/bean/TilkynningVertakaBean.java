@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.4 2007/03/08 14:27:54 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.5 2007/03/08 15:18:21 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,14 +19,12 @@ import java.util.Map;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 14:27:54 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 15:18:21 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TilkynningVertakaBean {
-	
-	private Rafverktaki rafverktaka = null;
 	
 	// first step 
 	
@@ -56,11 +54,11 @@ public class TilkynningVertakaBean {
     
     private String heimtaugTengist = null;
     
-    private String stofn1;
+    private String stofn1 = null;
     
-    private String stofn2;
+    private String stofn2 = null;
     
-    private String stofn3;
+    private String stofn3 = null;
     
     private String adaltafla = null;
     
@@ -89,6 +87,34 @@ public class TilkynningVertakaBean {
     }
 	
 	private void initialize() {
+	    orkuveitufyrirtaeki = null;
+	    postnumer = null;
+	    gata = null;
+	    gotunumer = null;
+	    haed = null;
+	    nafnOrkukaupanda = null;
+	    kennitalaOrkukaupanda = null;
+	    heimasimiOrkukaupanda = null;
+	    vinnusimiOrkukaupanda = null;
+	    // second step 
+	    notkunarflokkur = null;
+	    heimtaug = null;
+	    heimtaugTengist = null;
+	    stofn1 = null;
+	    stofn2 = null;
+	    stofn3 = null;
+	    adaltafla = null;
+	    varnarradstoefun = null;
+	    beidniUm = null;
+	    uppsett = null;
+	    stadurMaelir = null;
+	    numerToeflu = null;
+	    spennukerfi = null;
+	    annad = null;
+	    // third step
+	    maelirListMap = null;
+	    skyringar = null;
+
 		// initialize maelir
 		stadurMaelir = new Maelir();
 		// initialize list of maelir
@@ -107,6 +133,8 @@ public class TilkynningVertakaBean {
 		return maelirListMap;
 	}
 	
+	// navigation methods
+	
 	public String store() {
 		return "store";
 	}
@@ -120,9 +148,19 @@ public class TilkynningVertakaBean {
 		return "nextwizard";
 	}
 	
+	public String goToTilkynningVertaka() {
+		initialize();
+		return "tilkynningvertaka";
+	}
+	
 	private void initializeTilkynningLokVerks() {
 		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
 		// first step
+		tilkynningLokVersBean.setPostnumer(getPostnumer());
+		tilkynningLokVersBean.setGata(getGata());
+		tilkynningLokVersBean.setGotunumer(getGotunumer());
+		tilkynningLokVersBean.setHaed(getHaed());
+		// line break
 		tilkynningLokVersBean.setNafnOrkukaupanda(getNafnOrkukaupanda());
 		tilkynningLokVersBean.setKennitalaOrkukaupanda(getKennitalaOrkukaupanda());
 		tilkynningLokVersBean.setHeimasimiOrkukaupanda(getHeimasimiOrkukaupanda());
@@ -134,7 +172,6 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.setAnnad(getAnnad());
 		// ...spennu fields
 		tilkynningLokVersBean.setVarnarradstoefun(getVarnarradstoefun());
-		
 	}
 
 	// generated getter and setter methods
