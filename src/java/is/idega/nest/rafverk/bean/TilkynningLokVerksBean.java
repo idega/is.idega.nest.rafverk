@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.4 2007/03/08 14:27:55 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.5 2007/03/08 15:25:08 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -15,10 +15,10 @@ import java.util.List;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 14:27:55 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 15:25:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -92,6 +92,39 @@ public class TilkynningLokVerksBean {
 
     
 	public TilkynningLokVerksBean() {
+	    postnumer = null;
+	    gata = null;
+	    gotunumer = null;
+	    haed = null;
+	    nafnOrkukaupanda = null;
+	    kennitalaOrkukaupanda = null;
+	    heimasimiOrkukaupanda = null;
+	    vinnusimiOrkukaupanda = null;
+	    // second step 
+	    tilkynnt = null;
+	    tilkynntAnnad = null;
+	    notkunarflokkur = null;
+	    skyring = null;
+	    spennukerfi = null;
+	    annad = null;
+	    varnarradstoefun = null;
+	    jardskaut = null;
+	    jardskautAnnad = null;
+	    maelir = null;
+	    skyringar = null;
+	    // third step
+	    hringrasarvidam = null;
+	    skammhlaupsstraumur = null;
+	    einangrunNeysluveitu = null;
+	    hringrasarvidnamJardskaut = null;
+	    skammhlaupsstraumurNeysluveitu = null;
+	    hringrasarvidnamNeysluveitu = null;
+	    maeldSpennaFasiN = null;
+	    maeldSpennaFasiFasi = null;
+	    lekastraumsrofi = null;
+	    spennuhaekkunUtleysingVolt = null;
+	    lekastraumsrofaUtleysingMillisecond = null;
+	    skyringarMaelingar = null;
     	initialize();
     }
 	
@@ -101,6 +134,8 @@ public class TilkynningLokVerksBean {
 		
 	}
 	
+	// navigation methods
+	
 	public String store() {
 		return "store";
 	}
@@ -109,6 +144,10 @@ public class TilkynningLokVerksBean {
 		return "send";
 	}
 	
+	public String goToTilkynningLokVerks() {
+		initialize();
+		return "tilkynninglokverks";
+	}
 
 	// generated getter and setter methods
 	

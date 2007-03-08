@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.5 2007/03/08 15:18:21 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.6 2007/03/08 15:21:38 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,7 +10,6 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
-import is.idega.nest.rafverk.domain.Rafverktaki;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +18,10 @@ import java.util.Map;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 15:18:21 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 15:21:38 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TilkynningVertakaBean {
 	
