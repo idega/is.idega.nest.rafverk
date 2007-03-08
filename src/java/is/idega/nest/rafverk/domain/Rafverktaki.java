@@ -55,6 +55,8 @@ public class Rafverktaki extends BaseBean{
 		initializeHeimilisfang(user, userBusiness);
 		initializeSimi(user, userBusiness);
 		
+		setNafnFyrirtaekis("Rafverktakan ehf.");
+		
 	}
 
 	private void initializeHeimilisfang(User user, UserBusiness userBusiness) {
