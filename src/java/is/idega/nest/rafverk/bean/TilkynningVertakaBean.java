@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.3 2007/03/07 15:41:09 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.4 2007/03/08 14:27:54 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -15,23 +15,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.component.html.HtmlSelectOneRadio;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
-import javax.faces.context.FacesContext;
-import org.apache.myfaces.custom.datalist.HtmlDataList;
-import com.idega.presentation.IWContext;
-import com.idega.user.data.User;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/07 15:41:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 14:27:54 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TilkynningVertakaBean {
 	
@@ -65,11 +56,11 @@ public class TilkynningVertakaBean {
     
     private String heimtaugTengist = null;
     
-    private Integer stofn1;
+    private String stofn1;
     
-    private Integer stofn2;
+    private String stofn2;
     
-    private Integer stofn3;
+    private String stofn3;
     
     private String adaltafla = null;
     
@@ -77,11 +68,11 @@ public class TilkynningVertakaBean {
     
     private List beidniUm = null;
     
-    private Integer uppsett = null;
+    private String uppsett = null;
     
     private Maelir stadurMaelir = null;
     
-    private Integer numerToeflu = null;
+    private String numerToeflu = null;
     
     private String spennukerfi = null;
     
@@ -340,7 +331,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getNumerToeflu() {
+	public String getNumerToeflu() {
 		return numerToeflu;
 	}
 
@@ -348,7 +339,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setNumerToeflu(Integer numerToeflu) {
+	public void setNumerToeflu(String numerToeflu) {
 		this.numerToeflu = numerToeflu;
 	}
 
@@ -404,7 +395,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn1() {
+	public String getStofn1() {
 		return stofn1;
 	}
 
@@ -412,7 +403,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn1(Integer stofn1) {
+	public void setStofn1(String stofn1) {
 		this.stofn1 = stofn1;
 	}
 
@@ -420,7 +411,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn2() {
+	public String getStofn2() {
 		return stofn2;
 	}
 
@@ -428,7 +419,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn2(Integer stofn2) {
+	public void setStofn2(String stofn2) {
 		this.stofn2 = stofn2;
 	}
 
@@ -436,7 +427,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getStofn3() {
+	public String getStofn3() {
 		return stofn3;
 	}
 
@@ -444,7 +435,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn3(Integer stofn3) {
+	public void setStofn3(String stofn3) {
 		this.stofn3 = stofn3;
 	}
 
@@ -452,7 +443,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public Integer getUppsett() {
+	public String getUppsett() {
 		return uppsett;
 	}
 
@@ -460,7 +451,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setUppsett(Integer uppsett) {
+	public void setUppsett(String uppsett) {
 		this.uppsett = uppsett;
 	}
 

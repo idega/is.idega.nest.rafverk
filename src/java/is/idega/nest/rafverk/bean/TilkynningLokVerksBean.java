@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.3 2007/03/07 15:08:50 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.4 2007/03/08 14:27:55 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,24 +10,15 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.component.html.HtmlSelectOneRadio;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
-import org.apache.myfaces.custom.datalist.HtmlDataList;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/07 15:08:50 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 14:27:55 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -77,25 +68,25 @@ public class TilkynningLokVerksBean {
     
     private String hringrasarvidam = null;
     
-    private Integer skammhlaupsstraumur = null;
+    private String skammhlaupsstraumur = null;
     
     private String einangrunNeysluveitu = null;
     
     private String hringrasarvidnamJardskaut = null;
     
-    private Integer skammhlaupsstraumurNeysluveitu = null;
+    private String skammhlaupsstraumurNeysluveitu = null;
     
     private String hringrasarvidnamNeysluveitu = null;
     
-    private Integer maeldSpennaFasiN = null;
+    private String maeldSpennaFasiN = null;
     
-    private Integer maeldSpennaFasiFasi = null;
+    private String maeldSpennaFasiFasi = null;
     
     private String lekastraumsrofi = null;
     
     private String spennuhaekkunUtleysingVolt = null;
     
-    private Integer lekastraumsrofaUtleysingMillisecond = null;
+    private String lekastraumsrofaUtleysingMillisecond = null;
     
     private String skyringarMaelingar = null;
 
@@ -351,12 +342,12 @@ public class TilkynningLokVerksBean {
 	}
 
 	
-	public Integer getLekastraumsrofaUtleysingMillisecond() {
+	public String getLekastraumsrofaUtleysingMillisecond() {
 		return lekastraumsrofaUtleysingMillisecond;
 	}
 
 	
-	public void setLekastraumsrofaUtleysingMillisecond(Integer lekastraumsrofaUtleysingMillisecond) {
+	public void setLekastraumsrofaUtleysingMillisecond(String lekastraumsrofaUtleysingMillisecond) {
 		this.lekastraumsrofaUtleysingMillisecond = lekastraumsrofaUtleysingMillisecond;
 	}
 
@@ -371,42 +362,42 @@ public class TilkynningLokVerksBean {
 	}
 
 	
-	public Integer getMaeldSpennaFasiFasi() {
+	public String getMaeldSpennaFasiFasi() {
 		return maeldSpennaFasiFasi;
 	}
 
 	
-	public void setMaeldSpennaFasiFasi(Integer maeldSpennaFasiFasi) {
+	public void setMaeldSpennaFasiFasi(String maeldSpennaFasiFasi) {
 		this.maeldSpennaFasiFasi = maeldSpennaFasiFasi;
 	}
 
 	
-	public Integer getMaeldSpennaFasiN() {
+	public String getMaeldSpennaFasiN() {
 		return maeldSpennaFasiN;
 	}
 
 	
-	public void setMaeldSpennaFasiN(Integer maeldSpennaFasiN) {
+	public void setMaeldSpennaFasiN(String maeldSpennaFasiN) {
 		this.maeldSpennaFasiN = maeldSpennaFasiN;
 	}
 
 	
-	public Integer getSkammhlaupsstraumur() {
+	public String getSkammhlaupsstraumur() {
 		return skammhlaupsstraumur;
 	}
 
 	
-	public void setSkammhlaupsstraumur(Integer skammhlaupsstraumur) {
+	public void setSkammhlaupsstraumur(String skammhlaupsstraumur) {
 		this.skammhlaupsstraumur = skammhlaupsstraumur;
 	}
 
 	
-	public Integer getSkammhlaupsstraumurNeysluveitu() {
+	public String getSkammhlaupsstraumurNeysluveitu() {
 		return skammhlaupsstraumurNeysluveitu;
 	}
 
 	
-	public void setSkammhlaupsstraumurNeysluveitu(Integer skammhlaupsstraumurNeysluveitu) {
+	public void setSkammhlaupsstraumurNeysluveitu(String skammhlaupsstraumurNeysluveitu) {
 		this.skammhlaupsstraumurNeysluveitu = skammhlaupsstraumurNeysluveitu;
 	}
 
