@@ -1,5 +1,5 @@
 /*
- * $Id: Maelir.java,v 1.2 2007/03/07 13:19:29 thomas Exp $
+ * $Id: Maelir.java,v 1.3 2007/03/08 15:54:40 thomas Exp $
  * Created on Feb 12, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,10 +14,10 @@ import java.util.List;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/07 13:19:29 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 15:54:40 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class Maelir {
 	
@@ -37,7 +37,7 @@ public class Maelir {
 	
 	private String numer = null;
 	
-	private Integer ampere = null;
+	private String ampere = null;
 	
 	private String taxti = null;
 	
@@ -61,12 +61,12 @@ public class Maelir {
 	}
 
 	
-	public Integer getAmpere() {
+	public String getAmpere() {
 		return ampere;
 	}
 
 	
-	public void setAmpere(Integer ampere) {
+	public void setAmpere(String ampere) {
 		this.ampere = ampere;
 	}
 
