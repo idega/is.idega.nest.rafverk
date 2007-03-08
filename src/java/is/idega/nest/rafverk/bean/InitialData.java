@@ -1,20 +1,25 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.domain.Fasteign;
-import is.idega.nest.rafverk.domain.Gata;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
-import is.idega.nest.rafverk.domain.Postnumer;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.idega.nest.rafverk.domain.Veitustadur;
+import is.postur.Gata;
+import is.postur.Gotuskra;
+import is.postur.Postnumer;
+import is.postur.Postnumeraskra;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 
@@ -270,7 +275,7 @@ public class InitialData extends BaseBean {
 	
 	
 	public List getPostnumeraListi(){
-		ArrayList listi = new ArrayList();
+		/*ArrayList listi = new ArrayList();
 		
 		
 		Postnumer rvk101 = getRvk101();
@@ -279,16 +284,27 @@ public class InitialData extends BaseBean {
 		Postnumer rvk104 = getRvk104();
 		listi.add(rvk104);
 		
-		return listi;
+		return listi;*/
+		
+
+		Postnumeraskra skra= Postnumeraskra.getCached();
+		return skra.getPostnumer();
+		
 	}
 	
 	public List getPostnumeraListiSelects(){
 		ArrayList selects = new ArrayList();
+		
+		SelectItem item0 = new SelectItem();
+		item0.setLabel("Veldu póstnúmer:");
+		item0.setValue("");
+		selects.add(item0);
+		
 		List postnumer = getPostnumeraListi();
 		for (Iterator iter = postnumer.iterator(); iter.hasNext();) {
 			Postnumer numer = (Postnumer) iter.next();
 			SelectItem item = new SelectItem();
-			item.setLabel(numer.getName());
+			item.setLabel(numer.getFulltNafn());
 			item.setValue(numer.getNumer());
 			selects.add(item);
 		}
@@ -327,7 +343,7 @@ public class InitialData extends BaseBean {
 	}
 	
 	public List getGotuListi(){
-		ArrayList listi = new ArrayList();
+		/*ArrayList listi = new ArrayList();
 		
 		Gata adalstr = getGataAdalstraeti();
 		listi.add(adalstr);
@@ -342,13 +358,21 @@ public class InitialData extends BaseBean {
 		listi.add(engjateigur);
 		
 		
-		return listi;
+		return listi;*/
+		
+		Gotuskra skra=null;
+		skra = Gotuskra.getCached();
+		return skra.getGotur();
+	}
+	
+	public List getGotuListiByPostnumer(String postnumer){
+		return Gotuskra.getCached().getGoturByPostnumer(postnumer);
 	}
 
 
 	public Gata getGataEngjateigur() {
 		Gata engjateigur = new Gata();
-		engjateigur.setGotuId("104eingjavegur");
+		//engjateigur.setGotuId("104eingjavegur");
 		engjateigur.setNafn("Engjavegur");
 		engjateigur.setNafnThagufall("Engjavegi");
 		engjateigur.setPostnumer(getRvk104());
@@ -358,7 +382,7 @@ public class InitialData extends BaseBean {
 
 	public Gata getGataEngjavegur() {
 		Gata engjavegur = new Gata();
-		engjavegur.setGotuId("104engjateigur");
+		//engjavegur.setGotuId("104engjateigur");
 		engjavegur.setNafn("Engjateigur");
 		engjavegur.setNafnThagufall("Engjategi");
 		engjavegur.setPostnumer(getRvk104());
@@ -368,7 +392,7 @@ public class InitialData extends BaseBean {
 
 	public Gata getGataAusturstraeti() {
 		Gata austurstraeti = new Gata();
-		austurstraeti.setGotuId("101adalstr");
+		//austurstraeti.setGotuId("101adalstr");
 		austurstraeti.setNafn("Austurstraeti");
 		austurstraeti.setNafnThagufall("Austurstraeti");
 		austurstraeti.setPostnumer(getRvk101());
@@ -378,7 +402,7 @@ public class InitialData extends BaseBean {
 
 	public Gata getGataAdalstraeti() {
 		Gata adalstr = new Gata();
-		adalstr.setGotuId("101adalstr");
+		//adalstr.setGotuId("101adalstr");
 		adalstr.setNafn("Adalstraeti");
 		adalstr.setNafnThagufall("Adalstraeti");
 		adalstr.setPostnumer(getRvk101());

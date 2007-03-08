@@ -1,5 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
+import is.postur.Gata;
+
 public class Veitustadur extends BaseBean{
 
 	String id;

@@ -1,12 +1,16 @@
 package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.BaseBean;
+import is.postur.Gata;
+import is.postur.Postnumer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
+
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;

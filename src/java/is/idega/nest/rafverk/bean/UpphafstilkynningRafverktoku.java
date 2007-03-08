@@ -3,13 +3,14 @@ package is.idega.nest.rafverk.bean;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
+import is.idega.nest.rafverk.fmr.FMRLookupBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UpphafstilkynningRafverktoku extends BaseBean {
 
-	List possibleFasteignir;
+	//List possibleFasteignir;
 	Rafverktaka rafverktaka;
 	
 	public UpphafstilkynningRafverktoku(){
@@ -28,18 +29,7 @@ public class UpphafstilkynningRafverktoku extends BaseBean {
 		this.rafverktaka = verktaka;
 	}
 
-	public String flettaUppIFasteignasrka() {
-		
-		List fasteignirSearchResults = new ArrayList();
-		
-		Fasteign result1 = getInitialData().getFasteignAdalstraeti13();
-		
-		//TODO Auto-generated method stub
 
-		return null;
-	}
-	
-	
 	
 	
 }

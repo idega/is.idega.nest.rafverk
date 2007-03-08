@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.6 2007/03/08 15:21:38 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.7 2007/03/08 17:37:56 tryggvil Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,20 +10,31 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.domain.Fasteign;
+import is.idega.nest.rafverk.domain.FasteignaEigandi;
+import is.idega.nest.rafverk.domain.Rafverktaki;
+import is.idega.nest.rafverk.fmr.FMRLookupBean;
+import is.postur.Gata;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.faces.model.SelectItem;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 15:21:38 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/08 17:37:56 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TilkynningVertakaBean {
+	
+	private Rafverktaki rafverktaka = null;
 	
 	// first step 
 	
@@ -45,6 +56,9 @@ public class TilkynningVertakaBean {
     
     private String vinnusimiOrkukaupanda = null;
     
+    private String fastanumer;
+    private List fasteignaListi;
+    
     // second step 
     
     private String notkunarflokkur = null;
@@ -53,11 +67,11 @@ public class TilkynningVertakaBean {
     
     private String heimtaugTengist = null;
     
-    private String stofn1 = null;
+    private Integer stofn1;
     
-    private String stofn2 = null;
+    private Integer stofn2;
     
-    private String stofn3 = null;
+    private Integer stofn3;
     
     private String adaltafla = null;
     
@@ -65,11 +79,11 @@ public class TilkynningVertakaBean {
     
     private List beidniUm = null;
     
-    private String uppsett = null;
+    private Integer uppsett = null;
     
     private Maelir stadurMaelir = null;
     
-    private String numerToeflu = null;
+    private Integer numerToeflu = null;
     
     private String spennukerfi = null;
     
@@ -86,34 +100,6 @@ public class TilkynningVertakaBean {
     }
 	
 	private void initialize() {
-	    orkuveitufyrirtaeki = null;
-	    postnumer = null;
-	    gata = null;
-	    gotunumer = null;
-	    haed = null;
-	    nafnOrkukaupanda = null;
-	    kennitalaOrkukaupanda = null;
-	    heimasimiOrkukaupanda = null;
-	    vinnusimiOrkukaupanda = null;
-	    // second step 
-	    notkunarflokkur = null;
-	    heimtaug = null;
-	    heimtaugTengist = null;
-	    stofn1 = null;
-	    stofn2 = null;
-	    stofn3 = null;
-	    adaltafla = null;
-	    varnarradstoefun = null;
-	    beidniUm = null;
-	    uppsett = null;
-	    stadurMaelir = null;
-	    numerToeflu = null;
-	    spennukerfi = null;
-	    annad = null;
-	    // third step
-	    maelirListMap = null;
-	    skyringar = null;
-
 		// initialize maelir
 		stadurMaelir = new Maelir();
 		// initialize list of maelir
@@ -132,8 +118,6 @@ public class TilkynningVertakaBean {
 		return maelirListMap;
 	}
 	
-	// navigation methods
-	
 	public String store() {
 		return "store";
 	}
@@ -147,19 +131,9 @@ public class TilkynningVertakaBean {
 		return "nextwizard";
 	}
 	
-	public String goToTilkynningVertaka() {
-		initialize();
-		return "tilkynningvertaka";
-	}
-	
 	private void initializeTilkynningLokVerks() {
 		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
 		// first step
-		tilkynningLokVersBean.setPostnumer(getPostnumer());
-		tilkynningLokVersBean.setGata(getGata());
-		tilkynningLokVersBean.setGotunumer(getGotunumer());
-		tilkynningLokVersBean.setHaed(getHaed());
-		// line break
 		tilkynningLokVersBean.setNafnOrkukaupanda(getNafnOrkukaupanda());
 		tilkynningLokVersBean.setKennitalaOrkukaupanda(getKennitalaOrkukaupanda());
 		tilkynningLokVersBean.setHeimasimiOrkukaupanda(getHeimasimiOrkukaupanda());
@@ -171,6 +145,7 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.setAnnad(getAnnad());
 		// ...spennu fields
 		tilkynningLokVersBean.setVarnarradstoefun(getVarnarradstoefun());
+		
 	}
 
 	// generated getter and setter methods
@@ -328,7 +303,9 @@ public class TilkynningVertakaBean {
 
 	
 	public void setKennitalaOrkukaupanda(String kennitalaOrkukaupanda) {
-		this.kennitalaOrkukaupanda = kennitalaOrkukaupanda;
+		if(kennitalaOrkukaupanda!=null&!kennitalaOrkukaupanda.equals("")){
+			this.kennitalaOrkukaupanda = kennitalaOrkukaupanda;
+		}
 	}
 
 
@@ -344,7 +321,9 @@ public class TilkynningVertakaBean {
 
 	
 	public void setNafnOrkukaupanda(String nafnOrkukaupanda) {
-		this.nafnOrkukaupanda = nafnOrkukaupanda;
+		if(nafnOrkukaupanda!=null&!nafnOrkukaupanda.equals("")){
+			this.nafnOrkukaupanda = nafnOrkukaupanda;
+		}
 	}
 
 
@@ -367,7 +346,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public String getNumerToeflu() {
+	public Integer getNumerToeflu() {
 		return numerToeflu;
 	}
 
@@ -375,7 +354,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setNumerToeflu(String numerToeflu) {
+	public void setNumerToeflu(Integer numerToeflu) {
 		this.numerToeflu = numerToeflu;
 	}
 
@@ -431,7 +410,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public String getStofn1() {
+	public Integer getStofn1() {
 		return stofn1;
 	}
 
@@ -439,7 +418,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn1(String stofn1) {
+	public void setStofn1(Integer stofn1) {
 		this.stofn1 = stofn1;
 	}
 
@@ -447,7 +426,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public String getStofn2() {
+	public Integer getStofn2() {
 		return stofn2;
 	}
 
@@ -455,7 +434,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn2(String stofn2) {
+	public void setStofn2(Integer stofn2) {
 		this.stofn2 = stofn2;
 	}
 
@@ -463,7 +442,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public String getStofn3() {
+	public Integer getStofn3() {
 		return stofn3;
 	}
 
@@ -471,7 +450,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setStofn3(String stofn3) {
+	public void setStofn3(Integer stofn3) {
 		this.stofn3 = stofn3;
 	}
 
@@ -479,7 +458,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public String getUppsett() {
+	public Integer getUppsett() {
 		return uppsett;
 	}
 
@@ -487,7 +466,7 @@ public class TilkynningVertakaBean {
 
 
 	
-	public void setUppsett(String uppsett) {
+	public void setUppsett(Integer uppsett) {
 		this.uppsett = uppsett;
 	}
 
@@ -538,6 +517,110 @@ public class TilkynningVertakaBean {
 	
 	public void setStadurMaelir(Maelir stadurMaelir) {
 		this.stadurMaelir = stadurMaelir;
+	}
+	
+	public String flettaUppIFasteignaskra() {
+		
+		fetchFasteignaListi();
+		
+		return "result";
+	}
+	
+	
+	private void fetchFasteignaListi() {
+		//TODO: Implement lookup
+		String sveitarfelagsNumer = "0000";
+		
+		String addr = getGata()+" "+getGotunumer();
+
+		FMRLookupBean lookup = getFMRLookup();
+		fasteignaListi = lookup.getFasteignir(sveitarfelagsNumer, addr);
+		setAvailablefasteign(true);
+	}
+
+	public List getFasteignaListi(){
+		return fasteignaListi;
+	}
+	
+
+	public String getFastanumer() {
+		return fastanumer;
+	}
+
+	public void setFastanumer(String fastanumer) {
+		if(fastanumer!=null&&!fastanumer.equals("")){
+			
+			Fasteign fasteign = getFMRLookup().getFasteignByFastanumer(fastanumer);
+			FasteignaEigandi eigandi = fasteign.getEigandi();
+			if(eigandi!=null){
+				setNafnOrkukaupanda(eigandi.getNafn());
+				setKennitalaOrkukaupanda(eigandi.getKennitala());
+			}
+			
+		}
+		this.fastanumer = fastanumer;
+	}
+
+	public List getFasteignaListiSelects() {
+		ArrayList selects = new ArrayList();
+		List listi = getFasteignaListi();
+		SelectItem noneItem = new SelectItem();
+		noneItem.setLabel("Vinsamlegast veldu rétta fasteign:");
+		noneItem.setValue("");
+		selects.add(noneItem);
+		for (Iterator iter = listi.iterator(); iter.hasNext();) {
+			Fasteign fasteign = (Fasteign) iter.next();
+			SelectItem item = new SelectItem();
+			item.setLabel(fasteign.getDescription());
+			item.setValue(fasteign.getFastaNumer());
+			selects.add(item);
+		}
+		return selects;
+	}
+
+
+	public void setFasteignaListi(List fasteignaListi) {
+		this.fasteignaListi = fasteignaListi;
+	}
+
+	public boolean isAvailablefasteign() {
+		return fasteignaListi!=null;
+		//return availablefasteign;
+	}
+
+	public void setAvailablefasteign(boolean availablefasteign) {
+		//this.availablefasteign = availablefasteign;
+	}
+	
+	
+	public FMRLookupBean getFMRLookup(){
+		return new FMRLookupBean();
+	}
+	
+	public List getGotuListiSelects(){
+
+		ArrayList selects = new ArrayList();
+		if(postnumer==null||postnumer.equals("")){
+			SelectItem item = new SelectItem();
+			item.setLabel("Veldu póstnúmer fyrst");
+			item.setValue("");
+			selects.add(item);
+		}
+		else{
+			SelectItem item0 = new SelectItem();
+			item0.setLabel("- Engin gata til staðar");
+			item0.setValue("none");
+			selects.add(item0);
+			List gotuListi = InitialData.getInitialData().getGotuListiByPostnumer(postnumer);
+			for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
+				Gata gata = (Gata) iter.next();
+				SelectItem item = new SelectItem();
+				item.setLabel(gata.getNafn());
+				item.setValue(gata.getGotuId());
+				selects.add(item);
+			}
+		}
+		return selects;
 	}
 
 }

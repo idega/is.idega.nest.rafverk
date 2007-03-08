@@ -1,5 +1,8 @@
 package is.idega.nest.rafverk.domain;
 
+import is.postur.Gata;
+import is.postur.Postnumer;
+
 import com.idega.util.StringHandler;
 
 public class Heimilisfang extends BaseBean{
