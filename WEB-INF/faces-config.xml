@@ -245,4 +245,21 @@
   	</navigation-case>
   	 </navigation-rule>
   
+     <navigation-rule>
+    	<description>
+  		raverktoekur
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>tilkynningvertaka</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>tilkynninglokverks</from-outcome>
+  		  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  	</navigation-case>
+  	 </navigation-rule>
+  
+  
+  
   </faces-config>
