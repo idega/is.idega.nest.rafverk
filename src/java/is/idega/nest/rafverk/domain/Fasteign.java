@@ -98,7 +98,7 @@ public class Fasteign extends BaseBean{
 	
 	public String getDescription(){
 		
-		String desc = getNafn()+" "+getMerkingHumanReadable();
+		String desc = getNafn()+" - "+getMerkingHumanReadable();
 		FasteignaEigandi eigandi = getEigandi();
 		if(eigandi!=null){
 			desc+=" ("+eigandi.getNafn()+")";
