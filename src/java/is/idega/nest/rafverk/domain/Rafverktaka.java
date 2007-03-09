@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.InitialData;
+import is.idega.nest.rafverk.data.Maelir;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,8 @@ public class Rafverktaka extends BaseBean{
     private String annad = null;
     
     private List varnarradstoefun = null;
+    
+	private Maelir stadurMaelir = new Maelir();
     
 
 
@@ -144,6 +147,18 @@ public class Rafverktaka extends BaseBean{
 	
 	public void setVarnarradstoefun(List varnarradstoefun) {
 		this.varnarradstoefun = varnarradstoefun;
+	}
+
+
+	
+	public Maelir getStadurMaelir() {
+		return stadurMaelir;
+	}
+
+
+	
+	public void setStadurMaelir(Maelir stadurMaelir) {
+		this.stadurMaelir = stadurMaelir;
 	}
 	
 }
