@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.7 2007/03/09 10:54:51 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.8 2007/03/09 11:24:41 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -15,15 +15,18 @@ import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.postur.Gata;
 import is.postur.Postnumer;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.faces.model.SelectItem;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/09 10:54:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/09 11:24:41 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -186,6 +189,32 @@ public class TilkynningLokVerksBean {
 	public String goToTilkynningLokVerks() {
 		initialize();
 		return "tilkynninglokverks";
+	}
+	
+	public List getGotuListiSelects(){
+
+		ArrayList selects = new ArrayList();
+		if(postnumer==null||postnumer.equals("")){
+			SelectItem item = new SelectItem();
+			item.setLabel("Veldu póstnúmer fyrst");
+			item.setValue("");
+			selects.add(item);
+		}
+		else{
+			SelectItem item0 = new SelectItem();
+			item0.setLabel("- Engin gata til staðar");
+			item0.setValue("none");
+			selects.add(item0);
+			List gotuListi = InitialData.getInitialData().getGotuListiByPostnumer(postnumer);
+			for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
+				Gata gata = (Gata) iter.next();
+				SelectItem item = new SelectItem();
+				item.setLabel(gata.getNafn());
+				item.setValue(gata.getNafn());
+				selects.add(item);
+			}
+		}
+		return selects;
 	}
 
 	// generated getter and setter methods
