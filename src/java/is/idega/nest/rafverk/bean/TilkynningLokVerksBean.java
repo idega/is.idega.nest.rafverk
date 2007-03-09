@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.6 2007/03/09 02:53:00 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.7 2007/03/09 10:54:51 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -20,10 +20,10 @@ import java.util.List;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/09 02:53:00 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/09 10:54:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -158,6 +158,13 @@ public class TilkynningLokVerksBean {
 		
 		// second step
 		
+		Maelir tempMaelir = new Maelir();
+		Maelir tempStadurMaelir = rafverktaka.getStadurMaelir();
+		if (tempStadurMaelir != null) {
+			String tempStadur = tempStadurMaelir.getStadur();
+			tempMaelir.setStadur(tempStadur);
+			setMaelir(tempStadurMaelir);
+		}
 		
 		setNotkunarflokkur(rafverktaka.getNotkunarflokkur());
 		setSpennukerfi(rafverktaka.getSpennukerfi());

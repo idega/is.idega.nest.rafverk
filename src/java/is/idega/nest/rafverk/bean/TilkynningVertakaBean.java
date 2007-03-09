@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.9 2007/03/09 02:52:59 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.10 2007/03/09 10:54:50 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -32,10 +32,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/09 02:52:59 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/09 10:54:50 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TilkynningVertakaBean {
 	
@@ -176,6 +176,11 @@ public class TilkynningVertakaBean {
 		newRafverktaka.setSpennukerfi(getSpennukerfi());
 		newRafverktaka.setAnnad(getAnnad());
 		newRafverktaka.setVarnarradstoefun(getVarnarradstoefun());
+		
+		String tempStadur = getStadurMaelir().getStadur();
+		Maelir tempMaelir = new Maelir();
+		tempMaelir.setStadur(tempStadur);
+		newRafverktaka.setStadurMaelir(tempMaelir);
 		
 		RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
 		String id = rafverktokuListi.getNewId();
