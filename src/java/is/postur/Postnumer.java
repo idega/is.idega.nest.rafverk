@@ -24,8 +24,13 @@ public class Postnumer {
 		return getNumerString();
 	}
 	public void setNumer(String numer) {
-		Integer num = new Integer(numer);
-		setNumerInt(num.intValue());
+		try {
+			Integer num = new Integer(numer);
+			setNumerInt(num.intValue());
+		}
+		catch (Exception ex) {
+			setNumerInt(0);
+		}
 	}
 	public int getNumerInt() {
 		return numer;

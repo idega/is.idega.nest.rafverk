@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.8 2007/03/08 22:54:32 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.9 2007/03/09 02:52:59 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -13,6 +13,7 @@ import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Heimilisfang;
+import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
@@ -31,10 +32,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 22:54:32 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/09 02:52:59 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TilkynningVertakaBean {
 	
@@ -143,7 +144,7 @@ public class TilkynningVertakaBean {
 		}
 	}
 	
-	private void storeRafvertaka() {
+	private void storeNewRafvertaka() {
 		Orkukaupandi orkukaupandi = new Orkukaupandi();
 		orkukaupandi.setNafn(getNafnOrkukaupanda());
 		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
@@ -164,8 +165,23 @@ public class TilkynningVertakaBean {
 		
 		// second step
 		
-		Rafverktaka rafverktaka = new Rafverktaka();
-		rafverktaka.setOrkukaupandi(orkukaupandi);
+		Rafverktaka newRafverktaka = new Rafverktaka();
+		newRafverktaka.setOrkukaupandi(orkukaupandi);
+		
+		Orkufyrirtaeki orkufyrirtaeki = new Orkufyrirtaeki();
+		orkufyrirtaeki.setName(getOrkuveitufyrirtaeki());
+		newRafverktaka.setOrkufyrirtaeki(orkufyrirtaeki);
+		
+		newRafverktaka.setNotkunarflokkur(getNotkunarflokkur());
+		newRafverktaka.setSpennukerfi(getSpennukerfi());
+		newRafverktaka.setAnnad(getAnnad());
+		newRafverktaka.setVarnarradstoefun(getVarnarradstoefun());
+		
+		RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
+		String id = rafverktokuListi.getNewId();
+		newRafverktaka.setId(id);
+		
+		rafverktokuListi.addRafvertaka(newRafverktaka);
 		
 
 		
@@ -176,10 +192,12 @@ public class TilkynningVertakaBean {
 	}
 	
 	public String store() {
+		storeNewRafvertaka();
 		return "store";
 	}
 	
 	public String send() {
+		storeNewRafvertaka();
 		return "send";
 	}
 	
@@ -190,6 +208,8 @@ public class TilkynningVertakaBean {
 	
 	public String goToTilkynningVertaka() {
 		initialize();
+		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
+		tilkynningLokVersBean.initialize();
 		return "tilkynningvertaka";
 	}
 	
@@ -684,7 +704,7 @@ public class TilkynningVertakaBean {
 				Gata gata = (Gata) iter.next();
 				SelectItem item = new SelectItem();
 				item.setLabel(gata.getNafn());
-				item.setValue(gata.getGotuId());
+				item.setValue(gata.getNafn());
 				selects.add(item);
 			}
 		}

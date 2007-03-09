@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.5 2007/03/08 15:25:08 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.6 2007/03/09 02:53:00 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,15 +10,20 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.domain.Heimilisfang;
+import is.idega.nest.rafverk.domain.Orkukaupandi;
+import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.postur.Gata;
+import is.postur.Postnumer;
 import java.util.List;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 15:25:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/09 02:53:00 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -92,6 +97,10 @@ public class TilkynningLokVerksBean {
 
     
 	public TilkynningLokVerksBean() {
+    	initialize();
+    }
+	
+	public void initialize() {
 	    postnumer = null;
 	    gata = null;
 	    gotunumer = null;
@@ -125,12 +134,35 @@ public class TilkynningLokVerksBean {
 	    spennuhaekkunUtleysingVolt = null;
 	    lekastraumsrofaUtleysingMillisecond = null;
 	    skyringarMaelingar = null;
-    	initialize();
-    }
-	
-	private void initialize() {
 		// initialize maelir
 		maelir = new Maelir();
+		
+	}
+	
+	public void populate(Rafverktaka rafverktaka) {
+		Orkukaupandi orkukaupandi = rafverktaka.getOrkukaupandi();
+		setNafnOrkukaupanda(orkukaupandi.getNafn());
+		setKennitalaOrkukaupanda(orkukaupandi.getKennitala());
+		setHeimasimiOrkukaupanda(orkukaupandi.getHeimasimi());
+		setVinnusimiOrkukaupanda(orkukaupandi.getVinnusimi());
+		
+		Heimilisfang heimilisfang = orkukaupandi.getHeimilisfang();
+		Gata gataObject = heimilisfang.getGata();
+		setGata(gataObject.getNafn());
+		
+		Postnumer postnumerObject = gataObject.getPostnumer();
+		setPostnumer(postnumerObject.getNumer());
+		
+		setGotunumer(heimilisfang.getHusnumer());
+		setHaed(heimilisfang.getHushluti());
+		
+		// second step
+		
+		
+		setNotkunarflokkur(rafverktaka.getNotkunarflokkur());
+		setSpennukerfi(rafverktaka.getSpennukerfi());
+		setAnnad(rafverktaka.getAnnad());
+		setVarnarradstoefun(rafverktaka.getVarnarradstoefun());
 		
 	}
 	
@@ -459,24 +491,6 @@ public class TilkynningLokVerksBean {
 	public void setSpennuhaekkunUtleysingVolt(String spennuhaekkunUtleysingVolt) {
 		this.spennuhaekkunUtleysingVolt = spennuhaekkunUtleysingVolt;
 	}
-
-
-	
-	
-
-//	public Map getList() {
-//		return maelirListMap;
-//	}
-//	
-//	public String store() {
-//		return "store";
-//	}
-//	
-//	public String send() {
-//		return "send";
-//	}
-
-	// generated getter and setter methods
 	
 	
 	

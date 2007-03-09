@@ -6,33 +6,48 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
 import javax.faces.model.SelectItem;
 
-public class RafverktokuListi extends BaseBean implements ActionListener {
+public class RafverktokuListi extends BaseBean  {
 	
 	String selectedStatus;
 	
-	Map rafverktokuListi = null;
+	SortedMap rafverktokuListi = null;
 	
 	Rafverktaka currentRafverktaka = null;
+	
+	String currentId = null;
+	
+	int k = 1;
 	
 	public RafverktokuListi() {
 		initialize();
 	}
 	
 	private void initialize() {
-		rafverktokuListi = new HashMap();
+		rafverktokuListi = new TreeMap();
 		List verktokur = getInitialData().getAllRafverktokurListi();
 		Iterator iterator = verktokur.iterator();
 		while (iterator.hasNext()) {
+			k++;
 			Rafverktaka verktaka = (Rafverktaka) iterator.next();
 			String id = verktaka.getId();
-			rafverktokuListi.put(id, verktaka);			
+			rafverktokuListi.put(id, verktaka);	
+			currentId = id;
 		}
+	}
+	
+	public String getNewId() {
+		return "id"+k++;
+	}
+	
+	public void addRafvertaka(Rafverktaka rafvertaka) {
+		rafverktokuListi.put(rafvertaka.getId(), rafvertaka);
 	}
 
 	public List getRafverktokuListiSelects(){
@@ -58,11 +73,24 @@ public class RafverktokuListi extends BaseBean implements ActionListener {
 	}
 
 	public List getRafverktokurWithStatus(String status) {
-		return getInitialData().getAllRafverktokurWithStatusListi(status);
+		return getAllRafverktokurWithStatusListi(status);
+	}
+	
+	public List getAllRafverktokurWithStatusListi(String status){
+		List verktokur = getAllRafverktokur();
+		List list = new ArrayList();
+		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
+			Rafverktaka verktaka = (Rafverktaka) iter.next();
+			if(verktaka.getStada().equals(status)){
+				list.add(verktaka);
+			}
+		}
+		return list;
 	}
 
 	public List getAllRafverktokur() {
-		return getInitialData().getAllRafverktokurListi();
+		return new ArrayList(rafverktokuListi.values());
+		//return getInitialData().getAllRafverktokurListi();
 	}
 
 	public String getSelectedStatus() {
@@ -91,12 +119,15 @@ public class RafverktokuListi extends BaseBean implements ActionListener {
 		return selects;
 	}
 
-	public void processAction(ActionEvent actionEvent) throws AbortProcessingException {
+	public void populateForms(ActionEvent actionEvent) throws AbortProcessingException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		actionEvent.hashCode();
 		Object component = actionEvent.getComponent();
 		String id = (String) ((javax.faces.component.html.HtmlCommandLink) component).getValue();
 		currentRafverktaka = (Rafverktaka) rafverktokuListi.get(id);
+		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
+		tilkynningLokVerksBean.initialize();
+		tilkynningLokVerksBean.populate(currentRafverktaka);
 	}
 
 }

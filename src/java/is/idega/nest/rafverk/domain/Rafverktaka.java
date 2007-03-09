@@ -43,7 +43,9 @@ public class Rafverktaka extends BaseBean{
     private String annad = null;
     
     private List varnarradstoefun = null;
-	
+    
+
+
 	public Rafverktaka(){
 		//initializeDummyData();
 	}
