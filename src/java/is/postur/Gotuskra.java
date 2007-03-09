@@ -143,4 +143,16 @@ public class Gotuskra {
 		}
 		return gotur;
 	}
+	
+	public Gata getGataByNafnAndPostnumer(String nafn, String postnumer){
+
+		List allargotur = getGoturByPostnumer(postnumer);
+		for (Iterator iter = allargotur.iterator(); iter.hasNext();) {
+			Gata gata = (Gata) iter.next();
+			if(gata.getNafn().equals(nafn)){
+				return gata;
+			}
+		}
+		throw new RuntimeException("No gata found with name:"+nafn);
+	}
 }
