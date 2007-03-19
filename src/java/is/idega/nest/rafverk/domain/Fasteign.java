@@ -1,6 +1,10 @@
 package is.idega.nest.rafverk.domain;
 
+import fasteignaskra.landskra_wse.FasteignaskraFasteign;
+import fasteignaskra.landskra_wse.FasteignaskraFasteignEigandi;
+import fasteignaskra.landskra_wse.Fasteignaskra_Element;
 import is.postur.Gata;
+import is.postur.Gotuskra;
 
 /**
  * RealEstate
@@ -15,11 +19,34 @@ public class Fasteign extends BaseBean{
 	String fastaNumer;
 	String merking;// 100101 Bygging Hæð Nr. innan hæðar
 	String notkun; //Íbúð, Skrifstofa
+	String skyring;
 	
 	Gata gata;
 	String gotuNumer;
 	FasteignaEigandi eigandi;
 	
+	public Fasteign(){}
+	
+	public Fasteign(Fasteignaskra_Element dFasteign,String postnumer) {
+		
+		FasteignaskraFasteign eFasteign = dFasteign.getFasteign();
+
+		setFastaNumer(eFasteign.getFastanr().toString());
+		setMerking(eFasteign.getMerking());
+		setNotkun(eFasteign.getNotkun());
+		if(postnumer!=null){
+			setGata(Gotuskra.getCached().getGataByNafnAndPostnumer(eFasteign.getGotuheiti(), postnumer));
+		}
+		setGotuNumer(eFasteign.getHusnumer());
+		setSkyring(eFasteign.getSkyring());
+		
+		FasteignaskraFasteignEigandi[] eigendur = eFasteign.getEigandi();
+		if(eigendur!=null&&eigendur.length>=1){
+			FasteignaskraFasteignEigandi firstowner = eigendur[0];
+			setEigandi(new FasteignaEigandi(firstowner.getKennitala(),firstowner.getNafn()));
+		}
+				
+	}
 	public String getFastaNumer() {
 		return fastaNumer;
 	}
@@ -45,7 +72,18 @@ public class Fasteign extends BaseBean{
 		this.merking = merking;
 	}
 	public String getNafn() {
-		return nafn;
+		if(nafn!=null){
+			return nafn;
+		}
+		else{
+			Gata gata = getGata();
+			if(gata!=null){
+				String gotuheiti = gata.getNafn();
+				gotuheiti=gotuheiti+" "+getGotuNumer();
+				return gotuheiti;
+			}
+		}
+		return null;
 	}
 	public void setNafn(String nafn) {
 		this.nafn = nafn;
@@ -76,20 +114,36 @@ public class Fasteign extends BaseBean{
 		
 		String notkun = getNotkun();
 		
-		String haedHuman = null;
+		if(notkun.endsWith("hæð")){
+			String skyring = getSkyring();
+			notkun=notkun+" "+iHaed+", "+skyring+" "+iNr;
+		}
+		else{
+			
+			String haedHuman = null;
+			if(iHaed.intValue()==0){
+				haedHuman = "jarðhæð";
+			}
+			else{
+				haedHuman = iHaed+". hæð";
+			}
+			
+			notkun=notkun+", "+haedHuman+", nr. "+iNr;
+		}
+		/*String haedHuman = null;
 		if(iHaed.intValue()==0){
 			haedHuman = "jarðhæð";
 		}
 		else{
 			haedHuman = iHaed+". hæð";
-		}
+		}*/
 		
 		String str="";
 		if(iBygging.intValue()==1){
-			str = haedHuman+" "+notkun+" "+iNr;
+			str = notkun;
 		}
 		else{
-			str = "Bygging "+iBygging+" "+haedHuman+" "+notkun+" "+iNr;
+			str = notkun+", bygging "+iBygging;
 		}
 		
 		return str;
@@ -112,5 +166,13 @@ public class Fasteign extends BaseBean{
 	}
 	public void setGotuNumer(String gotuNumer) {
 		this.gotuNumer = gotuNumer;
+	}
+
+	public String getSkyring() {
+		return skyring;
+	}
+
+	public void setSkyring(String skyring) {
+		this.skyring = skyring;
 	}
 }

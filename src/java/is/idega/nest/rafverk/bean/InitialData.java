@@ -325,21 +325,24 @@ public class InitialData extends BaseBean {
 	}
 
 	public Postnumer getRvk104() {
-		Postnumer rvk104 = new Postnumer();
+		/*Postnumer rvk104 = new Postnumer();
 		rvk104.setSveitarfelag("Reykjavik");
 		rvk104.setId("104");
 		rvk104.setNumer("104");
 		rvk104.setName("104 Reykjavik");
-		return rvk104;
+		return rvk104;*/
+		
+		return Postnumeraskra.getCached().getPostnumerByNumer("104");
 	}
 
 	public Postnumer getRvk101() {
-		Postnumer rvk101 = new Postnumer();
+		/*Postnumer rvk101 = new Postnumer();
 		rvk101.setSveitarfelag("Reykjavik");
 		rvk101.setId("101");
 		rvk101.setNumer("101");
 		rvk101.setName("101 Reykjavik");
-		return rvk101;
+		return rvk101;*/
+		return Postnumeraskra.getCached().getPostnumerByNumer("101");
 	}
 	
 	public List getGotuListi(){
@@ -371,42 +374,47 @@ public class InitialData extends BaseBean {
 
 
 	public Gata getGataEngjateigur() {
-		Gata engjateigur = new Gata();
+		/*Gata engjateigur = new Gata();
 		//engjateigur.setGotuId("104eingjavegur");
 		engjateigur.setNafn("Engjavegur");
 		engjateigur.setNafnThagufall("Engjavegi");
 		engjateigur.setPostnumer(getRvk104());
-		return engjateigur;
+		return engjateigur;*/
+		return Gotuskra.getCached().getGataByNafnAndPostnumer("Engjateigur", "104");
 	}
 
 
 	public Gata getGataEngjavegur() {
-		Gata engjavegur = new Gata();
+		/*Gata engjavegur = new Gata();
 		//engjavegur.setGotuId("104engjateigur");
 		engjavegur.setNafn("Engjateigur");
 		engjavegur.setNafnThagufall("Engjategi");
 		engjavegur.setPostnumer(getRvk104());
 		return engjavegur;
+		*/
+		return Gotuskra.getCached().getGataByNafnAndPostnumer("Engjavegur", "104");
 	}
 
 
 	public Gata getGataAusturstraeti() {
-		Gata austurstraeti = new Gata();
+		/*Gata austurstraeti = new Gata();
 		//austurstraeti.setGotuId("101adalstr");
 		austurstraeti.setNafn("Austurstraeti");
 		austurstraeti.setNafnThagufall("Austurstraeti");
 		austurstraeti.setPostnumer(getRvk101());
-		return austurstraeti;
+		return austurstraeti;*/
+		return Gotuskra.getCached().getGataByNafnAndPostnumer("Austurstræti", "101");
 	}
 
 
 	public Gata getGataAdalstraeti() {
-		Gata adalstr = new Gata();
+		/*Gata adalstr = new Gata();
 		//adalstr.setGotuId("101adalstr");
 		adalstr.setNafn("Adalstraeti");
 		adalstr.setNafnThagufall("Adalstraeti");
 		adalstr.setPostnumer(getRvk101());
-		return adalstr;
+		return adalstr;*/
+		return Gotuskra.getCached().getGataByNafnAndPostnumer("Aðalstræti", "101");
 	}
 	
 	public Fasteign getFasteignAusturstraeti1() {

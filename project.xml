@@ -37,12 +37,30 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
       <version>3.1.2</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>is.fmr.landskra</artifactId>
+      <version>SNAPSHOT</version>
+      <type>jar</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>is.idega.iceland</artifactId>
+      <version>SNAPSHOT</version>
+      <type>jar</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
       </properties>

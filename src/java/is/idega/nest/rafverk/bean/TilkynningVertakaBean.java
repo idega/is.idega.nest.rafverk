@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.10 2007/03/09 10:54:50 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.11 2007/03/19 11:44:32 tryggvil Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -32,10 +32,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/09 10:54:50 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/19 11:44:32 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TilkynningVertakaBean {
 	
@@ -621,13 +621,11 @@ public class TilkynningVertakaBean {
 	
 	
 	private void fetchFasteignaListi() {
-		//TODO: Implement lookup
-		String sveitarfelagsNumer = "0000";
 		
 		String addr = getGata()+" "+getGotunumer();
 
 		FMRLookupBean lookup = getFMRLookup();
-		fasteignaListi = lookup.getFasteignir(sveitarfelagsNumer, addr);
+		fasteignaListi = lookup.getFasteignir(addr,getPostnumer());
 		setAvailablefasteign(true);
 	}
 
@@ -642,8 +640,8 @@ public class TilkynningVertakaBean {
 
 	public void setFastanumer(String fastanumer) {
 		if(fastanumer!=null&&!fastanumer.equals("")){
-			
-			Fasteign fasteign = getFMRLookup().getFasteignByFastanumer(fastanumer);
+			String postnumer = getPostnumer();
+			Fasteign fasteign = getFMRLookup().getFasteignByFastanumerAndPostnumer(fastanumer,postnumer);
 			FasteignaEigandi eigandi = fasteign.getEigandi();
 			if(eigandi!=null){
 				setNafnOrkukaupanda(eigandi.getNafn());

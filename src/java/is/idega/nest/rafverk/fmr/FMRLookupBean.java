@@ -1,5 +1,7 @@
 package is.idega.nest.rafverk.fmr;
 
+import fasteignaskra.landskra_wse.Fasteignaskra_Element;
+import is.fmr.landskra.FasteignaskraClient;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
@@ -14,16 +16,41 @@ public class FMRLookupBean {
 
 	
 	
-	public List getFasteignir(String sveitarfelagsNumer,String addr){
+	public List getFasteignir(String addr,String postnumer){
 		//TODO: Implement real webservice call
-		if(hardList==null){
+		/*if(hardList==null){
 			hardList = getHardcodedList();
 		}
-		return hardList;
+		return hardList;*/
+		
+		List list = new ArrayList();
+		
+		FasteignaskraClient client = getFasteignaskraClient();
+		try {
+			Fasteignaskra_Element[] fasteignir = client.getFasteignirByHeitiAndPostnumer(addr, postnumer);
+			if(fasteignir!=null){
+				for (int i = 0; i < fasteignir.length; i++) {
+					Fasteignaskra_Element eFasteign = fasteignir[i];
+					Fasteign fasteign = new Fasteign(eFasteign,postnumer);
+					list.add(fasteign);
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 	
 	
 	
+	protected FasteignaskraClient getFasteignaskraClient() {
+		return new FasteignaskraClient();
+	}
+
+
+
 	private List getHardcodedList() {
 
 		ArrayList list = new ArrayList();
@@ -70,14 +97,20 @@ public class FMRLookupBean {
 
 
 
-	public Fasteign getFasteignByFastanumer(String fastanumer){
-		List fasteignir = getFasteignir(null,null);
-		for (Iterator iter = fasteignir.iterator(); iter.hasNext();) {
-			Fasteign fasteign = (Fasteign) iter.next();
-			if(fasteign.getFastaNumer().equals(fastanumer)){
-				return fasteign;
-			}
+	public Fasteign getFasteignByFastanumerAndPostnumer(String fastanumer,String postnumer){
+		
+
+		FasteignaskraClient client = getFasteignaskraClient();
+		Fasteignaskra_Element eFasteign;
+		try {
+			eFasteign = client.getFasteignByFastaNr(fastanumer);
+			Fasteign fasteign = new Fasteign(eFasteign,postnumer);
+			return fasteign;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		throw new RuntimeException("Engin fasteign fannst");
 	}
 	
