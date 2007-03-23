@@ -1,12 +1,12 @@
 package is.idega.nest.rafverk.domain;
 
-import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.data.Maelir;
-
 import java.util.ArrayList;
 import java.util.List;
+import com.idega.user.data.Group;
+import com.idega.user.data.User;
 
-public class Rafverktaka extends BaseBean{
+public class Rafverktaka {
 	
 	
 	public static final String STADA_MOTTEKIN="MOTTEKIN";
@@ -16,6 +16,9 @@ public class Rafverktaka extends BaseBean{
 	public static final String STADA_LOKID="LOKID";
 	private static List statusList;
 	
+	public static Rafverktaka getInstanceWithCurrentUserAsRafverktaki() {
+		return new Rafverktaka();
+	}
 	
 	public static List getPossibleStatuses(){
 		
@@ -30,9 +33,12 @@ public class Rafverktaka extends BaseBean{
 		return statusList;
 	}
 	
+	ElectricalInstallation electricalInstallation = null;
+	Rafverktaki rafverktaki = null;
+	
 	String id;
 	Orkufyrirtaeki orkufyrirtaeki;
-	Rafverktaki rafverktaki;
+
 	Veitustadur veitustadur;
 	Orkukaupandi orkukaupandi;
 	String stada=STADA_MOTTEKIN;
@@ -48,16 +54,20 @@ public class Rafverktaka extends BaseBean{
 	private Maelir stadurMaelir = new Maelir();
     
 
+	public Rafverktaka() {
+	}
 
-	public Rafverktaka(){
-		//initializeDummyData();
+	public Rafverktaka(ElectricalInstallation electricalInstallation){
+		initialize(electricalInstallation);
 	}
 	
-	
-	/*private void initializeDummyData() {
-		Rafverktaki jon = InitialData.getInitialData().getRafverktakiJon();
-		setRafverktaki(jon);
-	}*/
+	private void initialize(ElectricalInstallation electricalInstallation) {
+		setElectricalInstallation(electricalInstallation);
+		Group energyCompany = electricalInstallation.getEnergyCompany();
+		setOrkufyrirtaeki(new Orkufyrirtaeki(energyCompany));
+		setOrkukaupandi(new Orkukaupandi(electricalInstallation));
+		
+	}
 
 
 	public Orkufyrirtaeki getOrkufyrirtaeki() {
@@ -67,14 +77,35 @@ public class Rafverktaka extends BaseBean{
 		this.orkufyrirtaeki = orkufyrirtaeki;
 	}
 	public Orkukaupandi getOrkukaupandi() {
+		if (orkukaupandi == null) {
+			orkukaupandi = new Orkukaupandi();
+		}
 		return orkukaupandi;
 	}
 	public void setOrkukaupandi(Orkukaupandi orkukaupandi) {
 		this.orkukaupandi = orkukaupandi;
 	}
+	
+	/**
+	 * if there is no electrical installation set use current user else
+	 * use user from electrical installation
+	 * 
+	 * @return
+	 */
 	public Rafverktaki getRafverktaki() {
+		if (rafverktaki == null) {
+			if (electricalInstallation != null) {
+				User user = electricalInstallation.getElectrician();
+					if (user != null) {
+						rafverktaki = Rafverktaki.getInstanceWithUserAsRafverktaki(user);
+						return rafverktaki;
+					}
+				}
+				rafverktaki = Rafverktaki.getInstanceWithCurrentUserAsRafverktaki();
+		}
 		return rafverktaki;
 	}
+
 	public void setRafverktaki(Rafverktaki rafverktaki) {
 		this.rafverktaki = rafverktaki;
 	}
@@ -87,6 +118,7 @@ public class Rafverktaka extends BaseBean{
 	public String getId() {
 		return id;
 	}
+	
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -159,6 +191,17 @@ public class Rafverktaka extends BaseBean{
 	
 	public void setStadurMaelir(Maelir stadurMaelir) {
 		this.stadurMaelir = stadurMaelir;
+	}
+
+	
+	public ElectricalInstallation getElectricalInstallation() {
+		return electricalInstallation;
+	}
+
+	
+	public void setElectricalInstallation(ElectricalInstallation electricalInstallation) {
+		this.electricalInstallation = electricalInstallation;
+		id = electricalInstallation.getPrimaryKey().toString();
 	}
 	
 }

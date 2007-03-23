@@ -1,5 +1,5 @@
 /*
- * $Id: Maelir.java,v 1.3 2007/03/08 15:54:40 thomas Exp $
+ * $Id: Maelir.java,v 1.4 2007/03/23 16:15:54 thomas Exp $
  * Created on Feb 12, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,10 +14,10 @@ import java.util.List;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/08 15:54:40 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/23 16:15:54 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class Maelir {
 	
@@ -32,6 +32,10 @@ public class Maelir {
 	List myList = null;
 	
 	private boolean valid = true;
+	
+	private String context = null;
+	
+	private int priorityWithinContext = 0;
 	
 	private String fasa = null;
 	
@@ -53,7 +57,9 @@ public class Maelir {
 	 */
 	public void add() {
 		valid = true;
-		Maelir.addInvalidInstance(myList);
+		Maelir newMaelir = Maelir.addInvalidInstance(myList);
+		int newPriority = priorityWithinContext + 1;
+		newMaelir.setPriorityWithinContext(newPriority);
 	}
 	
 	public void delete() {
@@ -131,4 +137,25 @@ public class Maelir {
 	public void setStadur(String stadur) {
 		this.stadur = stadur;
 	}
+
+	
+	public String getContext() {
+		return context;
+	}
+
+	
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	
+	public int getPriorityWithinContext() {
+		return priorityWithinContext;
+	}
+
+	
+	public void setPriorityWithinContext(int priorityWithinContext) {
+		this.priorityWithinContext = priorityWithinContext;
+	}
+
 }

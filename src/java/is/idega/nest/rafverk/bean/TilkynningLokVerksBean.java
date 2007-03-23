@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.8 2007/03/09 11:24:41 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.9 2007/03/23 16:13:15 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -23,12 +23,14 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/09 11:24:41 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/23 16:13:15 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TilkynningLokVerksBean {
+	
+	private Rafverktaka rafverktaka = null;
 	
 	// first step 
 	
@@ -37,16 +39,6 @@ public class TilkynningLokVerksBean {
     private String gata = null;
     
     private String gotunumer = null;
-    
-    private String haed = null;
-    
-    private String nafnOrkukaupanda = null;
-    
-    private String kennitalaOrkukaupanda = null;
-    
-    private String heimasimiOrkukaupanda = null;
-    
-    private String vinnusimiOrkukaupanda = null;
     
     // second step 
     
@@ -107,11 +99,6 @@ public class TilkynningLokVerksBean {
 	    postnumer = null;
 	    gata = null;
 	    gotunumer = null;
-	    haed = null;
-	    nafnOrkukaupanda = null;
-	    kennitalaOrkukaupanda = null;
-	    heimasimiOrkukaupanda = null;
-	    vinnusimiOrkukaupanda = null;
 	    // second step 
 	    tilkynnt = null;
 	    tilkynntAnnad = null;
@@ -157,7 +144,6 @@ public class TilkynningLokVerksBean {
 		setPostnumer(postnumerObject.getNumer());
 		
 		setGotunumer(heimilisfang.getHusnumer());
-		setHaed(heimilisfang.getHushluti());
 		
 		// second step
 		
@@ -184,11 +170,6 @@ public class TilkynningLokVerksBean {
 	
 	public String send() {
 		return "send";
-	}
-	
-	public String goToTilkynningLokVerks() {
-		initialize();
-		return "tilkynninglokverks";
 	}
 	
 	public List getGotuListiSelects(){
@@ -249,23 +230,13 @@ public class TilkynningLokVerksBean {
 	}
 
 	
-	public String getHaed() {
-		return haed;
-	}
-
-	
-	public void setHaed(String haed) {
-		this.haed = haed;
-	}
-
-	
 	public String getHeimasimiOrkukaupanda() {
-		return heimasimiOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getHeimasimi();
 	}
 
 	
 	public void setHeimasimiOrkukaupanda(String heimasimiOrkukaupanda) {
-		this.heimasimiOrkukaupanda = heimasimiOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setHeimasimi(heimasimiOrkukaupanda);
 	}
 
 	
@@ -290,12 +261,12 @@ public class TilkynningLokVerksBean {
 
 	
 	public String getKennitalaOrkukaupanda() {
-		return kennitalaOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getKennitala();
 	}
 
 	
 	public void setKennitalaOrkukaupanda(String kennitalaOrkukaupanda) {
-		this.kennitalaOrkukaupanda = kennitalaOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setKennitala(kennitalaOrkukaupanda);
 	}
 
 	
@@ -310,12 +281,12 @@ public class TilkynningLokVerksBean {
 
 	
 	public String getNafnOrkukaupanda() {
-		return nafnOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getNafn();
 	}
 
 	
 	public void setNafnOrkukaupanda(String nafnOrkukaupanda) {
-		this.nafnOrkukaupanda = nafnOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setNafn(nafnOrkukaupanda);
 	}
 
 	
@@ -400,12 +371,12 @@ public class TilkynningLokVerksBean {
 
 	
 	public String getVinnusimiOrkukaupanda() {
-		return vinnusimiOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getVinnusimi();
 	}
 
 	
 	public void setVinnusimiOrkukaupanda(String vinnusimiOrkukaupanda) {
-		this.vinnusimiOrkukaupanda = vinnusimiOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setVinnusimi(vinnusimiOrkukaupanda);
 	}
 
 	
@@ -526,6 +497,16 @@ public class TilkynningLokVerksBean {
 	
 	public void setSpennuhaekkunUtleysingVolt(String spennuhaekkunUtleysingVolt) {
 		this.spennuhaekkunUtleysingVolt = spennuhaekkunUtleysingVolt;
+	}
+
+	
+	public Rafverktaka getRafverktaka() {
+		return rafverktaka;
+	}
+
+	
+	public void setRafverktaka(Rafverktaka rafverktaka) {
+		this.rafverktaka = rafverktaka;
 	}
 	
 	

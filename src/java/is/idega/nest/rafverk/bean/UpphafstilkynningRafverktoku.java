@@ -16,7 +16,7 @@ public class UpphafstilkynningRafverktoku extends BaseBean {
 	public UpphafstilkynningRafverktoku(){
 		
 		Rafverktaka verktaka = new Rafverktaka();
-		verktaka.setRafverktaki(new Rafverktaki());
+		//verktaka.setRafverktaki(new Rafverktaki());
 		setRafverktaka(verktaka);
 		
 	}

@@ -9,6 +9,7 @@ import javax.faces.el.ValueBinding;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 
 public class YfirlitRafverktaka extends RafverktokuListi{
+	
 
 	Rafverktaki selectedRafverktaki;
 	public YfirlitRafverktaka() {

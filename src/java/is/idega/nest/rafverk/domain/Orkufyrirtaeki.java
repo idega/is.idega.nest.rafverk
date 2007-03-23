@@ -1,9 +1,28 @@
 package is.idega.nest.rafverk.domain;
 
-public class Orkufyrirtaeki extends BaseBean{
+import com.idega.user.data.Group;
 
+public class Orkufyrirtaeki extends BaseBean{
+	
+	
 	String name;
 	String id;
+	
+	public Orkufyrirtaeki() {
+	}
+	
+	public Orkufyrirtaeki(Group energyCompany) {
+		initialize(energyCompany);
+	}
+		
+	public void initialize(Group energyCompany) {
+		if (energyCompany != null) {
+			id = (String) energyCompany.getPrimaryKey();
+			name = energyCompany.getName();
+		}
+	}
+	
+	
 	public String getId() {
 		return id;
 	}

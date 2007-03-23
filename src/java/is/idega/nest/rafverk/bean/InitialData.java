@@ -1,5 +1,6 @@
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
@@ -12,22 +13,32 @@ import is.postur.Gotuskra;
 import is.postur.Postnumer;
 import is.postur.Postnumeraskra;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import com.idega.business.IBOLookup;
+import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
+import com.idega.user.business.GroupBusiness;
+import com.idega.user.data.Group;
 
 public class InitialData extends BaseBean {
 	
 	public static final String BUNDLE_IDENTIFIER = "is.idega.nest.rafverk";
 	
 	private IWResourceBundle resourceBundle = null;
+	
+	private GroupBusiness groupBusiness = null;
 	
 	// first step
 	
@@ -123,15 +134,23 @@ public class InitialData extends BaseBean {
 	
 	// third step
 	
-	private static final String TAKA = "taka";
-	private static final String FYRIR = "fyrir";
-	private static final String SETJA = "setja";
-	private static final String FLUTT_A = "fluttA";
-	private static final String FLUTT_AF = "fluttAf";
-	private static final String HJALPATAEKI = "hjalpataeki";
-	private static final String STRAUMSPENNA = "straumspenna";
+	// !!!! NEVER change the strings of the following maelir types variables since they are referenced in JSF pages !!!!!
 	
-	public static final String[] MAELIR_TYPES = {TAKA,FYRIR, SETJA, FLUTT_A, FLUTT_AF, HJALPATAEKI, STRAUMSPENNA};
+	// special case (a special input field)
+	public static final String STADUR = "place";
+	
+	// special case (two special input fields (number and place) in the second form)
+	public static final String METER_IN_REPORT = "meterInReport";
+	
+	public static final String TAKA = "taka";
+	public static final String FYRIR = "fyrir";
+	public static final String SETJA = "setja";
+	public static final String FLUTT_A = "fluttA";
+	public static final String FLUTT_AF = "fluttAf";
+	public static final String HJALPATAEKI = "hjalpataeki";
+	public static final String STRAUMSPENNA = "straumspenna";
+	
+	public static final String[] MAELIR_CONTEXT = {TAKA ,FYRIR, SETJA, FLUTT_A, FLUTT_AF, HJALPATAEKI, STRAUMSPENNA};
 	
 	// tilkynning lok verks
 	
@@ -153,21 +172,51 @@ public class InitialData extends BaseBean {
 		"Sökkulskaut", "SOEKKULSKAUT"
 		};
 	
+	public static final String LEKASTRAUMSROFI_I_LAGI_KEY = "I_LAGI";
+	public static final String LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY = "EKKI_TIL_STADAR";
+	
 	private static final String[] LEKASTRAUMSROFI = {
-		"í lagi", "I_LAGI",
-		"ekki til staðar", "EKKI_TIL_STADAR"
+		"í lagi", LEKASTRAUMSROFI_I_LAGI_KEY,
+		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY
 		};
 	
+
+	
 	public List getRafveituListi(){
-		ArrayList listi = new ArrayList();
-		
-		Orkufyrirtaeki or = getOrkuveitan();
-		listi.add(or);
-		
-		Orkufyrirtaeki rarik = getRarik();
-		listi.add(rarik);
-		
-		return listi;	
+		ArrayList list = new ArrayList();
+		GroupBusiness groupBusinessTemp = getGroupBusiness();
+		try {
+			Collection groups = groupBusinessTemp.getGroupsByGroupName("Rafveitur");
+			Iterator groupIterator = groups.iterator();
+			while (groupIterator.hasNext()) {
+				Group group = (Group) groupIterator.next();
+				Collection children = groupBusinessTemp.getChildGroups(group);
+				list.addAll(children);
+ 			}
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		// sort according to names
+		Comparator comparator = new Comparator() {
+			public int compare(Object o1, Object o2) {
+				Group group1 = (Group) o1;
+				Group group2 = (Group) o2;
+				return group1.getName().compareTo(group2.getName());
+			}
+		};
+		Collections.sort(list, comparator);
+		return list;
+//		ArrayList listi = new ArrayList();
+//		
+//		
+//		Orkufyrirtaeki or = getOrkuveitan();
+//		listi.add(or);
+//		
+//		Orkufyrirtaeki rarik = getRarik();
+//		listi.add(rarik);
+//		
+//		return listi;	
 	}
 
 	public Orkufyrirtaeki getRarik() {
@@ -189,10 +238,10 @@ public class InitialData extends BaseBean {
 		ArrayList listi = new ArrayList();
 		List rafveitur = getRafveituListi();
 		for (Iterator iter = rafveitur.iterator(); iter.hasNext();) {
-			Orkufyrirtaeki fyrirtaeki = (Orkufyrirtaeki) iter.next();
+			Group fyrirtaeki = (Group) iter.next();
 			SelectItem item = new SelectItem();
 			item.setLabel(fyrirtaeki.getName());
-			item.setValue(fyrirtaeki.getId());
+			item.setValue(fyrirtaeki.getPrimaryKey().toString());
 			listi.add(item);
 		}
 		
@@ -711,4 +760,21 @@ public class InitialData extends BaseBean {
 		return resourceBundle;
 	}
 
+	public GroupBusiness getGroupBusiness() {
+		if (groupBusiness == null) {
+			try {
+				FacesContext context = FacesContext.getCurrentInstance();
+				IWContext iwContext = IWContext.getIWContext(context);
+				IWApplicationContext iwac = iwContext.getApplicationContext();
+				groupBusiness = (GroupBusiness) 
+					IBOLookup.getServiceInstance(iwac, GroupBusiness.class);
+			}
+			catch (RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return groupBusiness;
+	}
+	
+	
 }

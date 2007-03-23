@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.11 2007/03/19 11:44:32 tryggvil Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.12 2007/03/23 16:13:15 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,10 +9,15 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.domain.ElectricalInstallation;
+import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Heimilisfang;
+import is.idega.nest.rafverk.domain.Meter;
+import is.idega.nest.rafverk.domain.MeterHome;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
@@ -21,25 +26,33 @@ import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
 import is.postur.Postnumer;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import com.idega.business.IBOLookup;
+import com.idega.data.IDOLookup;
+import com.idega.idegaweb.IWApplicationContext;
+import com.idega.presentation.IWContext;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/19 11:44:32 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/03/23 16:13:15 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TilkynningVertakaBean {
 	
-	private Rafverktaki rafverktaka = null;
+	private Rafverktaka rafverktaka = null;
+	
+	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
 	// first step 
 	
@@ -51,18 +64,9 @@ public class TilkynningVertakaBean {
     
     private String gotunumer = null;
     
-    private String haed = null;
+    private String fastanumer = null;
     
-    private String nafnOrkukaupanda = null;
-    
-    private String kennitalaOrkukaupanda = null;
-    
-    private String heimasimiOrkukaupanda = null;
-    
-    private String vinnusimiOrkukaupanda = null;
-    
-    private String fastanumer;
-    private List fasteignaListi;
+    private List fasteignaListi = null;
     
     // second step 
     
@@ -72,11 +76,11 @@ public class TilkynningVertakaBean {
     
     private String heimtaugTengist = null;
     
-    private String stofn1;
+    private String stofn1 = null;
     
-    private String stofn2;
+    private String stofn2 = null;
     
-    private String stofn3;
+    private String stofn3 = null;
     
     private String adaltafla = null;
     
@@ -104,16 +108,13 @@ public class TilkynningVertakaBean {
     	initialize();
     }
 	
-	private void initialize() {
+	public void initialize() {
 	    orkuveitufyrirtaeki = null;
 	    postnumer = null;
 	    gata = null;
 	    gotunumer = null;
-	    haed = null;
-	    nafnOrkukaupanda = null;
-	    kennitalaOrkukaupanda = null;
-	    heimasimiOrkukaupanda = null;
-	    vinnusimiOrkukaupanda = null;
+	    fastanumer = null;
+	    fasteignaListi = null;
 	    // second step 
 	    notkunarflokkur = null;
 	    heimtaug = null;
@@ -136,57 +137,66 @@ public class TilkynningVertakaBean {
 		stadurMaelir = new Maelir();
 		// initialize list of maelir
 		maelirListMap = new HashMap();
-		for (int i = 0; i < InitialData.MAELIR_TYPES.length; i++) {
+		for (int i = 0; i < InitialData.MAELIR_CONTEXT.length; i++) {
 			List list = new ArrayList();
 			// initialize all lists with an invalid instance of maelir
 			Maelir.addInvalidInstance(list);
-			maelirListMap.put(InitialData.MAELIR_TYPES[i], list);
+			maelirListMap.put(InitialData.MAELIR_CONTEXT[i], list);
 		}
 	}
 	
-	private void storeNewRafvertaka() {
-		Orkukaupandi orkukaupandi = new Orkukaupandi();
-		orkukaupandi.setNafn(getNafnOrkukaupanda());
-		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
-		orkukaupandi.setHeimasimi(getHeimasimiOrkukaupanda());
-		orkukaupandi.setVinnusimi(getVinnusimiOrkukaupanda());
+	private void storeRafvertaka() {
+//		Orkukaupandi orkukaupandi = new Orkukaupandi();
+//		orkukaupandi.setNafn(getNafnOrkukaupanda());
+//		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
+//		orkukaupandi.setHeimasimi(getHeimasimiOrkukaupanda());
+//		orkukaupandi.setVinnusimi(getVinnusimiOrkukaupanda());
+//		
+//		Heimilisfang heimilisfang = new Heimilisfang();
+//		Gata gataObject = new Gata();
+//		gataObject.setNafn(getGata());
+//		Postnumer postnumerObject = new Postnumer();
+//		postnumerObject.setNumer(getPostnumer());
+//		gataObject.setPostnumer(postnumerObject);
+//		heimilisfang.setGata(gataObject);
+//		heimilisfang.setHusnumer(getGotunumer());
+//		heimilisfang.setHushluti(getHaed());
+//		
+//		orkukaupandi.setHeimilisfang(heimilisfang);
+//		
+//		// second step
+//		
+//		Rafverktaka newRafverktaka = new Rafverktaka();
+//		newRafverktaka.setOrkukaupandi(orkukaupandi);
+//		
+//		Orkufyrirtaeki orkufyrirtaeki = new Orkufyrirtaeki();
+//		orkufyrirtaeki.setName(getOrkuveitufyrirtaeki());
+//		newRafverktaka.setOrkufyrirtaeki(orkufyrirtaeki);
+//		
+//		newRafverktaka.setNotkunarflokkur(getNotkunarflokkur());
+//		newRafverktaka.setSpennukerfi(getSpennukerfi());
+//		newRafverktaka.setAnnad(getAnnad());
+//		newRafverktaka.setVarnarradstoefun(getVarnarradstoefun());
+//		
+//		String tempStadur = getStadurMaelir().getStadur();
+//		Maelir tempMaelir = new Maelir();
+//		tempMaelir.setStadur(tempStadur);
+//		newRafverktaka.setStadurMaelir(tempMaelir);
 		
-		Heimilisfang heimilisfang = new Heimilisfang();
-		Gata gataObject = new Gata();
-		gataObject.setNafn(getGata());
-		Postnumer postnumerObject = new Postnumer();
-		postnumerObject.setNumer(getPostnumer());
-		gataObject.setPostnumer(postnumerObject);
-		heimilisfang.setGata(gataObject);
-		heimilisfang.setHusnumer(getGotunumer());
-		heimilisfang.setHushluti(getHaed());
+
 		
-		orkukaupandi.setHeimilisfang(heimilisfang);
+		// store as case
+		boolean successfullyStored = false;
+		try {
+			successfullyStored = getElectricalInstallationBusiness().storeManagedBeans(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
 		
-		// second step
 		
-		Rafverktaka newRafverktaka = new Rafverktaka();
-		newRafverktaka.setOrkukaupandi(orkukaupandi);
-		
-		Orkufyrirtaeki orkufyrirtaeki = new Orkufyrirtaeki();
-		orkufyrirtaeki.setName(getOrkuveitufyrirtaeki());
-		newRafverktaka.setOrkufyrirtaeki(orkufyrirtaeki);
-		
-		newRafverktaka.setNotkunarflokkur(getNotkunarflokkur());
-		newRafverktaka.setSpennukerfi(getSpennukerfi());
-		newRafverktaka.setAnnad(getAnnad());
-		newRafverktaka.setVarnarradstoefun(getVarnarradstoefun());
-		
-		String tempStadur = getStadurMaelir().getStadur();
-		Maelir tempMaelir = new Maelir();
-		tempMaelir.setStadur(tempStadur);
-		newRafverktaka.setStadurMaelir(tempMaelir);
-		
-		RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
-		String id = rafverktokuListi.getNewId();
-		newRafverktaka.setId(id);
-		
-		rafverktokuListi.addRafvertaka(newRafverktaka);
+
 		
 
 		
@@ -197,12 +207,12 @@ public class TilkynningVertakaBean {
 	}
 	
 	public String store() {
-		storeNewRafvertaka();
+		storeRafvertaka();
 		return "store";
 	}
 	
 	public String send() {
-		storeNewRafvertaka();
+		storeRafvertaka();
 		return "send";
 	}
 	
@@ -211,11 +221,32 @@ public class TilkynningVertakaBean {
 		return "nextwizard";
 	}
 	
-	public String goToTilkynningVertaka() {
+	/**
+	 * Creates an empty electrical installation with the current user as electrician
+	 * 
+	 * @return
+	 */
+	public String startTilkynningVertaka() {
+		createEmptyRafverktaka();
+		return "tilkynningvertaka";
+	}
+	
+	/**
+	 * Creates an empty electrical installation with the current user as electrician
+	 * 
+	 * @return
+	 */
+	public String startTilkynningLokVerks() {
+		createEmptyRafverktaka();
+		return "tilkynninglokverks";
+	}
+	
+	private void createEmptyRafverktaka() {
 		initialize();
 		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
 		tilkynningLokVersBean.initialize();
-		return "tilkynningvertaka";
+		Rafverktaka rafverktakaTemp = Rafverktaka.getInstanceWithCurrentUserAsRafverktaki();
+		setRafverktaka(rafverktakaTemp);
 	}
 	
 	private void initializeTilkynningLokVerks() {
@@ -229,7 +260,6 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.setPostnumer(getPostnumer());
 		tilkynningLokVersBean.setGata(getGata());
 		tilkynningLokVersBean.setGotunumer(getGotunumer());
-		tilkynningLokVersBean.setHaed(getHaed());
 		// second step
 		tilkynningLokVersBean.setNotkunarflokkur(getNotkunarflokkur());
 		// spennu fields...
@@ -321,26 +351,9 @@ public class TilkynningVertakaBean {
 
 
 
-
-	
-	public String getHaed() {
-		return haed;
-	}
-
-
-
-
-	
-	public void setHaed(String haed) {
-		this.haed = haed;
-	}
-
-
-
-
 	
 	public String getHeimasimiOrkukaupanda() {
-		return heimasimiOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getHeimasimi();
 	}
 
 
@@ -348,7 +361,7 @@ public class TilkynningVertakaBean {
 
 	
 	public void setHeimasimiOrkukaupanda(String heimasimiOrkukaupanda) {
-		this.heimasimiOrkukaupanda = heimasimiOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setHeimasimi(heimasimiOrkukaupanda);
 	}
 
 
@@ -388,7 +401,7 @@ public class TilkynningVertakaBean {
 
 	
 	public String getKennitalaOrkukaupanda() {
-		return kennitalaOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getKennitala();
 	}
 
 
@@ -397,7 +410,7 @@ public class TilkynningVertakaBean {
 	
 	public void setKennitalaOrkukaupanda(String kennitalaOrkukaupanda) {
 		if(kennitalaOrkukaupanda!=null&!kennitalaOrkukaupanda.equals("")){
-			this.kennitalaOrkukaupanda = kennitalaOrkukaupanda;
+			getRafverktaka().getOrkukaupandi().setKennitala(kennitalaOrkukaupanda);
 		}
 	}
 
@@ -406,7 +419,7 @@ public class TilkynningVertakaBean {
 
 	
 	public String getNafnOrkukaupanda() {
-		return nafnOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getNafn();
 	}
 
 
@@ -415,7 +428,7 @@ public class TilkynningVertakaBean {
 	
 	public void setNafnOrkukaupanda(String nafnOrkukaupanda) {
 		if(nafnOrkukaupanda!=null&!nafnOrkukaupanda.equals("")){
-			this.nafnOrkukaupanda = nafnOrkukaupanda;
+			getRafverktaka().getOrkukaupandi().setNafn(nafnOrkukaupanda);
 		}
 	}
 
@@ -584,12 +597,12 @@ public class TilkynningVertakaBean {
 
 	
 	public String getVinnusimiOrkukaupanda() {
-		return vinnusimiOrkukaupanda;
+		return getRafverktaka().getOrkukaupandi().getVinnusimi();
 	}
 
 	
 	public void setVinnusimiOrkukaupanda(String vinnusimiOrkukaupanda) {
-		this.vinnusimiOrkukaupanda = vinnusimiOrkukaupanda;
+		getRafverktaka().getOrkukaupandi().setVinnusimi(vinnusimiOrkukaupanda);
 	}
 
 	
@@ -611,6 +624,7 @@ public class TilkynningVertakaBean {
 	public void setStadurMaelir(Maelir stadurMaelir) {
 		this.stadurMaelir = stadurMaelir;
 	}
+	
 	
 	public String flettaUppIFasteignaskra() {
 		
@@ -714,4 +728,32 @@ public class TilkynningVertakaBean {
 		return selects;
 	}
 
+	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
+		if (electricalInstallationBusiness == null) {
+			try {
+				FacesContext context = FacesContext.getCurrentInstance();
+				IWContext iwContext = IWContext.getIWContext(context);
+				IWApplicationContext iwac = iwContext.getApplicationContext();
+				electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+					IBOLookup.getServiceInstance(iwac, ElectricalInstallationBusiness.class);
+			}
+			catch (RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return electricalInstallationBusiness;
+	}
+
+	
+	public Rafverktaka getRafverktaka() {
+		return rafverktaka;
+	}
+
+	
+	public void setRafverktaka(Rafverktaka rafverktaka) {
+		this.rafverktaka = rafverktaka;
+	}
+	
+	
+	
 }

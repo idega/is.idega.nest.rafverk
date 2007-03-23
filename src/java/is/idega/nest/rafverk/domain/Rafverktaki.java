@@ -24,6 +24,30 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 
 public class Rafverktaki extends BaseBean{
+	
+	public static Rafverktaki getInstanceWithCurrentUserAsRafverktaki() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		IWContext iwc = IWContext.getIWContext(facesContext);
+		return getInstanceWithCurrentUserAsRafverktaki(iwc);
+
+	}
+	
+	public static Rafverktaki getInstanceWithCurrentUserAsRafverktaki(IWContext iwc) {
+		User user = iwc.getCurrentUser();
+		IWApplicationContext iwac = iwc.getApplicationContext();
+		return getInstanceWithUserAsRafverktaki(user, iwac);
+	}
+	
+	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		IWContext iwc = IWContext.getIWContext(facesContext);
+		IWApplicationContext iwac = iwc.getApplicationContext(); 
+		return getInstanceWithUserAsRafverktaki(user, iwac);
+	}
+	
+	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user, IWApplicationContext iwac) {
+		return new Rafverktaki(user, iwac);
+	}
 
 	public static final String EMPTY_STRING = "";
 	
@@ -31,6 +55,7 @@ public class Rafverktaki extends BaseBean{
 	public static String STADA_OVIRKUR="OVIRKUR";
 	
 	String id;
+	User electrician;
 	String nafn;
 	String nafnFyrirtaekis;
 	String kennitala;
@@ -42,16 +67,18 @@ public class Rafverktaki extends BaseBean{
 	String stada=STADA_VIRKUR;
 	
 	public Rafverktaki() {
-		initialize();
+		// should not be used still there because of prototype
 	}
 	
-	public void initialize() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		IWContext context = IWContext.getIWContext(facesContext);
-		User user = context.getCurrentUser();
+	private Rafverktaki(User user, IWApplicationContext iwac) {
+		initialize(user, iwac);
+	}
+	
+	private void initialize(User user, IWApplicationContext iwac) {
+		electrician = user;
 		nafn = user.getDisplayName();
 		kennitala = user.getPersonalID();
-		UserBusiness userBusiness = getUserBusiness(context);
+		UserBusiness userBusiness = getUserBusiness(iwac);
 		initializeHeimilisfang(user, userBusiness);
 		initializeSimi(user, userBusiness);
 		
@@ -201,6 +228,16 @@ public class Rafverktaki extends BaseBean{
 		catch (IBOLookupException e) {
 			throw new IBORuntimeException(e);
 		}
+	}
+
+	
+	public User getElectrician() {
+		return electrician;
+	}
+
+	
+	public void setElectrician(User electrician) {
+		this.electrician = electrician;
 	}
 	
 }

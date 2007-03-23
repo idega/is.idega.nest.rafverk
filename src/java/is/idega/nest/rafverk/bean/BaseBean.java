@@ -19,6 +19,11 @@ public class BaseBean implements Serializable{
 		return (TilkynningLokVerksBean) getBean("#{TilkynningLokVerksBean}");
 	}
 	
+	public static TilkynningVertakaBean getTilkynningVertakaBean() {
+		return (TilkynningVertakaBean) getBean("#{TilkynningVertakaBean}");
+	}
+	
+	
 	public static Object getBean(String bean) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ValueBinding binding = context.getApplication().createValueBinding(bean);

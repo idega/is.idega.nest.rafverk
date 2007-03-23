@@ -1,53 +1,74 @@
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import javax.ejb.FinderException;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import com.idega.business.IBOLookup;
+import com.idega.idegaweb.IWApplicationContext;
+import com.idega.presentation.IWContext;
+import com.idega.user.data.User;
 
 public class RafverktokuListi extends BaseBean  {
 	
 	String selectedStatus;
 	
-	SortedMap rafverktokuListi = null;
+	Map rafverktokuListi = null;
 	
 	Rafverktaka currentRafverktaka = null;
+
 	
-	String currentId = null;
-	
-	int k = 1;
-	
+	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+
 	public RafverktokuListi() {
-		initialize();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		IWContext context = IWContext.getIWContext(facesContext);
+		User user = context.getCurrentUser();
+		initialize(user);
 	}
 	
-	private void initialize() {
-		rafverktokuListi = new TreeMap();
-		List verktokur = getInitialData().getAllRafverktokurListi();
-		Iterator iterator = verktokur.iterator();
-		while (iterator.hasNext()) {
-			k++;
-			Rafverktaka verktaka = (Rafverktaka) iterator.next();
-			String id = verktaka.getId();
-			rafverktokuListi.put(id, verktaka);	
-			currentId = id;
+	public RafverktokuListi(User electrician) {
+		initialize(electrician);
+	}
+	
+	private void initialize(User electrician) {
+		rafverktokuListi = new HashMap();
+		Collection verktokur = null;
+		try {
+			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByElectrician(electrician);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (FinderException e) {
+			verktokur = null;
+		}
+		if (verktokur != null) {
+			Iterator iterator = verktokur.iterator();
+			while (iterator.hasNext()) {
+				ElectricalInstallation electricalInstallation = (ElectricalInstallation) iterator.next();
+				Rafverktaka verktaka = new Rafverktaka(electricalInstallation);
+				String id = verktaka.getId();
+				rafverktokuListi.put(id, verktaka);	
+			}
 		}
 	}
 	
-	public String getNewId() {
-		return "id"+k++;
-	}
-	
-	public void addRafvertaka(Rafverktaka rafvertaka) {
-		rafverktokuListi.put(rafvertaka.getId(), rafvertaka);
+	public void addRafvertaka(Rafverktaka rafverktaka) {
+		rafverktokuListi.put(rafverktaka.getId(), rafverktaka);
 	}
 
 	public List getRafverktokuListiSelects(){
@@ -120,14 +141,45 @@ public class RafverktokuListi extends BaseBean  {
 	}
 
 	public void populateForms(ActionEvent actionEvent) throws AbortProcessingException {
-		FacesContext context = FacesContext.getCurrentInstance();
-		actionEvent.hashCode();
-		Object component = actionEvent.getComponent();
-		String id = (String) ((javax.faces.component.html.HtmlCommandLink) component).getValue();
-		currentRafverktaka = (Rafverktaka) rafverktokuListi.get(id);
-		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
-		tilkynningLokVerksBean.initialize();
-		tilkynningLokVerksBean.populate(currentRafverktaka);
+	    Rafverktaka rafverktaka = null;
+
+	    UIComponent tmpComponent = actionEvent.getComponent();
+
+	    while (null != tmpComponent && !(tmpComponent instanceof UIData)) {
+	      tmpComponent = tmpComponent.getParent();
+	    }
+
+	    if (tmpComponent instanceof UIData) {
+	    	Object tmpRowData = ((UIData) tmpComponent).getRowData();
+	    	if (tmpRowData instanceof Rafverktaka) {
+	    		rafverktaka = (Rafverktaka) tmpRowData;
+	    		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+	    		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
+	    		try {
+	    			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	    		}
+	    		catch (RemoteException e) {
+	    			throw new RuntimeException(e.getMessage());
+	    		}
+	    	}
+	    }
 	}
+	
+	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
+		if (electricalInstallationBusiness == null) {
+			try {
+				FacesContext context = FacesContext.getCurrentInstance();
+				IWContext iwContext = IWContext.getIWContext(context);
+				IWApplicationContext iwac = iwContext.getApplicationContext();
+				electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+					IBOLookup.getServiceInstance(iwac, ElectricalInstallationBusiness.class);
+			}
+			catch (RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return electricalInstallationBusiness;
+	}
+	
 
 }

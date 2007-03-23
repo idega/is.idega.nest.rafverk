@@ -1,5 +1,6 @@
 package is.idega.nest.rafverk.domain;
 
+
 public class Orkukaupandi extends BaseBean {
 	
 	String id;
@@ -8,6 +9,16 @@ public class Orkukaupandi extends BaseBean {
 	Heimilisfang heimilisfang;
 	String vinnusimi;
 	String heimasimi;
+	
+	public Orkukaupandi() {
+	}
+	
+	public Orkukaupandi(ElectricalInstallation electricalInstallation) {
+		nafn = electricalInstallation.getEnergyConsumerName();
+		kennitala = electricalInstallation.getEnergyConsumerPersonalID();
+		vinnusimi = electricalInstallation.getEnergyConsumerWorkPhone();
+		heimasimi = electricalInstallation.getEneryConsumerHomePhone();
+	}
 	
 	public String getHeimasimi() {
 		return heimasimi;
