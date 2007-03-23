@@ -7,7 +7,11 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.core">
   </classpathentry>
+  <classpathentry kind="src" path="/com.idega.block.process">
+  </classpathentry>
   <classpathentry kind="src" path="/com.idega.builder">
+  </classpathentry>
+  <classpathentry kind="src" path="/com.idega.location">
   </classpathentry>
   <classpathentry kind="src" path="/is.fmr.landskra">
   </classpathentry>
