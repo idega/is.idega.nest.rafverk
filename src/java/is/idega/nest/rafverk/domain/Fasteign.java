@@ -1,5 +1,8 @@
 package is.idega.nest.rafverk.domain;
 
+import com.idega.core.location.data.RealEstate;
+import com.idega.core.location.data.Street;
+import com.idega.util.StringHandler;
 import fasteignaskra.landskra_wse.FasteignaskraFasteign;
 import fasteignaskra.landskra_wse.FasteignaskraFasteignEigandi;
 import fasteignaskra.landskra_wse.Fasteignaskra_Element;
@@ -26,6 +29,20 @@ public class Fasteign extends BaseBean{
 	FasteignaEigandi eigandi;
 	
 	public Fasteign(){}
+	
+	public Fasteign(RealEstate realEstate) {
+		setFastaNumer(realEstate.getRealEstateNumber());
+		setMerking(realEstate.getRealEstateCode());
+		setNafn(realEstate.getName());
+		setNotkun(realEstate.getUse());
+		setSkyring(realEstate.getComment());
+		setGotuNumer(realEstate.getStreetNumber());
+		Street street = realEstate.getStreet();
+		if (street != null) {
+			Gata gataTemp = new Gata(street);
+			setGata(gataTemp);
+		}
+	}
 	
 	public Fasteign(Fasteignaskra_Element dFasteign,String postnumer) {
 		
@@ -104,7 +121,11 @@ public class Fasteign extends BaseBean{
 	
 	public String getMerkingHumanReadable(){
 		String merking = getMerking();
-		
+		String notkun = getNotkun();
+		String skyring = getSkyring();
+		if (merking == null || notkun == null || skyring == null) {
+			return StringHandler.EMPTY_STRING;
+		}
 		String sBygging = merking.substring(0,2);
 		Integer iBygging = new Integer(sBygging);
 		String sHaed = merking.substring(2,4);
@@ -112,10 +133,10 @@ public class Fasteign extends BaseBean{
 		String sNr = merking.substring(4,6);
 		Integer iNr = new Integer(sNr);
 		
-		String notkun = getNotkun();
+
 		
 		if(notkun.endsWith("hæð")){
-			String skyring = getSkyring();
+
 			notkun=notkun+" "+iHaed+", "+skyring+" "+iNr;
 		}
 		else{
