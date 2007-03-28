@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.1 2007/03/23 16:13:15 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.2 2007/03/28 17:21:15 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,15 +9,18 @@
  */
 package is.idega.nest.rafverk.business;
 
+import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
+import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Meter;
 import is.idega.nest.rafverk.domain.MeterHome;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.postur.Gata;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,22 +33,35 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 import com.idega.business.IBOServiceBean;
+import com.idega.core.location.data.PostalCode;
+import com.idega.core.location.data.PostalCodeHome;
+import com.idega.core.location.data.RealEstate;
+import com.idega.core.location.data.RealEstateHome;
+import com.idega.core.location.data.Street;
+import com.idega.core.location.data.StreetHome;
 import com.idega.data.IDOLookup;
 import com.idega.user.data.User;
+import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:13:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
 	private ElectricalInstallationHome electricalInstallationHome = null;
 	
 	private MeterHome meterHome = null;
+	
+	private RealEstateHome realEstateHome = null;
+	
+	private StreetHome streetHome = null;
+	
+	private PostalCodeHome postalCodeHome = null;
 	
 	public boolean storeManagedBeans(			
 			Rafverktaka rafverktaka ,
@@ -58,13 +74,30 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				rafverktaka.setElectricalInstallation(electricalInstallation);
 			}
 			catch (CreateException e) {	
+				e.printStackTrace();
 				return false;
 			}
+		}
+		try {
+			storeRealEstate(electricalInstallation, tilkynningVertakaBean);
+		}
+		catch (CreateException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (EJBException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (RemoveException e) {
+			e.printStackTrace();
+			return false;
 		}
 		storeElectrician(rafverktaka);
 		storeManagedBean(rafverktaka, tilkynningVertakaBean);
 		storeManagedBean(rafverktaka, tilkynningLokVerksBean);
-		rafverktaka.getElectricalInstallation().store();
+		electricalInstallation.store();
+		rafverktaka.initialize(electricalInstallation);
 		return true;
 	}
 	
@@ -78,9 +111,219 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		electricalInstallation.setElectrician(electrician);
 	}
 	
+	private void storeRealEstate(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException, EJBException, RemoveException {
+		String realEstateNumber = tilkynningVertakaBean.getFastanumer();
+		boolean newRealEstateIsNotDummy = StringHandler.isNotEmpty(realEstateNumber);
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		if (realEstate == null) {
+			if (newRealEstateIsNotDummy) {
+				// "normal" case if the application is new and complete
+				setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+				return;
+			}
+			// application is new but not complete
+			setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
+			return;
+		}
+		// there is a real estate....
+		// check the existing real estate
+		String oldRealEstateNumber = realEstate.getRealEstateNumber();
+		boolean oldRealEstateIsNotDummy = StringHandler.isNotEmpty(oldRealEstateNumber);
+		if (oldRealEstateIsNotDummy) {
+			if (newRealEstateIsNotDummy) {
+				// "normal" case: application replaces real estate with complete real estate
+				setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+				return;
+			}
+			// application replaces the existing real estate with incomplete real estate
+			setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
+			return;
+		}
+		// there is a dummy real estate 
+		if (newRealEstateIsNotDummy) {
+			// delete the dummy one
+			deleteDummyRealEstate(electricalInstallation);
+			setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+			return;
+		}
+		// new real estate is dummy and the old one was one
+		// check if the old one could be deleted
+		Street street = findOrCreateStreet(tilkynningVertakaBean);
+		if (street == null) {
+			deleteDummyRealEstate(electricalInstallation);
+			return;
+		}
+		// street was found, reuse the existing dummy real estate
+		setStreetToRealEstate(realEstate, tilkynningVertakaBean);
+		realEstate.store();		
+	}
+	
+	private void deleteDummyRealEstate(ElectricalInstallation electricalInstallation) throws EJBException, RemoveException {
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		// security check - ONLY delete real dummies
+		if (StringHandler.isEmpty(realEstate.getRealEstateNumber())) {
+			electricalInstallation.setRealEstate(null);
+			realEstate.remove();
+		}
+	}
+		
+	private void setDummyRealEstateOrNull(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		// special case: if there is no street do not create a dummy real estate
+		Street street = findOrCreateStreet(tilkynningVertakaBean);
+		if (street == null) {
+			electricalInstallation.setRealEstate(null);
+			return;
+		}
+		// create a dummy one and add the street 
+		RealEstate dummyRealEstate = getRealEstateHome().create();
+		dummyRealEstate.setStreetNumber(tilkynningVertakaBean.getGotunumer());
+		dummyRealEstate.setStreet(street);
+		dummyRealEstate.store();
+		electricalInstallation.setRealEstate(dummyRealEstate);
+	}
+	
+	private void setStreetToRealEstate(RealEstate realEstate, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		Street street = findOrCreateStreet(tilkynningVertakaBean);
+		if (street != null) {
+			realEstate.setStreetNumber(tilkynningVertakaBean.getGotunumer());
+			realEstate.setStreet(street);
+		}
+	}
+		
+	private void setRealEstate(String realEstateNumber, ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		RealEstate realEstate = findRealEstate(realEstateNumber);
+		// not found? create one!
+		if (realEstate == null) {
+			realEstate = createRealEstate(realEstateNumber, tilkynningVertakaBean);
+			if (realEstate == null) {
+				// could not be created (realEstateNumber wrong!), give up and set dummy one
+				setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
+				return;
+			}
+			setStreetToRealEstate(realEstate, tilkynningVertakaBean);
+			realEstate.store();
+		}
+		// found? just set in electrical installation
+		electricalInstallation.setRealEstate(realEstate);
+	}
+			
+		
+	private Street findOrCreateStreet(TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		String postalCode = tilkynningVertakaBean.getPostnumer();
+		String streetName = tilkynningVertakaBean.getGata();
+		if (StringHandler.isEmpty(postalCode) || StringHandler.isEmpty(streetName)) {
+			return null;
+		}
+		Gata gata = lookupGata(streetName, postalCode);
+		if (gata == null) {
+			return null;
+		}
+		String name = gata.getNafn();
+		String nameDativ = gata.getNafnThagufall();
+		if (StringHandler.isEmpty(name) && StringHandler.isEmpty(nameDativ)) {
+			return null;
+		}
+		PostalCode postalCodeObject = null;
+		try {
+			postalCodeObject = getPostalCodeHome().findByPostalCode(postalCode);
+		}
+		catch (FinderException e) {
+			postalCodeObject = null;
+		}
+		if (postalCodeObject == null) {
+			return null;
+		}
+		Street street; 
+		try {
+			street = getStreetHome().findStreetByPostalCodeAndNameOrNameDativ(postalCodeObject, name, nameDativ);
+		}
+		catch (FinderException e) {
+			street = null;
+		}
+		if (street != null) {
+			return street;
+		}
+		// not found, let us create one
+		street = getStreetHome().create();
+		street.setName(name);
+		street.setNameDativ(nameDativ);
+		street.setPostalCode(postalCodeObject);
+		street.store();
+		return street;
+	}
+		
+	private RealEstate findRealEstate(String realEstateNumber) {
+		if (StringHandler.isEmpty(realEstateNumber)) {
+			return null;
+		}
+		// try to find an existing (that is in our database existing) real estate
+		RealEstate realEstate = null;
+		try {
+			realEstate = getRealEstateHome().findRealEstateByNumber(realEstateNumber);
+		}
+		catch (FinderException e) {
+			realEstate = null;
+		}
+		return realEstate;
+	}
+	
+	private RealEstate createRealEstate(String realEstateNumber, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		if (StringHandler.isEmpty(realEstateNumber)) {
+			// should not happen, this method is called when realEstateNumber is not empty
+			return null;
+		}
+		Fasteign fasteign = lookupFasteign(realEstateNumber, tilkynningVertakaBean);
+		if (fasteign == null) {
+			// should not happen, something wrong with GUI?
+			return null;
+		}
+		RealEstate realEstate = getRealEstateHome().create();
+		realEstate.setRealEstateNumber(realEstateNumber);
+		realEstate.setRealEstateCode(fasteign.getMerking());
+		realEstate.setUse(fasteign.getNotkun());
+		realEstate.setComment(fasteign.getSkyring());
+		realEstate.setName(fasteign.getNafn());
+		return realEstate;
+	}
+
+
+		
+	
+	private Gata lookupGata(String streetName, String postalCode) {
+		if (postalCode == null) {
+			return null;
+		}
+		List gotuListi = BaseBean.getInitialData().getGotuListiByPostnumer(postalCode);
+		Iterator iterator = gotuListi.iterator();
+		while(iterator.hasNext()) {
+			Gata gata = (Gata) iterator.next();
+			String name = gata.getNafn();
+			if (name != null && name.equals(streetName)) {
+				return gata;
+			}
+		}
+		return null;
+	}
+	
+	private Fasteign lookupFasteign(String realEstateNumber, TilkynningVertakaBean tilkynningVertakaBean) {
+		return tilkynningVertakaBean.lookupFasteign(realEstateNumber);
+	}
+		
+		
+	
 	
 	private void storeManagedBean(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		// energy company
+		String energyCompany = tilkynningVertakaBean.getOrkuveitufyrirtaeki();
+		Integer energyCompanyInteger = null;
+		try {
+			energyCompanyInteger = Integer.valueOf(energyCompany);
+		}
+		catch(NumberFormatException e) {
+			energyCompanyInteger = null;
+		}		
+		electricalInstallation.setEnergyCompanyID(energyCompanyInteger);
 		// energy consumer
 		electricalInstallation.setEnergyConsumerName(tilkynningVertakaBean.getNafnOrkukaupanda());
 		electricalInstallation.setEnergyConsumerPersonalID(tilkynningVertakaBean.getKennitalaOrkukaupanda());
@@ -208,6 +451,31 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		// move all values from the entity to the managed bean
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		tilkynningVertakaBean.initialize();
+		// energy company
+		Integer energyCompanyInteger = electricalInstallation.getEnergyCompanyID();
+		String energyCompany = (energyCompanyInteger == null) ? null : energyCompanyInteger.toString();
+		// real estate
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		if (realEstate != null) {
+			// set street number
+			tilkynningVertakaBean.setGotunumer(realEstate.getStreetNumber());
+			String number = realEstate.getRealEstateNumber();
+			if (number != null) {
+				Fasteign fasteign = new Fasteign(realEstate);
+				tilkynningVertakaBean.setVeitustadurDisplay(fasteign.getDescription());
+			}
+			Street street = realEstate.getStreet();
+			if (street != null) { 
+				// set street name
+				tilkynningVertakaBean.setGata(street.getName());
+				// set postal code
+				PostalCode postalCode = street.getPostalCode();
+				if (postalCode != null) {
+					tilkynningVertakaBean.setPostnumer(postalCode.getPostalCode());
+				}
+			}
+		}
+		tilkynningVertakaBean.setOrkuveitufyrirtaeki(energyCompany);
 		tilkynningVertakaBean.setRafverktaka(rafverktaka);
 		tilkynningVertakaBean.setNotkunarflokkur(electricalInstallation.getType());
 		tilkynningVertakaBean.setHeimtaug(electricalInstallation.getCurrentLineModification());
@@ -341,26 +609,37 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	
 	
 	public ElectricalInstallationHome getElectricalInstallationHome() {
-		if (electricalInstallationHome == null) {
-			try {
-				electricalInstallationHome = (ElectricalInstallationHome) IDOLookup.getHome(ElectricalInstallation.class);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
-		}
-		return electricalInstallationHome;
+		return (ElectricalInstallationHome) retrieveHome(electricalInstallationHome, ElectricalInstallation.class);
 	}
 	
 	public MeterHome getMeterHome() {
-		if (meterHome == null) {
+		return (MeterHome) retrieveHome(meterHome, Meter.class);
+	}
+
+	
+	public RealEstateHome getRealEstateHome() {
+		return (RealEstateHome)  retrieveHome(realEstateHome, RealEstate.class);
+	}
+	
+	public StreetHome getStreetHome() {
+		return (StreetHome)  retrieveHome(streetHome, Street.class);
+	}
+	
+	public PostalCodeHome getPostalCodeHome() {
+		return (PostalCodeHome) retrieveHome(postalCodeHome, PostalCode.class);
+	}
+	
+	private Object retrieveHome(Object home, Class entityClass ) {
+		if (home == null) {
 			try {
-				meterHome = (MeterHome) IDOLookup.getHome(Meter.class);
+				home = IDOLookup.getHome(entityClass);
 			}
 			catch (RemoteException rme) {
 				throw new RuntimeException(rme.getMessage());
 			}
 		}
-		return meterHome;
+		return home;
 	}
+	
+	
 }

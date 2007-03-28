@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.1 2007/03/23 16:13:56 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.2 2007/03/28 17:21:15 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,6 +14,7 @@ import java.util.List;
 import javax.ejb.FinderException;
 import is.idega.nest.rafverk.util.DataConverter;
 import com.idega.block.process.data.AbstractCaseBMPBean;
+import com.idega.core.location.data.RealEstate;
 import com.idega.data.IDOQuery;
 import com.idega.location.data.Location;
 import com.idega.user.data.Group;
@@ -22,10 +23,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:13:56 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -64,7 +65,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	private static final String COLUMN_CON_WORK_PHONE = "CON_WORK_PHONE";
 	
 	// veitustadur
-	private static final String COLUMN_LOCATION = "LOCATION_ID";
+	private static final String COLUMN_REAL_ESTATE_ID = "REAL_ESTATE_ID";
 	
 	// notkunarflokkur
 	private static final String COLUMN_TYPE = "TYPE";	
@@ -201,8 +202,6 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		// TODO Auto-generated method stub
 		return "nest_el_install";
 	}
-
-	private static final String COLUMN_NEST_EL_INSTALL = "NEST_EL_INSTALL_ID";
 	
 	/* (non-Javadoc)
 	 * @see com.idega.data.GenericEntity#initializeAttributes()
@@ -267,9 +266,9 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		addAttribute(COLUMN_MEASUREMENT_REMARKS, "measurement remarks", String.class, DESCRIPTION);
 		
 		// pointers to other entities
-		addOneToOneRelationship(COLUMN_ENERGY_COMPANY_ID, Group.class);
-		addOneToOneRelationship(COLUMN_ELECTRICIAN_ID, User.class);
-		addOneToOneRelationship(COLUMN_LOCATION, Location.class);
+		addManyToOneRelationship(COLUMN_ENERGY_COMPANY_ID, Group.class);
+		addManyToOneRelationship(COLUMN_ELECTRICIAN_ID, User.class);
+		addManyToOneRelationship(COLUMN_REAL_ESTATE_ID, RealEstate.class);
 
 	}
 
@@ -596,11 +595,19 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	// pointers to other entities
 	
 	public void setEnergyCompany(Group energyCompany) {
-		setColumn(COLUMN_ENERGY_COMPANY_ID, energyCompany.getPrimaryKey());
+		setColumn(COLUMN_ENERGY_COMPANY_ID, energyCompany);
 	}
 	
 	public Group getEnergyCompany() {
 		return (Group) getColumnValue(COLUMN_ENERGY_COMPANY_ID);
+	}
+	
+	public void setEnergyCompanyID(Integer energyCompanyID) {
+		setColumn(COLUMN_ENERGY_COMPANY_ID, energyCompanyID);
+	}
+	
+	public Integer getEnergyCompanyID() {
+		return getIntegerColumnValue(COLUMN_ENERGY_COMPANY_ID);
 	}
 	
 	public void setEnergyConsumerPersonalID( String energyConsumerPersonalID) {
@@ -621,19 +628,19 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	
 	
 	public void setElectrician(User electrician) {
-		setColumn(COLUMN_ELECTRICIAN_ID, electrician.getPrimaryKey());
+		setColumn(COLUMN_ELECTRICIAN_ID, electrician);
 	}
 	
 	public User getElectrician() {
 		return (User) getColumnValue(COLUMN_ELECTRICIAN_ID);
 	}
 	
-	public void setLocation(Location location) {
-		setColumn(COLUMN_LOCATION, location.getPrimaryKey());
+	public void setRealEstate(RealEstate realEstate) {
+		setColumn(COLUMN_REAL_ESTATE_ID, realEstate);
 	}
 	
-	public Location getLocation() {
-		return (Location) getColumnValue(COLUMN_LOCATION);
+	public RealEstate getRealEstate() {
+		return (RealEstate) getColumnValue(COLUMN_REAL_ESTATE_ID);
 	}
 	
 	public Collection ejbFindElectricalInstallationByElectrician(User electrician) throws FinderException {

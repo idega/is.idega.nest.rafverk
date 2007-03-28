@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.12 2007/03/23 16:13:15 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.13 2007/03/28 17:21:15 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,42 +11,36 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.data.Maelir;
-import is.idega.nest.rafverk.domain.ElectricalInstallation;
-import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
-import is.idega.nest.rafverk.domain.Heimilisfang;
-import is.idega.nest.rafverk.domain.Meter;
-import is.idega.nest.rafverk.domain.MeterHome;
-import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
-import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
-import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
-import is.postur.Postnumer;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import com.idega.business.IBOLookup;
-import com.idega.data.IDOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
+import com.idega.user.business.GroupBusiness;
+import com.idega.user.data.Group;
+import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:13:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TilkynningVertakaBean {
 	
@@ -54,7 +48,19 @@ public class TilkynningVertakaBean {
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
+	private GroupBusiness groupBusiness = null;
+	
+	// special lock variables
+	
+	private boolean nafnOrkukaupandaIsLocked = false;
+	
+	private boolean kennitalaOrkukaupandaIsLocked = false;
+	
 	// first step 
+	
+	// id of group
+	
+	private List cachedListOfEnergyCompanies = null;
 	
     private String orkuveitufyrirtaeki = null;
     
@@ -65,6 +71,8 @@ public class TilkynningVertakaBean {
     private String gotunumer = null;
     
     private String fastanumer = null;
+    
+    private String veitustadurDisplay = null;
     
     private List fasteignaListi = null;
     
@@ -401,15 +409,20 @@ public class TilkynningVertakaBean {
 
 	
 	public String getKennitalaOrkukaupanda() {
+		kennitalaOrkukaupandaIsLocked = false;
 		return getRafverktaka().getOrkukaupandi().getKennitala();
 	}
 
-
-
+	public void setKennitalaOrkukaupandaAndLock(String kennitalaOrkukaupanda) {
+		if(StringHandler.isNotEmpty(kennitalaOrkukaupanda)){
+			getRafverktaka().getOrkukaupandi().setKennitala(kennitalaOrkukaupanda);
+			kennitalaOrkukaupandaIsLocked = true;
+		}
+	}
 
 	
 	public void setKennitalaOrkukaupanda(String kennitalaOrkukaupanda) {
-		if(kennitalaOrkukaupanda!=null&!kennitalaOrkukaupanda.equals("")){
+		if(StringHandler.isNotEmpty(kennitalaOrkukaupanda) && ! kennitalaOrkukaupandaIsLocked){
 			getRafverktaka().getOrkukaupandi().setKennitala(kennitalaOrkukaupanda);
 		}
 	}
@@ -419,15 +432,22 @@ public class TilkynningVertakaBean {
 
 	
 	public String getNafnOrkukaupanda() {
+		nafnOrkukaupandaIsLocked = false;
 		return getRafverktaka().getOrkukaupandi().getNafn();
 	}
 
-
+	
+	public void setNafnOrkukaupandaAndLock(String nafnOrkukaupanda) {
+		if(StringHandler.isNotEmpty(nafnOrkukaupanda)){
+			getRafverktaka().getOrkukaupandi().setNafn(nafnOrkukaupanda);
+			nafnOrkukaupandaIsLocked = true;
+		}
+	}
 
 
 	
 	public void setNafnOrkukaupanda(String nafnOrkukaupanda) {
-		if(nafnOrkukaupanda!=null&!nafnOrkukaupanda.equals("")){
+		if(StringHandler.isNotEmpty(nafnOrkukaupanda) && ! nafnOrkukaupandaIsLocked){
 			getRafverktaka().getOrkukaupandi().setNafn(nafnOrkukaupanda);
 		}
 	}
@@ -653,13 +673,19 @@ public class TilkynningVertakaBean {
 	}
 
 	public void setFastanumer(String fastanumer) {
-		if(fastanumer!=null&&!fastanumer.equals("")){
+		if(StringHandler.isNotEmpty(fastanumer)) {
+			// do not do anything if there is no change
+			if (fastanumer.equals(this.fastanumer)) {
+				return;
+			}
 			String postnumer = getPostnumer();
-			Fasteign fasteign = getFMRLookup().getFasteignByFastanumerAndPostnumer(fastanumer,postnumer);
+			Fasteign fasteign = lookupFasteign(fastanumer);
 			FasteignaEigandi eigandi = fasteign.getEigandi();
 			if(eigandi!=null){
-				setNafnOrkukaupanda(eigandi.getNafn());
-				setKennitalaOrkukaupanda(eigandi.getKennitala());
+				setNafnOrkukaupandaAndLock(eigandi.getNafn());
+				setKennitalaOrkukaupandaAndLock(eigandi.getKennitala());
+				String description = fasteign.getDescription();
+				setVeitustadurDisplay(description);
 			}
 			
 		}
@@ -716,16 +742,75 @@ public class TilkynningVertakaBean {
 			item0.setLabel("- Engin gata til staðar");
 			item0.setValue("none");
 			selects.add(item0);
-			List gotuListi = InitialData.getInitialData().getGotuListiByPostnumer(postnumer);
+			List gotuListi = BaseBean.getInitialData().getGotuListiByPostnumer(postnumer);
 			for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
-				Gata gata = (Gata) iter.next();
+				Gata gataTemp = (Gata) iter.next();
 				SelectItem item = new SelectItem();
-				item.setLabel(gata.getNafn());
-				item.setValue(gata.getNafn());
+				item.setLabel(gataTemp.getNafn());
+				item.setValue(gataTemp.getNafn());
 				selects.add(item);
 			}
 		}
 		return selects;
+	}
+	
+	// lookup fasteign
+	
+	public Fasteign lookupFasteign(String realEstateNumber) {
+		List fasteignaListiTemp = getFasteignaListi();
+		Iterator iterator = fasteignaListiTemp.iterator();
+		while(iterator.hasNext()) {
+			Fasteign fasteign = (Fasteign) iterator.next();
+			String fastaNumer = fasteign.getFastaNumer();
+			if (fastaNumer != null && fastaNumer.equals(realEstateNumber)) {
+				return fasteign;
+			}
+		}
+		return null;
+	}
+	
+	// energy companies
+	
+	public List getRafveituListiSelects(){
+		if (cachedListOfEnergyCompanies == null) {
+			cachedListOfEnergyCompanies = new ArrayList();
+			List rafveitur = getRafveituListi();
+			for (Iterator iter = rafveitur.iterator(); iter.hasNext();) {
+				Group fyrirtaeki = (Group) iter.next();
+				SelectItem item = new SelectItem();
+				item.setLabel(fyrirtaeki.getName());
+				item.setValue(fyrirtaeki.getPrimaryKey().toString());
+				cachedListOfEnergyCompanies.add(item);
+			}
+		}
+		return cachedListOfEnergyCompanies;
+	}
+	
+	public List getRafveituListi(){
+		ArrayList list = new ArrayList();
+		GroupBusiness groupBusinessTemp = getGroupBusiness();
+		try {
+			Collection groups = groupBusinessTemp.getGroupsByGroupName(InitialData.RAFVEITUR);
+			Iterator groupIterator = groups.iterator();
+			while (groupIterator.hasNext()) {
+				Group group = (Group) groupIterator.next();
+				Collection children = groupBusinessTemp.getChildGroups(group);
+				list.addAll(children);
+ 			}
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		// sort according to names
+		Comparator comparator = new Comparator() {
+			public int compare(Object o1, Object o2) {
+				Group group1 = (Group) o1;
+				Group group2 = (Group) o2;
+				return group1.getName().compareTo(group2.getName());
+			}
+		};
+		Collections.sort(list, comparator);
+		return list;
 	}
 
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
@@ -744,6 +829,22 @@ public class TilkynningVertakaBean {
 		return electricalInstallationBusiness;
 	}
 
+	public GroupBusiness getGroupBusiness() {
+		if (groupBusiness == null) {
+			try {
+				FacesContext context = FacesContext.getCurrentInstance();
+				IWContext iwContext = IWContext.getIWContext(context);
+				IWApplicationContext iwac = iwContext.getApplicationContext();
+				groupBusiness = (GroupBusiness) 
+					IBOLookup.getServiceInstance(iwac, GroupBusiness.class);
+			}
+			catch (RemoteException rme) {
+				throw new RuntimeException(rme.getMessage());
+			}
+		}
+		return groupBusiness;
+	}
+
 	
 	public Rafverktaka getRafverktaka() {
 		return rafverktaka;
@@ -752,6 +853,16 @@ public class TilkynningVertakaBean {
 	
 	public void setRafverktaka(Rafverktaka rafverktaka) {
 		this.rafverktaka = rafverktaka;
+	}
+
+	
+	public String getVeitustadurDisplay() {
+		return veitustadurDisplay;
+	}
+
+	
+	public void setVeitustadurDisplay(String veitustadur) {
+		this.veitustadurDisplay = veitustadur;
 	}
 	
 	

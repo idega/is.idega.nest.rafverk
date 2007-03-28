@@ -1,6 +1,5 @@
 package is.idega.nest.rafverk.bean;
 
-import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
@@ -12,35 +11,19 @@ import is.postur.Gata;
 import is.postur.Gotuskra;
 import is.postur.Postnumer;
 import is.postur.Postnumeraskra;
-
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-
-import com.idega.business.IBOLookup;
-import com.idega.idegaweb.IWApplicationContext;
-import com.idega.idegaweb.IWResourceBundle;
-import com.idega.presentation.IWContext;
-import com.idega.user.business.GroupBusiness;
-import com.idega.user.data.Group;
 
 public class InitialData extends BaseBean {
 	
 	public static final String BUNDLE_IDENTIFIER = "is.idega.nest.rafverk";
 	
-	private IWResourceBundle resourceBundle = null;
-	
-	private GroupBusiness groupBusiness = null;
-	
 	// first step
+	
+	public static final String RAFVEITUR = "Rafveitur";
 	
 	private static final String[] NOTKUNARFLOKKUR = {
 		"Íbúðarhúsnæði", "IBUDARHUSNAEDI", 
@@ -179,45 +162,7 @@ public class InitialData extends BaseBean {
 		"í lagi", LEKASTRAUMSROFI_I_LAGI_KEY,
 		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY
 		};
-	
 
-	
-	public List getRafveituListi(){
-		ArrayList list = new ArrayList();
-		GroupBusiness groupBusinessTemp = getGroupBusiness();
-		try {
-			Collection groups = groupBusinessTemp.getGroupsByGroupName("Rafveitur");
-			Iterator groupIterator = groups.iterator();
-			while (groupIterator.hasNext()) {
-				Group group = (Group) groupIterator.next();
-				Collection children = groupBusinessTemp.getChildGroups(group);
-				list.addAll(children);
- 			}
-		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
-		}
-		// sort according to names
-		Comparator comparator = new Comparator() {
-			public int compare(Object o1, Object o2) {
-				Group group1 = (Group) o1;
-				Group group2 = (Group) o2;
-				return group1.getName().compareTo(group2.getName());
-			}
-		};
-		Collections.sort(list, comparator);
-		return list;
-//		ArrayList listi = new ArrayList();
-//		
-//		
-//		Orkufyrirtaeki or = getOrkuveitan();
-//		listi.add(or);
-//		
-//		Orkufyrirtaeki rarik = getRarik();
-//		listi.add(rarik);
-//		
-//		return listi;	
-	}
 
 	public Orkufyrirtaeki getRarik() {
 		Orkufyrirtaeki rarik = new Orkufyrirtaeki();
@@ -233,20 +178,7 @@ public class InitialData extends BaseBean {
 		return or;
 	}
 	
-	public List getRafveituListiSelects(){
-		
-		ArrayList listi = new ArrayList();
-		List rafveitur = getRafveituListi();
-		for (Iterator iter = rafveitur.iterator(); iter.hasNext();) {
-			Group fyrirtaeki = (Group) iter.next();
-			SelectItem item = new SelectItem();
-			item.setLabel(fyrirtaeki.getName());
-			item.setValue(fyrirtaeki.getPrimaryKey().toString());
-			listi.add(item);
-		}
-		
-		return listi;
-	}
+
 	
 	public List getNotkunarflokkurListi() {
 		return Arrays.asList(NOTKUNARFLOKKUR);
@@ -736,13 +668,10 @@ public class InitialData extends BaseBean {
 	                      
 	
 	private List getSelectItemList(List myList) {
-		IWResourceBundle localResourceBundle = getResourceBundle();
 		ArrayList selects = new ArrayList();
 		for (Iterator iter = myList.iterator(); iter.hasNext();) {
 			String label = (String) iter.next();
 			String value = (String) iter.next();
-			// use value as key
-			// label = localResourceBundle.getLocalizedString(value, label);
 			SelectItem item = new SelectItem();
 			item.setLabel(label);
 			item.setValue(value);
@@ -750,31 +679,7 @@ public class InitialData extends BaseBean {
 		}
 		return selects;
 	}
-	
-	private IWResourceBundle getResourceBundle() {
-		if (resourceBundle == null) {
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			IWContext context = IWContext.getIWContext(facesContext);
-			resourceBundle = context.getIWMainApplication().getBundle(BUNDLE_IDENTIFIER).getResourceBundle(context);
-		}
-		return resourceBundle;
-	}
 
-	public GroupBusiness getGroupBusiness() {
-		if (groupBusiness == null) {
-			try {
-				FacesContext context = FacesContext.getCurrentInstance();
-				IWContext iwContext = IWContext.getIWContext(context);
-				IWApplicationContext iwac = iwContext.getApplicationContext();
-				groupBusiness = (GroupBusiness) 
-					IBOLookup.getServiceInstance(iwac, GroupBusiness.class);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
-		}
-		return groupBusiness;
-	}
 	
 	
 }

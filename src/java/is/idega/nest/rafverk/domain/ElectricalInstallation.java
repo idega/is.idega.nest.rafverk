@@ -1,8 +1,8 @@
 package is.idega.nest.rafverk.domain;
 
 
+import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
-import com.idega.location.data.Location;
 import com.idega.user.data.User;
 import java.util.List;
 import com.idega.data.IDOEntity;
@@ -430,6 +430,16 @@ public interface ElectricalInstallation extends IDOEntity {
 	public Group getEnergyCompany();
 
 	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setEnergyCompanyID
+	 */
+	public void setEnergyCompanyID(Integer energyCompanyID);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getEnergyCompanyID
+	 */
+	public Integer getEnergyCompanyID();
+
+	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setEnergyConsumerPersonalID
 	 */
 	public void setEnergyConsumerPersonalID(String energyConsumerPersonalID);
@@ -460,12 +470,12 @@ public interface ElectricalInstallation extends IDOEntity {
 	public User getElectrician();
 
 	/**
-	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setLocation
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setRealEstate
 	 */
-	public void setLocation(Location location);
+	public void setRealEstate(RealEstate realEstate);
 
 	/**
-	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getLocation
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getRealEstate
 	 */
-	public Location getLocation();
+	public RealEstate getRealEstate();
 }
