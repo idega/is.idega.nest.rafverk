@@ -3,6 +3,7 @@ package is.idega.nest.rafverk.domain;
 import is.idega.nest.rafverk.data.Maelir;
 import java.util.ArrayList;
 import java.util.List;
+import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
@@ -35,6 +36,7 @@ public class Rafverktaka {
 	
 	ElectricalInstallation electricalInstallation = null;
 	Rafverktaki rafverktaki = null;
+	Fasteign fasteign = null;
 	
 	String id;
 	Orkufyrirtaeki orkufyrirtaeki;
@@ -61,11 +63,15 @@ public class Rafverktaka {
 		initialize(electricalInstallation);
 	}
 	
-	private void initialize(ElectricalInstallation electricalInstallation) {
+	public void initialize(ElectricalInstallation electricalInstallation) {
 		setElectricalInstallation(electricalInstallation);
 		Group energyCompany = electricalInstallation.getEnergyCompany();
 		setOrkufyrirtaeki(new Orkufyrirtaeki(energyCompany));
 		setOrkukaupandi(new Orkukaupandi(electricalInstallation));
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		if (realEstate != null) {
+			fasteign = new Fasteign(realEstate);
+		}
 		
 	}
 
@@ -202,6 +208,13 @@ public class Rafverktaka {
 	public void setElectricalInstallation(ElectricalInstallation electricalInstallation) {
 		this.electricalInstallation = electricalInstallation;
 		id = electricalInstallation.getPrimaryKey().toString();
+	}
+	
+	public String getVeitustadurDisplay() {
+		if (fasteign != null) {
+			return fasteign.getDescription();
+		}
+		return null;
 	}
 	
 }
