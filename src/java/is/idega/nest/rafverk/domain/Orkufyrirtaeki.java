@@ -17,7 +17,7 @@ public class Orkufyrirtaeki extends BaseBean{
 		
 	public void initialize(Group energyCompany) {
 		if (energyCompany != null) {
-			id = (String) energyCompany.getPrimaryKey();
+			id = energyCompany.getPrimaryKey().toString();
 			name = energyCompany.getName();
 		}
 	}
