@@ -26,9 +26,19 @@ public class Orkukaupandi extends BaseBean {
 	public void setHeimasimi(String heimasimi) {
 		this.heimasimi = heimasimi;
 	}
+	
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public Heimilisfang getHeimilisfang() {
 		return heimilisfang;
 	}
+	
+	/**
+	 * @deprecated
+	 * @param heimilisfang
+	 */
 	public void setHeimilisfang(Heimilisfang heimilisfang) {
 		this.heimilisfang = heimilisfang;
 	}
