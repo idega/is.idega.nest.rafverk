@@ -1,5 +1,5 @@
 /*
- * $Id: MeterBMPBean.java,v 1.1 2007/03/23 16:13:54 thomas Exp $
+ * $Id: MeterBMPBean.java,v 1.2 2007/03/29 10:12:51 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -17,10 +17,10 @@ import com.idega.data.IDOQuery;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:13:54 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/29 10:12:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class MeterBMPBean extends GenericEntity implements Meter {
 	
@@ -34,7 +34,7 @@ public class MeterBMPBean extends GenericEntity implements Meter {
 	private static final int LONG_INPUT_FIELD = 255;
 	
 	private static final String COLUMN_PHASE = "PHASE";
-	private static final String COLUMN_NUMBER = "NUMBER";
+	private static final String COLUMN_NUMBER = "METER_NUMBER";
 	private static final String COLUMN_AMPERE = "AMPERE";
 	private static final String COLUMN_RATE = "RATE";
 	private static final String COLUMN_DEVICE = "DEVICE";
@@ -43,7 +43,7 @@ public class MeterBMPBean extends GenericEntity implements Meter {
 	// pointer to parent electrical installation
 	private static final String COLUMN_ELECTRIAL_INSTALLATION_ID = "ELECTRICAL_INSTALLATION_ID";
 	// context in what the meter is used 
-	private static final String COLUMN_CONTEXT = "CONTEXT";
+	private static final String COLUMN_CONTEXT = "METER_CONTEXT";
 	// priority within the context
 	private static final String COLUMN_PRIORITY_WITHHIN_CONTEXT = "PRIORITY_WITHIN_CONTEXT";
 	
