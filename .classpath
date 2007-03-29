@@ -11,8 +11,6 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.builder">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.location">
-  </classpathentry>
   <classpathentry kind="src" path="/is.fmr.landskra">
   </classpathentry>
   <classpathentry kind="src" path="/is.idega.iceland">
