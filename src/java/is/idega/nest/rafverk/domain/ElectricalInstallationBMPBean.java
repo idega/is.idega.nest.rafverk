@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.2 2007/03/28 17:21:15 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.3 2007/03/29 11:29:53 tryggvil Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,24 +9,26 @@
  */
 package is.idega.nest.rafverk.domain;
 
+import is.idega.nest.rafverk.util.DataConverter;
+
 import java.util.Collection;
 import java.util.List;
+
 import javax.ejb.FinderException;
-import is.idega.nest.rafverk.util.DataConverter;
+
 import com.idega.block.process.data.AbstractCaseBMPBean;
 import com.idega.core.location.data.RealEstate;
 import com.idega.data.IDOQuery;
-import com.idega.location.data.Location;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/03/29 11:29:53 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
