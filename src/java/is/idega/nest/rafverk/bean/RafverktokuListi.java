@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.ejb.FinderException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
@@ -45,7 +46,7 @@ public class RafverktokuListi extends BaseBean  {
 	}
 	
 	private void initialize(User electrician) {
-		rafverktokuListi = new HashMap();
+		rafverktokuListi = new TreeMap();
 		Collection verktokur = null;
 		try {
 			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByElectrician(electrician);
