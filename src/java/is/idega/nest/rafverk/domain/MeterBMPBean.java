@@ -1,5 +1,5 @@
 /*
- * $Id: MeterBMPBean.java,v 1.2 2007/03/29 10:12:51 thomas Exp $
+ * $Id: MeterBMPBean.java,v 1.3 2007/04/05 22:28:49 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -17,10 +17,10 @@ import com.idega.data.IDOQuery;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/29 10:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MeterBMPBean extends GenericEntity implements Meter {
 	
@@ -111,7 +111,7 @@ public class MeterBMPBean extends GenericEntity implements Meter {
 	}
 	
 	public String getDevice() {
-		return (String) getColumnValue(COLUMN_NUMBER);
+		return (String) getColumnValue(COLUMN_DEVICE);
 	}
 	
 	public void setPlace(String place) {
@@ -131,11 +131,11 @@ public class MeterBMPBean extends GenericEntity implements Meter {
 	}
 	
 	public void setPriorityWithinContext(int priority) {
-		setColumn(COLUMN_NUMBER, priority);
+		setColumn(COLUMN_PRIORITY_WITHHIN_CONTEXT, priority);
 	}
 	
 	public int getPriorityWithinContext() {
-		return getIntColumnValue(COLUMN_NUMBER, 0);
+		return getIntColumnValue(COLUMN_PRIORITY_WITHHIN_CONTEXT, 0);
 	}
 	
 	// pointer to other entities

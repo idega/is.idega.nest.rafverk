@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.9 2007/03/23 16:13:15 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.10 2007/04/05 22:28:49 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -23,10 +23,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:13:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -125,7 +125,7 @@ public class TilkynningLokVerksBean {
 	    lekastraumsrofaUtleysingMillisecond = null;
 	    skyringarMaelingar = null;
 		// initialize maelir
-		maelir = new Maelir();
+		maelir = new Maelir(InitialData.METER_IN_REPORT,0);
 		
 	}
 	
@@ -147,7 +147,7 @@ public class TilkynningLokVerksBean {
 		
 		// second step
 		
-		Maelir tempMaelir = new Maelir();
+		Maelir tempMaelir = new Maelir(InitialData.METER_IN_REPORT,0);
 		Maelir tempStadurMaelir = rafverktaka.getStadurMaelir();
 		if (tempStadurMaelir != null) {
 			String tempStadur = tempStadurMaelir.getStadur();
@@ -165,11 +165,18 @@ public class TilkynningLokVerksBean {
 	// navigation methods
 	
 	public String store() {
+		storeRafvertaka();
 		return "store";
 	}
 	
 	public String send() {
+		storeRafvertaka();
 		return "send";
+	}
+	
+	private boolean storeRafvertaka() {
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		return tilkynningVertakaBean.storeRafvertaka();
 	}
 	
 	public List getGotuListiSelects(){

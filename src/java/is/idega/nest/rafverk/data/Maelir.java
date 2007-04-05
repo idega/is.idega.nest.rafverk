@@ -1,5 +1,5 @@
 /*
- * $Id: Maelir.java,v 1.4 2007/03/23 16:15:54 thomas Exp $
+ * $Id: Maelir.java,v 1.5 2007/04/05 22:28:49 thomas Exp $
  * Created on Feb 12, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,18 +14,19 @@ import java.util.List;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:15:54 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class Maelir {
 	
-	public static Maelir addInvalidInstance(List myList) {
-		Maelir maelir = new Maelir();
+	public static Maelir addInvalidInstance(String context, int priorityWithinList, List myList) {
+		Maelir maelir = new Maelir(context, priorityWithinList);
 		myList.add(maelir);
-		maelir.myList = myList;
+		maelir.setMyList(myList);
 		maelir.setValid(false);
+		maelir.setContext(context);
 		return maelir;
 	}
 	
@@ -49,6 +50,11 @@ public class Maelir {
 	
 	private String stadur = null;
 	
+	public Maelir(String context, int priorityWithinContext) {
+		this.context = context;
+		this.priorityWithinContext = priorityWithinContext;
+	}
+	
 	/**
 	 * Set this instance to valid and 
 	 * add an invalid instance at the end
@@ -57,9 +63,8 @@ public class Maelir {
 	 */
 	public void add() {
 		valid = true;
-		Maelir newMaelir = Maelir.addInvalidInstance(myList);
 		int newPriority = priorityWithinContext + 1;
-		newMaelir.setPriorityWithinContext(newPriority);
+		Maelir.addInvalidInstance(getContext(), newPriority, myList);
 	}
 	
 	public void delete() {
@@ -156,6 +161,16 @@ public class Maelir {
 	
 	public void setPriorityWithinContext(int priorityWithinContext) {
 		this.priorityWithinContext = priorityWithinContext;
+	}
+
+	
+	public List getMyList() {
+		return myList;
+	}
+
+	
+	public void setMyList(List myList) {
+		this.myList = myList;
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.2 2007/03/28 17:21:15 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.3 2007/04/05 22:28:49 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -46,10 +46,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -96,6 +96,21 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		storeElectrician(rafverktaka);
 		storeManagedBean(rafverktaka, tilkynningVertakaBean);
 		storeManagedBean(rafverktaka, tilkynningLokVerksBean);
+		try {
+			storeMetersOfManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		}
+		catch (EJBException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (CreateException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (RemoveException e) {
+			e.printStackTrace();
+			return false;
+		}
 		electricalInstallation.store();
 		rafverktaka.initialize(electricalInstallation);
 		return true;
@@ -109,6 +124,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		User electrician = rafverktaka.getRafverktaki().getElectrician();
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		electricalInstallation.setElectrician(electrician);
+		electricalInstallation.setOwner(electrician);
 	}
 	
 	private void storeRealEstate(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException, EJBException, RemoveException {
@@ -342,7 +358,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		electricalInstallation.setPower(tilkynningVertakaBean.getUppsett());
 		electricalInstallation.setSwitchPanelNumber(tilkynningVertakaBean.getNumerToeflu());
 		electricalInstallation.setVoltageSystem(tilkynningVertakaBean.getSpennukerfi());
-		electricalInstallation.setVoltageSystemInReport(tilkynningVertakaBean.getAnnad());
+		electricalInstallation.setVoltageSystemOther(tilkynningVertakaBean.getAnnad());
+		electricalInstallation.setApplicationRemarks(tilkynningVertakaBean.getSkyringar());
 	}
 	
 	private void storeManagedBean(Rafverktaka rafverktaka, TilkynningLokVerksBean tilkynningLokVerksBean) {
@@ -391,24 +408,31 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		// special case stadur maelir
 		Maelir stadurMaelir = tilkynningVertakaBean.getStadurMaelir();
-		Meter stadurMeter = findMeterByContextAndIndex(metersInDatabase, InitialData.STADUR, 0);
+		Meter stadurMeter = findMeterByContextAndIndex(metersInDatabase, InitialData.STADUR, 0, electricalInstallation);
 		storeMaelir(stadurMaelir, stadurMeter);
+		// prevent deleting!
+		metersInDatabase.remove(stadurMeter);
 		// specail case meter in report (second form)
 		Maelir maelirInReport = tilkynningLokVerksBean.getMaelir();
-		Meter meterInReport = findMeterByContextAndIndex(metersInDatabase, InitialData.METER_IN_REPORT, 0);
+		Meter meterInReport = findMeterByContextAndIndex(metersInDatabase, InitialData.METER_IN_REPORT, 0, electricalInstallation);
 		storeMaelir(maelirInReport, meterInReport);
+		// prevent deleting!
+		metersInDatabase.remove(meterInReport);
 		// meters in list
 		Map maelirMap = tilkynningVertakaBean.getList();
-		Iterator iterator = maelirMap.values().iterator();
+		Iterator iterator = maelirMap.keySet().iterator();
 		while (iterator.hasNext()) {
-			Collection coll = (Collection) iterator.next();
+			String context = (String) iterator.next();
+			Collection coll = (Collection) maelirMap.get(context);
 			Iterator maelirIterator = coll.iterator();
 			while (maelirIterator.hasNext()) {
 				Maelir maelir = (Maelir) maelirIterator.next();
-				Meter meter = findMeterByContextAndIndex(metersInDatabase, maelir.getContext(), maelir.getPriorityWithinContext());
-				storeMaelir(maelir, meter);
-				// do not keep the meter in the collection
-				metersInDatabase.remove(meter);
+				if (maelir.isValid()) {
+					Meter meter = findMeterByContextAndIndex(metersInDatabase, context, maelir.getPriorityWithinContext(), electricalInstallation);
+					storeMaelir(maelir, meter);
+					// do not keep the meter in the collection
+					metersInDatabase.remove(meter);
+				}
 			}
 		}
 		// delete the meters in the database that are left
@@ -422,7 +446,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 	// lazy searching, collection is usually very small 
-	private Meter findMeterByContextAndIndex(Collection coll, String context, int index) throws CreateException {
+	private Meter findMeterByContextAndIndex(Collection coll, String context, int index, ElectricalInstallation electricalInstallation) throws CreateException {
 		if (coll != null) {
 			Iterator iterator = coll.iterator();
 			while (iterator.hasNext()) {
@@ -434,7 +458,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			}
 		}
 		// not found, create new one
-		return getMeterHome().create();
+		Meter newMeter =  getMeterHome().create();
+		newMeter.setElectricalInstallation(electricalInstallation);
+		return newMeter;
+		
 	}
 	
 	public void initializeManagedBeans(
@@ -443,7 +470,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			TilkynningLokVerksBean tilkynningLokVerksBean) {
 		initializeManagedBean(rafverktaka, tilkynningVertakaBean);
 		initializeManagedBean(rafverktaka, tilkynningLokVerksBean);
-		//initializeManagedBeansByMeters(electricalInstallation, tilkynningVertakaBean, tilkynningLokVerksBean);
+		initializeManagedBeansByMeters(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 	}
 	
 	
@@ -490,6 +517,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		tilkynningVertakaBean.setNumerToeflu(electricalInstallation.getSwitchPanelNumber());
 		tilkynningVertakaBean.setSpennukerfi(electricalInstallation.getVoltageSystem());
 		tilkynningVertakaBean.setAnnad(electricalInstallation.getVoltageSystemOther());
+		tilkynningVertakaBean.setSkyringar(electricalInstallation.getApplicationRemarks());
 	}
 	
 	private void initializeManagedBean(Rafverktaka rafverktaka, TilkynningLokVerksBean tilkynningLokVerksBean) {
@@ -527,9 +555,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 	private void initializeManagedBeansByMeters(
-		ElectricalInstallation electricalInstallation, 
+		Rafverktaka rafverktaka, 
 		TilkynningVertakaBean tilkynningVertakaBean,
 		TilkynningLokVerksBean tilkynningLokVerksBean) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		// handling all meters (mapping meter to maelir)
 		MeterHome meterHomeTemp = getMeterHome();
 		Collection coll = null;
@@ -546,8 +575,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		Map maelirMap = tilkynningVertakaBean.getList();
 		while (iterator.hasNext()) {
 			Meter meter = (Meter) iterator.next();
-			Maelir maelir = new Maelir();
-			initializeMaelir(maelir, meter);
+			Maelir maelir = initializeMaelir(meter);
 			String context = meter.getContext();
 			// special case stadur maelir
 			if (InitialData.STADUR.equals(context)) {
@@ -558,7 +586,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			}
 			else {
 				List list = (List) maelirMap.get(context);
-				list.add(maelir);
+				if (list != null) { 
+					list.add(maelir);
+					maelir.setMyList(list);
+				}
 			}
 		}
 		// second step: sorting all meter corresponding to the index
@@ -566,19 +597,33 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		// comparator: index ascending
 		Comparator comparator = new Comparator() {
 			public int compare(Object o1, Object o2) {
-				Meter meter1 = (Meter) o1;
-				Meter meter2 = (Meter) o2;
+				Maelir meter1 = (Maelir) o1;
+				Maelir meter2 = (Maelir) o2;
 				return meter1.getPriorityWithinContext() - meter2.getPriorityWithinContext();
  			}
 		};
-		// sorting	
+		// sorting and setting of the right index
 		while (meterLists.hasNext()) {
 			List list = (List) meterLists.next();
 			Collections.sort(list, comparator);
+			// the very first one is the dummy maelir, put it at the end of the list, set the priority right 
+			int size = list.size();
+			if (list.size() > 1) {
+				// if only one element nothing to do!
+				Maelir lastMaelir = (Maelir) list.get(size - 1);
+				int highestIndex = lastMaelir.getPriorityWithinContext();
+				highestIndex++;
+				Maelir dummyMaelir = (Maelir) list.get(0);
+				dummyMaelir.setPriorityWithinContext(highestIndex);
+				// move the dummy from the beginning to the end
+				list.remove(0);
+				list.add(dummyMaelir);
+			}
 		}
 	}
 	
-	private void initializeMaelir(Maelir maelir, Meter meter) {
+	private Maelir initializeMaelir(Meter meter) {
+		Maelir maelir = new Maelir(meter.getContext(), meter.getPriorityWithinContext());
 		maelir.setContext(meter.getContext());
 		maelir.setPriorityWithinContext(meter.getPriorityWithinContext());
 		maelir.setNumer(meter.getNumber());
@@ -587,9 +632,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		maelir.setFasa(meter.getPhase());
 		maelir.setHjalpataeki(meter.getDevice());
 		maelir.setTaxti(meter.getRate());
+		return maelir;
 	}
 	
 	private void storeMaelir(Maelir maelir, Meter meter) {
+		if (! maelir.isValid()) {
+			return;
+		}
 		meter.setContext(maelir.getContext());
 		meter.setPriorityWithinContext(maelir.getPriorityWithinContext());
 		meter.setNumber(maelir.getNumer());

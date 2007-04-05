@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.13 2007/03/28 17:21:15 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.14 2007/04/05 22:28:49 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import com.idega.business.IBOLookup;
+import com.idega.fop.business.DataToXMLToPDFBusiness;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
 import com.idega.user.business.GroupBusiness;
@@ -37,10 +38,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/28 17:21:15 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TilkynningVertakaBean {
 	
@@ -49,6 +50,8 @@ public class TilkynningVertakaBean {
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
 	private GroupBusiness groupBusiness = null;
+	
+	private DataToXMLToPDFBusiness dataToXMLToPDFBusiness = null;
 	
 	// special lock variables
 	
@@ -123,6 +126,7 @@ public class TilkynningVertakaBean {
 	    gotunumer = null;
 	    fastanumer = null;
 	    fasteignaListi = null;
+	    veitustadurDisplay = null;
 	    // second step 
 	    notkunarflokkur = null;
 	    heimtaug = null;
@@ -142,18 +146,18 @@ public class TilkynningVertakaBean {
 	    maelirListMap = null;
 	    skyringar = null;
 		// initialize maelir
-		stadurMaelir = new Maelir();
+		stadurMaelir = new Maelir(InitialData.STADUR,0);
 		// initialize list of maelir
 		maelirListMap = new HashMap();
 		for (int i = 0; i < InitialData.MAELIR_CONTEXT.length; i++) {
 			List list = new ArrayList();
 			// initialize all lists with an invalid instance of maelir
-			Maelir.addInvalidInstance(list);
+			Maelir.addInvalidInstance(InitialData.MAELIR_CONTEXT[i],0,list);
 			maelirListMap.put(InitialData.MAELIR_CONTEXT[i], list);
 		}
 	}
 	
-	private void storeRafvertaka() {
+	public boolean storeRafvertaka() {
 //		Orkukaupandi orkukaupandi = new Orkukaupandi();
 //		orkukaupandi.setNafn(getNafnOrkukaupanda());
 //		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
@@ -202,6 +206,7 @@ public class TilkynningVertakaBean {
 			throw new RuntimeException(e.getMessage());
 		}
 		BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+		return successfullyStored;
 		
 		
 
@@ -221,6 +226,7 @@ public class TilkynningVertakaBean {
 	
 	public String send() {
 		storeRafvertaka();
+		getPDF();
 		return "send";
 	}
 	
@@ -235,8 +241,10 @@ public class TilkynningVertakaBean {
 	 * @return
 	 */
 	public String startTilkynningVertaka() {
-		createEmptyRafverktaka();
-		return "tilkynningvertaka";
+		getPDF();
+		return "";
+//		createEmptyRafverktaka();
+//		return "tilkynningvertaka";
 	}
 	
 	/**
@@ -255,6 +263,7 @@ public class TilkynningVertakaBean {
 		tilkynningLokVersBean.initialize();
 		Rafverktaka rafverktakaTemp = Rafverktaka.getInstanceWithCurrentUserAsRafverktaki();
 		setRafverktaka(rafverktakaTemp);
+		tilkynningLokVersBean.setRafverktaka(rafverktakaTemp);
 	}
 	
 	private void initializeTilkynningLokVerks() {
@@ -813,36 +822,31 @@ public class TilkynningVertakaBean {
 		return list;
 	}
 
+	public DataToXMLToPDFBusiness getDataToXMLToPDFBusiness() {
+		return (DataToXMLToPDFBusiness) getSeviceBean(dataToXMLToPDFBusiness, DataToXMLToPDFBusiness.class);
+	}
+	
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
-		if (electricalInstallationBusiness == null) {
-			try {
-				FacesContext context = FacesContext.getCurrentInstance();
-				IWContext iwContext = IWContext.getIWContext(context);
-				IWApplicationContext iwac = iwContext.getApplicationContext();
-				electricalInstallationBusiness = (ElectricalInstallationBusiness) 
-					IBOLookup.getServiceInstance(iwac, ElectricalInstallationBusiness.class);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
-		}
-		return electricalInstallationBusiness;
+		return (ElectricalInstallationBusiness) getSeviceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
 	}
 
 	public GroupBusiness getGroupBusiness() {
-		if (groupBusiness == null) {
+		return (GroupBusiness) getSeviceBean(groupBusiness, GroupBusiness.class);
+	}
+	
+	private Object getSeviceBean(Object myServiceBean, Class serviceBeanClass) {
+		if (myServiceBean == null) {
 			try {
 				FacesContext context = FacesContext.getCurrentInstance();
 				IWContext iwContext = IWContext.getIWContext(context);
 				IWApplicationContext iwac = iwContext.getApplicationContext();
-				groupBusiness = (GroupBusiness) 
-					IBOLookup.getServiceInstance(iwac, GroupBusiness.class);
+				myServiceBean = IBOLookup.getServiceInstance(iwac, serviceBeanClass);
 			}
 			catch (RemoteException rme) {
 				throw new RuntimeException(rme.getMessage());
 			}
 		}
-		return groupBusiness;
+		return myServiceBean;
 	}
 
 	
@@ -865,6 +869,16 @@ public class TilkynningVertakaBean {
 		this.veitustadurDisplay = veitustadur;
 	}
 	
+// test
 	
+	private void getPDF() {
+		try {
+			getDataToXMLToPDFBusiness().xmlToPDF();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 }
