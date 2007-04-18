@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.10 2007/04/05 22:28:49 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.11 2007/04/18 17:54:47 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,7 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
@@ -23,10 +24,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/18 17:54:47 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -125,7 +126,7 @@ public class TilkynningLokVerksBean {
 	    lekastraumsrofaUtleysingMillisecond = null;
 	    skyringarMaelingar = null;
 		// initialize maelir
-		maelir = new Maelir(InitialData.METER_IN_REPORT,0);
+		maelir = MaelirList.getEmptyMaelirContextMeterInReport();
 		
 	}
 	
@@ -165,12 +166,12 @@ public class TilkynningLokVerksBean {
 	// navigation methods
 	
 	public String store() {
-		storeRafvertaka();
+		boolean storingOK = storeRafvertaka();
 		return "store";
 	}
 	
 	public String send() {
-		storeRafvertaka();
+		boolean storingOK = storeRafvertaka();
 		return "send";
 	}
 	

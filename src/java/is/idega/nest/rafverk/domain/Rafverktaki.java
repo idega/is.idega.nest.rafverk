@@ -34,19 +34,22 @@ public class Rafverktaki extends BaseBean{
 	
 	public static Rafverktaki getInstanceWithCurrentUserAsRafverktaki(IWContext iwc) {
 		User user = iwc.getCurrentUser();
-		IWApplicationContext iwac = iwc.getApplicationContext();
-		return getInstanceWithUserAsRafverktaki(user, iwac);
+		return getInstanceWithUserAsRafverktaki(user, EMPTY_STRING, iwc);
 	}
 	
 	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user) {
+		return getInstanceWithUserAsRafverktaki(user, EMPTY_STRING);
+	}
+	
+	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user, String electricianCompany) {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		IWContext iwc = IWContext.getIWContext(facesContext);
 		IWApplicationContext iwac = iwc.getApplicationContext(); 
-		return getInstanceWithUserAsRafverktaki(user, iwac);
+		return getInstanceWithUserAsRafverktaki(user, electricianCompany, iwac);
 	}
 	
-	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user, IWApplicationContext iwac) {
-		return new Rafverktaki(user, iwac);
+	public static Rafverktaki getInstanceWithUserAsRafverktaki(User user, String electricicanCompany, IWApplicationContext iwac) {
+		return new Rafverktaki(user, electricicanCompany, iwac);
 	}
 
 	public static final String EMPTY_STRING = "";
@@ -70,11 +73,11 @@ public class Rafverktaki extends BaseBean{
 		// should not be used still there because of prototype
 	}
 	
-	private Rafverktaki(User user, IWApplicationContext iwac) {
-		initialize(user, iwac);
+	private Rafverktaki(User user, String electricianCompany, IWApplicationContext iwac) {
+		initialize(user, electricianCompany, iwac);
 	}
 	
-	private void initialize(User user, IWApplicationContext iwac) {
+	private void initialize(User user, String electricianCompany, IWApplicationContext iwac) {
 		electrician = user;
 		nafn = user.getDisplayName();
 		kennitala = user.getPersonalID();
@@ -82,7 +85,7 @@ public class Rafverktaki extends BaseBean{
 		initializeHeimilisfang(user, userBusiness);
 		initializeSimi(user, userBusiness);
 		
-		setNafnFyrirtaekis("Rafverktakan ehf.");
+		setNafnFyrirtaekis(electricianCompany);
 		
 	}
 

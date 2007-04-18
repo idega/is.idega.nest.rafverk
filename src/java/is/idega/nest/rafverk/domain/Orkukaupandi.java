@@ -17,7 +17,7 @@ public class Orkukaupandi extends BaseBean {
 		nafn = electricalInstallation.getEnergyConsumerName();
 		kennitala = electricalInstallation.getEnergyConsumerPersonalID();
 		vinnusimi = electricalInstallation.getEnergyConsumerWorkPhone();
-		heimasimi = electricalInstallation.getEneryConsumerHomePhone();
+		heimasimi = electricalInstallation.getEnergyConsumerHomePhone();
 	}
 	
 	public String getHeimasimi() {

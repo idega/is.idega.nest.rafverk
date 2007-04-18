@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.3 2007/03/29 11:29:53 tryggvil Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.4 2007/04/18 17:55:58 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -25,10 +25,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/29 11:29:53 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/04/18 17:55:58 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -50,6 +50,8 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	// first form Tilkynning
 	
 	private static final String COLUMN_ELECTRICIAN_ID = "ELECTRICIAN_ID";
+	
+	private static final String COLUMN_ELECTRICAN_COMPANY = "ElECTRICIAN_COMPANY";
 	
 	// who is in charge for that project
 	private static final String COLUMN_IN_CHARGE = "IN_CHARGE";
@@ -212,6 +214,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		addGeneralCaseRelation();
 		
 		// first form
+		addAttribute(COLUMN_ELECTRICAN_COMPANY, "electrician company", String.class, LONG_INPUT_FIELD);
 		
 		addAttribute(COLUMN_EXT_PROJECT_ID, "external project identifier", String.class, SHORT_INPUT_FIELDS);
 		addAttribute(COLUMN_IN_CHARGE, "in charge", String.class, SHORT_INPUT_FIELDS);
@@ -273,6 +276,14 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		addManyToOneRelationship(COLUMN_REAL_ESTATE_ID, RealEstate.class);
 
 	}
+	
+	public void setElectricianCompany(String electricianCompany) {
+		setColumn(COLUMN_ELECTRICAN_COMPANY, electricianCompany);
+	}
+	
+	public String getElectricianCompany() {
+		return (String) getColumnValue(COLUMN_ELECTRICAN_COMPANY);
+	}
 
 	public void setExternalProjectID(String externalProjectID) {
 		setColumn(COLUMN_EXT_PROJECT_ID, externalProjectID);
@@ -294,7 +305,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		setColumn(COLUMN_CON_HOME_PHONE, consumerHomePhone);
 	}
 	
-	public String getEneryConsumerHomePhone() {
+	public String getEnergyConsumerHomePhone() {
 		return (String) getColumnValue(COLUMN_CON_HOME_PHONE);
 	}
 	
@@ -650,8 +661,6 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	    query.appendWhere();
 	    query.appendEqualsQuoted(COLUMN_ELECTRICIAN_ID, electrician.getPrimaryKey().toString());
 	    return idoFindPKsByQuery(query);
-
 	}
-
 	
 }

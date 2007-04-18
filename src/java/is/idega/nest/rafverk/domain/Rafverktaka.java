@@ -103,8 +103,9 @@ public class Rafverktaka {
 		if (rafverktaki == null) {
 			if (electricalInstallation != null) {
 				User user = electricalInstallation.getElectrician();
+				String electricianCompany = electricalInstallation.getElectricianCompany();
 					if (user != null) {
-						rafverktaki = Rafverktaki.getInstanceWithUserAsRafverktaki(user);
+						rafverktaki = Rafverktaki.getInstanceWithUserAsRafverktaki(user,electricianCompany);
 						return rafverktaki;
 					}
 				}

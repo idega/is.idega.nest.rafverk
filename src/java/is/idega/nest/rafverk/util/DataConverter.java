@@ -1,5 +1,5 @@
 /*
- * $Id: DataConverter.java,v 1.1 2007/03/23 16:15:55 thomas Exp $
+ * $Id: DataConverter.java,v 1.2 2007/04/18 17:56:14 thomas Exp $
  * Created on Mar 15, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,7 @@
 package is.idega.nest.rafverk.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -18,10 +19,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/03/23 16:15:55 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/18 17:56:14 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DataConverter {
 	
@@ -72,4 +73,21 @@ public class DataConverter {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * Looks up  values of keys of the static arrays in InitialData ("value1, key1, value2, key2 .....") 
+	 * if value is not found returns key.
+	 */
+	public static String lookup(String[] myArray, String myKey) {
+		for (int i = 0; i < myArray.length; i++) {
+			String string = myArray[i];
+			if (string.equals(myKey) && i > 0) {
+				return myArray[--i];
+			}
+		}
+		return null;
+	}
+	
+	
 }

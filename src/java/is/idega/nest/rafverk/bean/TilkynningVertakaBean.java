@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.14 2007/04/05 22:28:49 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.15 2007/04/18 17:54:46 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,12 +10,15 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +31,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import com.idega.business.IBOLookup;
+import com.idega.business.IBOService;
 import com.idega.fop.business.DataToXMLToPDFBusiness;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
@@ -38,10 +42,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/18 17:54:46 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TilkynningVertakaBean {
 	
@@ -51,7 +55,7 @@ public class TilkynningVertakaBean {
 	
 	private GroupBusiness groupBusiness = null;
 	
-	private DataToXMLToPDFBusiness dataToXMLToPDFBusiness = null;
+	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
 	
 	// special lock variables
 	
@@ -115,6 +119,16 @@ public class TilkynningVertakaBean {
     
     private String skyringar = null;
     
+    // sent step
+    
+    private boolean isSuccessfullyStored = false;
+    private boolean isDownloadTilkynningVertaka = false;
+    private boolean isDownloadTilkynningLokVerks = false;
+    private String messagePDF = null;
+    private String messageStoring= null;
+    private String downloadTilkynningVertaka = null;
+    private String downloadTilkynningLokVerks = null;
+    
 	public TilkynningVertakaBean() {
     	initialize();
     }
@@ -146,57 +160,12 @@ public class TilkynningVertakaBean {
 	    maelirListMap = null;
 	    skyringar = null;
 		// initialize maelir
-		stadurMaelir = new Maelir(InitialData.STADUR,0);
+		stadurMaelir = MaelirList.getEmptyMaelirContextStadurMaelir();
 		// initialize list of maelir
-		maelirListMap = new HashMap();
-		for (int i = 0; i < InitialData.MAELIR_CONTEXT.length; i++) {
-			List list = new ArrayList();
-			// initialize all lists with an invalid instance of maelir
-			Maelir.addInvalidInstance(InitialData.MAELIR_CONTEXT[i],0,list);
-			maelirListMap.put(InitialData.MAELIR_CONTEXT[i], list);
-		}
+		maelirListMap = MaelirList.getEmptyMaelirMap(); 
 	}
 	
 	public boolean storeRafvertaka() {
-//		Orkukaupandi orkukaupandi = new Orkukaupandi();
-//		orkukaupandi.setNafn(getNafnOrkukaupanda());
-//		orkukaupandi.setKennitala(getKennitalaOrkukaupanda());
-//		orkukaupandi.setHeimasimi(getHeimasimiOrkukaupanda());
-//		orkukaupandi.setVinnusimi(getVinnusimiOrkukaupanda());
-//		
-//		Heimilisfang heimilisfang = new Heimilisfang();
-//		Gata gataObject = new Gata();
-//		gataObject.setNafn(getGata());
-//		Postnumer postnumerObject = new Postnumer();
-//		postnumerObject.setNumer(getPostnumer());
-//		gataObject.setPostnumer(postnumerObject);
-//		heimilisfang.setGata(gataObject);
-//		heimilisfang.setHusnumer(getGotunumer());
-//		heimilisfang.setHushluti(getHaed());
-//		
-//		orkukaupandi.setHeimilisfang(heimilisfang);
-//		
-//		// second step
-//		
-//		Rafverktaka newRafverktaka = new Rafverktaka();
-//		newRafverktaka.setOrkukaupandi(orkukaupandi);
-//		
-//		Orkufyrirtaeki orkufyrirtaeki = new Orkufyrirtaeki();
-//		orkufyrirtaeki.setName(getOrkuveitufyrirtaeki());
-//		newRafverktaka.setOrkufyrirtaeki(orkufyrirtaeki);
-//		
-//		newRafverktaka.setNotkunarflokkur(getNotkunarflokkur());
-//		newRafverktaka.setSpennukerfi(getSpennukerfi());
-//		newRafverktaka.setAnnad(getAnnad());
-//		newRafverktaka.setVarnarradstoefun(getVarnarradstoefun());
-//		
-//		String tempStadur = getStadurMaelir().getStadur();
-//		Maelir tempMaelir = new Maelir();
-//		tempMaelir.setStadur(tempStadur);
-//		newRafverktaka.setStadurMaelir(tempMaelir);
-		
-
-		
 		// store as case
 		boolean successfullyStored = false;
 		try {
@@ -207,12 +176,10 @@ public class TilkynningVertakaBean {
 		}
 		BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
 		return successfullyStored;
-		
-		
-
-		
-
-		
+	}
+	
+	public void initList(Map maelirListMap) {
+		this.maelirListMap = maelirListMap;
 	}
 
 	public Map getList() {
@@ -220,13 +187,24 @@ public class TilkynningVertakaBean {
 	}
 	
 	public String store() {
-		storeRafvertaka();
-		return "store";
+		isSuccessfullyStored = storeRafvertaka();
+		if (isSuccessfullyStored) { 
+			messageStoring = "Skýrsla send";
+			isDownloadTilkynningVertaka = createTilkynningVertakaPDF(); 
+			if (!isDownloadTilkynningVertaka) {
+				messagePDF = "PDF could not be created";
+			}
+		}
+		else {
+			messageStoring = "Skýrsla ekki send";
+		}
+		return "send";
 	}
 	
 	public String send() {
-		storeRafvertaka();
-		getPDF();
+		if (storeRafvertaka()) {
+			createTilkynningVertakaPDF();
+		}
 		return "send";
 	}
 	
@@ -241,10 +219,8 @@ public class TilkynningVertakaBean {
 	 * @return
 	 */
 	public String startTilkynningVertaka() {
-		getPDF();
-		return "";
-//		createEmptyRafverktaka();
-//		return "tilkynningvertaka";
+		createEmptyRafverktaka();
+		return "tilkynningvertaka";
 	}
 	
 	/**
@@ -681,6 +657,12 @@ public class TilkynningVertakaBean {
 		return fastanumer;
 	}
 
+	// called when populating the form with a previous stored form
+	public void initFastanumer(String fastanumer) {
+		this.fastanumer = fastanumer;
+	}
+	
+	
 	public void setFastanumer(String fastanumer) {
 		if(StringHandler.isNotEmpty(fastanumer)) {
 			// do not do anything if there is no change
@@ -822,29 +804,37 @@ public class TilkynningVertakaBean {
 		return list;
 	}
 
-	public DataToXMLToPDFBusiness getDataToXMLToPDFBusiness() {
-		return (DataToXMLToPDFBusiness) getSeviceBean(dataToXMLToPDFBusiness, DataToXMLToPDFBusiness.class);
+	public ElectricalInstallationRendererBusiness getElectricalInstallationRendererBusiness() {
+		if (electricalInstallationRendererBusiness == null) {
+			electricalInstallationRendererBusiness =  (ElectricalInstallationRendererBusiness) getSeviceBean(ElectricalInstallationRendererBusiness.class);
+		}
+		return electricalInstallationRendererBusiness;
 	}
 	
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
-		return (ElectricalInstallationBusiness) getSeviceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
+		if (electricalInstallationBusiness == null) {
+			electricalInstallationBusiness = (ElectricalInstallationBusiness) getSeviceBean(ElectricalInstallationBusiness.class);
+		}
+		return electricalInstallationBusiness;
 	}
 
 	public GroupBusiness getGroupBusiness() {
-		return (GroupBusiness) getSeviceBean(groupBusiness, GroupBusiness.class);
+		if (groupBusiness == null) {
+			groupBusiness = (GroupBusiness) getSeviceBean(GroupBusiness.class);
+		}
+		return groupBusiness;
 	}
 	
-	private Object getSeviceBean(Object myServiceBean, Class serviceBeanClass) {
-		if (myServiceBean == null) {
-			try {
-				FacesContext context = FacesContext.getCurrentInstance();
-				IWContext iwContext = IWContext.getIWContext(context);
-				IWApplicationContext iwac = iwContext.getApplicationContext();
-				myServiceBean = IBOLookup.getServiceInstance(iwac, serviceBeanClass);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
+	private IBOService getSeviceBean(Class serviceBeanClass) {
+		IBOService myServiceBean = null;
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			IWContext iwContext = IWContext.getIWContext(context);
+			IWApplicationContext iwac = iwContext.getApplicationContext();
+			myServiceBean = IBOLookup.getServiceInstance(iwac, serviceBeanClass);
+		}
+		catch (RemoteException rme) {
+			throw new RuntimeException(rme.getMessage());
 		}
 		return myServiceBean;
 	}
@@ -869,16 +859,63 @@ public class TilkynningVertakaBean {
 		this.veitustadurDisplay = veitustadur;
 	}
 	
-// test
+	// storing and creating 
 	
-	private void getPDF() {
+	public boolean isSuccessfullyStored() {
+		return isSuccessfullyStored;
+	}
+	
+	public boolean isDownloadTilkynningVertaka() {
+		return isDownloadTilkynningVertaka;
+	}
+	
+	public boolean isDownloadTilkynningLokVerks() {
+		return isDownloadTilkynningLokVerks;
+	}
+	
+	public String getMessageStoring() {
+		return messageStoring;
+	}
+	
+	public String getMessagePDF() {
+		return messagePDF;
+	}
+
+	
+	public String getDownloadTilkynningVertakaURL() {
+		return downloadTilkynningVertaka;
+	}
+	
+	public String getDownloadTilkynningLokVerksURL() {
+		return downloadTilkynningLokVerks;
+	}
+	
+	private boolean createTilkynningVertakaPDF()  {
 		try {
-			getDataToXMLToPDFBusiness().xmlToPDF();
+			downloadTilkynningVertaka = getElectricalInstallationRendererBusiness().getPDFApplication(getRafverktaka());
+			return true;
 		}
-		catch (Exception e) {
-			// TODO Auto-generated catch block
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
+	
+	private boolean createTilkynningLokVerksPDF()  {
+		try {
+			downloadTilkynningLokVerks = getElectricalInstallationRendererBusiness().getPDFReport(getRafverktaka());
+			return true;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (IOException e) {
+			return false;
+		}
+	}
+	
 	
 }

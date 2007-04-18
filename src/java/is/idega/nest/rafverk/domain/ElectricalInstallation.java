@@ -1,13 +1,13 @@
 package is.idega.nest.rafverk.domain;
 
 
-import java.util.List;
-import com.idega.block.process.data.Case;
 import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
+import java.util.List;
+import com.idega.data.IDOEntity;
 
-public interface ElectricalInstallation extends Case {
+public interface ElectricalInstallation extends IDOEntity {
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCaseCodeDescription
@@ -18,6 +18,16 @@ public interface ElectricalInstallation extends Case {
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCaseCodeKey
 	 */
 	public String getCaseCodeKey();
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setElectricianCompany
+	 */
+	public void setElectricianCompany(String electricianCompany);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getElectricianCompany
+	 */
+	public String getElectricianCompany();
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setExternalProjectID
@@ -47,7 +57,7 @@ public interface ElectricalInstallation extends Case {
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getEneryConsumerHomePhone
 	 */
-	public String getEneryConsumerHomePhone();
+	public String getEnergyConsumerHomePhone();
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setEnergyConsumerWorkPhone

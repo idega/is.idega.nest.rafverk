@@ -25,7 +25,7 @@ public class InitialData extends BaseBean {
 	
 	public static final String RAFVEITUR = "Rafveitur";
 	
-	private static final String[] NOTKUNARFLOKKUR = {
+	public static final String[] NOTKUNARFLOKKUR = {
 		"Íbúðarhúsnæði", "IBUDARHUSNAEDI", 
 		"Sumarhús", "SUMARHUS",
 		"Landb./Garðyrkja", "GARDYRKJA",
@@ -36,23 +36,23 @@ public class InitialData extends BaseBean {
 		"Bráðabirgðanotkun", "BRADABIRGDANOTKUN"
 		};
 	
-	private static final String[] HEIMTAUG = {
+	public static final String[] HEIMTAUG = {
 		"Ný", "NY",
 		"Óbreytt", "OBREYTT",
 		"Breytt", "BREYTT",
 		"Tekin", "TEKIN"
 		};
 	
-	private static final String[] ADALTAFLA = HEIMTAUG;
+	public static final String[] ADALTAFLA = HEIMTAUG;
 	
-	private static final String[] HEIMTAUG_TENGIST = {
+	public static final String[] HEIMTAUG_TENGIST = {
 		"Aðaltöflu", "ADALTOEFLU",
 		"Stofntengibox", "STOFNTENGIBOX",
 		"Mælakassa", "MAELAKASSA",
 		"Stofnvarkassa", "STOFNVARKASSA"
 		};
 
-	private static final String[] VARNARRADSTOEFUN = {
+	public static final String[] VARNARRADSTOEFUN = {
 		"Núllun", "NULLUN",
 		"um sérskaut", "UM_SERSKAUT",
 		"Lekastraumsrofvörn", "LEKASTRAUMSROFVOERN",
@@ -64,7 +64,7 @@ public class InitialData extends BaseBean {
 	
 	// second step
 	
-	private static final String[] BEIDNI = {
+	public static final String[] BEIDNI = {
 		"Spennusetningu", "SPENNUSETNINGU",
 		"Mælitæki", "MAELITAEKI",
 		"Tengingu rafhita", "TENGINGU_RAFHITA",
@@ -73,7 +73,7 @@ public class InitialData extends BaseBean {
 		"Tengingu án mælis", "TENINGU_AN_MAELIS"
 		};
 	
-	private static final String[] SPENNUKERFI = {
+	public static final String[] SPENNUKERFI = {
 		"3-230V", "3-230V",
 		"2N-460/230V", "2N-460/230V",
 		"3N-400/230V", "3N-400/230V",
@@ -81,28 +81,28 @@ public class InitialData extends BaseBean {
 		"Annað", "ANNAD"
 		};
 
-	private static final String[] MAELI = {
+	public static final String[] MAELI = {
 		"1-fasa", "1-FASA",
 		"3-fasa", "3-FASA"
 		};
 	
-	private static final String[] FLUTT = {
+	public static final String[] FLUTT = {
 		"á","A",
 		"af", "AF"
 		};
 	
-	private static final String[] TEGUND = {
+	public static final String[] TEGUND = {
 		"Aðalheimtaug", "ADALHEIMTAUG",
 		"Götuljósakerfi", "GOETULJOSAKERFI",
 		"Bráðabirgðaheimtaug", "BRADABIRGDAHEIMTAUG"
 		};
 	
-	private static final String[] STRENGUR = {
+	public static final String[] STRENGUR = {
 		"Jarðstrengur", "JARDSTRENGUR",
 		"Loftstrengur/ - lina", "LOFTSTRENGUR_LINA"
 		};
 	
-	private static final String[] TENGISTADUR = {
+	public static final String[] TENGISTADUR = {
 		"Rofi i dreifistöð", "ROFI_I_DREIFISTOED",
 		"Múffa", "MUFFA",
 		"Loftlina", "LOFTLINA",
@@ -110,7 +110,7 @@ public class InitialData extends BaseBean {
 		"Vör i stólpa", "VOER_I_STOLPA",
 		};
 	
-	private static final String[] TENGING = {
+	public static final String[] TENGING = {
 		"Veita uppfyllir tæknilega tengiskilmála rafveitna og tengd", "VEITA",
 		"Ekki tengt", "EKKI",
 		"Athugasemdir sjá bakhlið", "BAKHLID"};
@@ -137,20 +137,20 @@ public class InitialData extends BaseBean {
 	
 	// tilkynning lok verks
 	
-	private static final String[] TILKYNNT = {
+	public static final String[] TILKYNNT = {
 		"Nýlögn", "NYLOEGN",
 		"Breyting", "BREYING",
 		"Viðbót", "VIDBOT",
 		"Annað", "ANNAD"
 		};
 	
-	private static final String[] HUSNAEDIS = {
+	public static final String[] HUSNAEDIS = {
 		"Íbúð", "IBUD",
 		"Sumarhús", "SUMARHUS",
 		"Þjónusta/Iðnaður", "PJONUSTA"
 		};
 	
-	private static final String[] JARDSKAUT = {
+	public static final String[] JARDSKAUT = {
 		"Vatnspípukerfi", "VATNSPIPUKERFI",
 		"Sökkulskaut", "SOEKKULSKAUT"
 		};
@@ -158,7 +158,7 @@ public class InitialData extends BaseBean {
 	public static final String LEKASTRAUMSROFI_I_LAGI_KEY = "I_LAGI";
 	public static final String LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY = "EKKI_TIL_STADAR";
 	
-	private static final String[] LEKASTRAUMSROFI = {
+	public static final String[] LEKASTRAUMSROFI = {
 		"í lagi", LEKASTRAUMSROFI_I_LAGI_KEY,
 		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY
 		};

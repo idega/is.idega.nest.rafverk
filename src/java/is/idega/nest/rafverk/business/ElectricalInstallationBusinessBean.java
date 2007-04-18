@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.3 2007/04/05 22:28:49 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.4 2007/04/18 17:54:46 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,12 +14,14 @@ import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Meter;
 import is.idega.nest.rafverk.domain.MeterHome;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.postur.Gata;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -32,6 +34,8 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOService;
 import com.idega.business.IBOServiceBean;
 import com.idega.core.location.data.PostalCode;
 import com.idega.core.location.data.PostalCodeHome;
@@ -39,19 +43,23 @@ import com.idega.core.location.data.RealEstate;
 import com.idega.core.location.data.RealEstateHome;
 import com.idega.core.location.data.Street;
 import com.idega.core.location.data.StreetHome;
+import com.idega.data.IDOHome;
 import com.idega.data.IDOLookup;
+import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/18 17:54:46 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
+	
+	private UserBusiness userBusiness = null;
 	
 	private ElectricalInstallationHome electricalInstallationHome = null;
 	
@@ -121,10 +129,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 	private void storeElectrician(Rafverktaka rafverktaka) {
-		User electrician = rafverktaka.getRafverktaki().getElectrician();
+		Rafverktaki rafverktaki = rafverktaka.getRafverktaki(); 
+		User electrician = rafverktaki.getElectrician();
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		electricalInstallation.setElectrician(electrician);
-		electricalInstallation.setOwner(electrician);
+		// electrician company 
+		String electricianCompany = rafverktaki.getNafnFyrirtaekis();
+		electricalInstallation.setElectricianCompany(electricianCompany);
 	}
 	
 	private void storeRealEstate(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException, EJBException, RemoveException {
@@ -489,6 +500,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			String number = realEstate.getRealEstateNumber();
 			if (number != null) {
 				Fasteign fasteign = new Fasteign(realEstate);
+				tilkynningVertakaBean.initFastanumer(number);
 				tilkynningVertakaBean.setVeitustadurDisplay(fasteign.getDescription());
 			}
 			Street street = realEstate.getStreet();
@@ -559,7 +571,15 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		TilkynningVertakaBean tilkynningVertakaBean,
 		TilkynningLokVerksBean tilkynningLokVerksBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		MaelirList maelirList = getMaelirList(electricalInstallation);
 		// handling all meters (mapping meter to maelir)
+		tilkynningVertakaBean.initList(maelirList.getMaelirListMap());
+		tilkynningVertakaBean.setStadurMaelir(maelirList.getStadurMaelir());
+		tilkynningLokVerksBean.setMaelir(maelirList.getMaelir());
+	}
+		
+	public MaelirList getMaelirList(ElectricalInstallation electricalInstallation) {
+		MaelirList maelirList = new MaelirList();
 		MeterHome meterHomeTemp = getMeterHome();
 		Collection coll = null;
 		try {
@@ -568,21 +588,21 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		catch (FinderException ex) {
 			// nothing found that is fine (there might be no meters)
 			// nothing to do 
-			return;
+			return maelirList;
 		}
 		// first step putting all meters into the map
 		Iterator iterator = coll.iterator();
-		Map maelirMap = tilkynningVertakaBean.getList();
+		Map maelirMap = maelirList.getMaelirListMap();
 		while (iterator.hasNext()) {
 			Meter meter = (Meter) iterator.next();
 			Maelir maelir = initializeMaelir(meter);
 			String context = meter.getContext();
 			// special case stadur maelir
 			if (InitialData.STADUR.equals(context)) {
-				tilkynningVertakaBean.setStadurMaelir(maelir);
+				maelirList.setStadurMaelir(maelir);
 			}
 			else if (InitialData.METER_IN_REPORT.equals(context)) {
-				tilkynningLokVerksBean.setMaelir(maelir);
+				maelirList.setMaelir(maelir);
 			}
 			else {
 				List list = (List) maelirMap.get(context);
@@ -620,6 +640,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				list.add(dummyMaelir);
 			}
 		}
+		return maelirList;
 	}
 	
 	private Maelir initializeMaelir(Meter meter) {
@@ -651,6 +672,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 
+
 		
 	public Collection getElectricalInstallationByElectrician(User electrician) throws FinderException {
 		return getElectricalInstallationHome().findElectricalInstallationByElectrician(electrician);
@@ -658,34 +680,67 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	
 	
 	public ElectricalInstallationHome getElectricalInstallationHome() {
-		return (ElectricalInstallationHome) retrieveHome(electricalInstallationHome, ElectricalInstallation.class);
+		if (electricalInstallationHome == null) {
+			electricalInstallationHome = (ElectricalInstallationHome) retrieveHome(ElectricalInstallation.class);
+		}
+		return electricalInstallationHome;
 	}
 	
 	public MeterHome getMeterHome() {
-		return (MeterHome) retrieveHome(meterHome, Meter.class);
+		if (meterHome == null) {
+			meterHome = (MeterHome) retrieveHome(Meter.class);
+		}
+		return meterHome;
 	}
 
 	
 	public RealEstateHome getRealEstateHome() {
-		return (RealEstateHome)  retrieveHome(realEstateHome, RealEstate.class);
+		if (realEstateHome == null) {
+			realEstateHome = (RealEstateHome) retrieveHome(RealEstate.class);
+		}
+		return realEstateHome;
 	}
 	
 	public StreetHome getStreetHome() {
-		return (StreetHome)  retrieveHome(streetHome, Street.class);
+		if (streetHome == null) {
+			streetHome = (StreetHome)  retrieveHome(Street.class);
+		}
+		return streetHome;
 	}
 	
 	public PostalCodeHome getPostalCodeHome() {
-		return (PostalCodeHome) retrieveHome(postalCodeHome, PostalCode.class);
+		if (postalCodeHome == null) {
+			postalCodeHome = (PostalCodeHome) retrieveHome(PostalCode.class);
+		}
+		return postalCodeHome;
 	}
 	
-	private Object retrieveHome(Object home, Class entityClass ) {
-		if (home == null) {
-			try {
-				home = IDOLookup.getHome(entityClass);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
+	public UserBusiness getUserBusiness() {
+		if (userBusiness == null) {
+			userBusiness = (UserBusiness) getServiceBean(UserBusiness.class);
+		}
+		return userBusiness;
+	}
+	
+	private IBOService getServiceBean(Class serviceClass ) {
+		IBOService service = null;
+		try {
+			service = IBOLookup.getServiceInstance(getIWApplicationContext(), serviceClass);
+		}
+		catch (RemoteException rme) {
+			throw new RuntimeException(rme.getMessage());
+		}
+		return service;
+	}
+	
+	
+	private IDOHome retrieveHome(Class entityClass ) {
+		IDOHome home = null;
+		try {
+			home = IDOLookup.getHome(entityClass);
+		}
+		catch (RemoteException rme) {
+			throw new RuntimeException(rme.getMessage());
 		}
 		return home;
 	}
