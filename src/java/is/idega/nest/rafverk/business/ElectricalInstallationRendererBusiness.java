@@ -2,10 +2,12 @@ package is.idega.nest.rafverk.business;
 
 
 import java.io.IOException;
+import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
 import com.idega.business.IBOService;
 import com.idega.user.business.UserBusiness;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.data.MaelirList;
+import org.xml.sax.SAXException;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import com.idega.fop.data.PropertyTree;
 import java.rmi.RemoteException;
@@ -14,14 +16,19 @@ import com.idega.fop.data.Property;
 public interface ElectricalInstallationRendererBusiness extends IBOService {
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getPDFApplication
+	 */
+	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException, RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getPDFReport
 	 */
 	public String getPDFReport(Rafverktaka rafverktaka) throws IOException, RemoteException;
 
 	/**
-	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getPDFApplication
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#validateApplication
 	 */
-	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException, RemoteException;
+	public ElectricalInstallationValidator validateApplication(Rafverktaka rafverktaka) throws SAXException, RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getHeadApplication

@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.15 2007/04/18 17:54:46 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.16 2007/04/20 18:12:25 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import org.xml.sax.SAXException;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.fop.business.DataToXMLToPDFBusiness;
@@ -42,10 +43,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:54:46 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/20 18:12:25 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TilkynningVertakaBean {
 	
@@ -892,6 +893,7 @@ public class TilkynningVertakaBean {
 	
 	private boolean createTilkynningVertakaPDF()  {
 		try {
+			getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
 			downloadTilkynningVertaka = getElectricalInstallationRendererBusiness().getPDFApplication(getRafverktaka());
 			return true;
 		}
@@ -899,6 +901,11 @@ public class TilkynningVertakaBean {
 			throw new RuntimeException(e.getMessage());
 		}
 		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (SAXException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}

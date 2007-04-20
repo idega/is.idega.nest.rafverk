@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.1 2007/04/18 17:54:46 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.2 2007/04/20 18:12:25 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,7 @@
 package is.idega.nest.rafverk.business;
 
 import is.idega.nest.rafverk.bean.InitialData;
+import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -21,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import org.xml.sax.SAXException;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.business.IBOServiceBean;
@@ -33,7 +35,7 @@ import com.idega.fop.data.Property;
 import com.idega.fop.data.PropertyImpl;
 import com.idega.fop.data.PropertyTree;
 import com.idega.fop.tools.PropertyWriter;
-import com.idega.io.serialization.WriterToFile;
+import com.idega.fop.tools.PropertyXMLReader;
 import com.idega.presentation.IWContext;
 import com.idega.user.business.NoPhoneFoundException;
 import com.idega.user.business.UserBusiness;
@@ -43,10 +45,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:54:46 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/04/20 18:12:25 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -64,28 +66,46 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
+	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException {
+		Property prop = getApplicationProperty(rafverktaka);
+		return getPDFOutput(prop);
+	}	
+	
 	public String getPDFReport(Rafverktaka rafverktaka) throws IOException {
+		Property prop = getReportProperty(rafverktaka);
+		return getPDFOutput(prop);
+	}
+	
+	public ElectricalInstallationValidator validateApplication(Rafverktaka rafverktaka) throws SAXException {
+		Property property = getApplicationProperty(rafverktaka);
+		ElectricalInstallationValidator handler = new ElectricalInstallationValidator();
+		property.accept(handler);
+
+		return handler;
+	}
+	
+	private Property getApplicationProperty(Rafverktaka rafverktaka) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		PropertyTree prop = new PropertyTree("pjonustabeidni", "Þjónustubeiðni");
+		prop.add(getHeadApplication(electricalInstallation))
+		.add(getBodyApplication(electricalInstallation));
+		return prop;
+	}
+	
+	private Property getReportProperty(Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		PropertyTree prop = new PropertyTree("skyrsla", "Skýrsla um neysluveitu");		
 		prop.add(getHeadReport(electricalInstallation))
 		.add(getBodyReport(electricalInstallation))
 		.add(getBottomReport(electricalInstallation));
-		FacesContext context = FacesContext.getCurrentInstance();
-		IWContext iwContext = IWContext.getIWContext(context);
-		PropertyWriter writerToFile = new PropertyWriter(prop, iwContext);
-		writerToFile.setRenderer(PropertyWriter.PDF_RENDERER);
-		return writerToFile.createContainer();
+		return prop;
 	}
 	
-	
-	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException {
-		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-		PropertyTree prop = new PropertyTree("pjonustabeidni", "Þjónustubeiðni");
-		prop.add(getHeadApplication(electricalInstallation))
-		.add(getBodyApplication(electricalInstallation));
+	private String getPDFOutput(Property property) throws IOException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		IWContext iwContext = IWContext.getIWContext(context);
-		WriterToFile writerToFile = new PropertyWriter(prop, iwContext);
+		PropertyWriter writerToFile = new PropertyWriter(property, iwContext);
+		writerToFile.setRenderer(PropertyWriter.PDF_RENDERER);
 		return writerToFile.createContainer();
 	}
 		
@@ -289,7 +309,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		Iterator iterator = electricalInstallation.getApplication().iterator();
 		while (iterator.hasNext()) {
 			String value = (String) iterator.next();
-			items.add("item", "", DataConverter.lookup(InitialData.BEIDNI, value));
+			items.addWithValueDescription("item", "", value, DataConverter.lookup(InitialData.BEIDNI, value));
 		}
 		propertyTree.add(items);
 		propertyTree.addWithUnit("power", "Uppsett afl", electricalInstallation.getPower(), "kW");
