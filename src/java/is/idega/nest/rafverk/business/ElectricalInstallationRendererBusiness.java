@@ -21,9 +21,19 @@ public interface ElectricalInstallationRendererBusiness extends IBOService {
 	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException, RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getXMLApplication
+	 */
+	public String getXMLApplication(Rafverktaka rafverktaka) throws IOException, RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getPDFReport
 	 */
 	public String getPDFReport(Rafverktaka rafverktaka) throws IOException, RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getXMLReport
+	 */
+	public String getXMLReport(Rafverktaka rafverktaka) throws IOException, RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#validateApplication

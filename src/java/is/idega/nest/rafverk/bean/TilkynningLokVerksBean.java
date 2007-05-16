@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.11 2007/04/18 17:54:47 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.12 2007/05/16 15:54:53 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:54:47 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -163,21 +163,25 @@ public class TilkynningLokVerksBean {
 		
 	}
 	
-	// navigation methods
 	
+	/**
+	 * Called by JSF page
+	 * 
+	 * @return
+	 */
 	public String store() {
-		boolean storingOK = storeRafvertaka();
-		return "store";
-	}
-	
-	public String send() {
-		boolean storingOK = storeRafvertaka();
-		return "send";
-	}
-	
-	private boolean storeRafvertaka() {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-		return tilkynningVertakaBean.storeRafvertaka();
+		return tilkynningVertakaBean.store();
+	}
+	
+	/**
+	 * Called by JSF page
+	 * 
+	 * @return
+	 */
+	public String send() {
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		return tilkynningVertakaBean.sendReport();
 	}
 	
 	public List getGotuListiSelects(){

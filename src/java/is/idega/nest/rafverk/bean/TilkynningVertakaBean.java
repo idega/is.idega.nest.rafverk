@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.16 2007/04/20 18:12:25 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.17 2007/05/16 15:54:53 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,16 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import org.xml.sax.SAXException;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
-import com.idega.fop.business.DataToXMLToPDFBusiness;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
 import com.idega.user.business.GroupBusiness;
@@ -43,10 +40,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/20 18:12:25 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TilkynningVertakaBean {
 	
@@ -127,14 +124,21 @@ public class TilkynningVertakaBean {
     private boolean isDownloadTilkynningLokVerks = false;
     private String messagePDF = null;
     private String messageStoring= null;
-    private String downloadTilkynningVertaka = null;
-    private String downloadTilkynningLokVerks = null;
+    private String downloadTilkynningVertakaPDF = null;
+    private String downloadTilkynningVertakaXML = null;
+    private String downloadTilkynningLokVerksPDF = null;
+    private String downloadTilkynningLokVerksXML = null;
     
 	public TilkynningVertakaBean() {
     	initialize();
     }
 	
 	public void initialize() {
+		initializeForm();
+		initializeSending();
+	}
+	
+	private void initializeForm() {
 	    orkuveitufyrirtaeki = null;
 	    postnumer = null;
 	    gata = null;
@@ -166,6 +170,18 @@ public class TilkynningVertakaBean {
 		maelirListMap = MaelirList.getEmptyMaelirMap(); 
 	}
 	
+	private void initializeSending() {
+	    isSuccessfullyStored = false;
+	    isDownloadTilkynningVertaka = false;
+	    isDownloadTilkynningLokVerks = false;
+	    messagePDF = null;
+	    messageStoring= null;
+	    downloadTilkynningVertakaPDF = null;
+	    downloadTilkynningVertakaXML = null;
+	    downloadTilkynningLokVerksPDF = null;
+	    downloadTilkynningLokVerksXML = null;
+	}
+ 	
 	public boolean storeRafvertaka() {
 		// store as case
 		boolean successfullyStored = false;
@@ -187,24 +203,57 @@ public class TilkynningVertakaBean {
 		return maelirListMap;
 	}
 	
+	/**
+	 * Called by JSF page
+	 * 
+	 * @return
+	 */
 	public String store() {
+		isSuccessfullyStored = storeRafvertaka();
+		if (isSuccessfullyStored) { 
+			messageStoring = "Skýrsla gleymt";
+		}
+		else {
+			messageStoring = "Skýrsla ekki gleymt";
+		}
+		return "store";
+	}
+	
+	/**
+	 *  Called by JSF page
+	 * @return
+	 */
+	public String send() {
+		return sendApplication();
+	}
+	
+	public String sendApplication() {
+		return sendApplicationReport(false);
+	}
+	
+	public String sendReport() {
+		return sendApplicationReport(true);
+	}
+	
+	private String sendApplicationReport(boolean alsoReport) {
 		isSuccessfullyStored = storeRafvertaka();
 		if (isSuccessfullyStored) { 
 			messageStoring = "Skýrsla send";
 			isDownloadTilkynningVertaka = createTilkynningVertakaPDF(); 
-			if (!isDownloadTilkynningVertaka) {
-				messagePDF = "PDF could not be created";
+			isDownloadTilkynningVertaka = isDownloadTilkynningVertaka && createTilkynningVertakaXML();
+			if (alsoReport) {
+				isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
+				isDownloadTilkynningLokVerks = isDownloadTilkynningLokVerks && createTilkynningLokVerksXML();
+			}
+			else {
+				isDownloadTilkynningLokVerks = false;
+			}
+			if (!isDownloadTilkynningVertaka ||(alsoReport && ! isDownloadTilkynningLokVerks)) {
+				messagePDF = "Problems appeared creating PDF";
 			}
 		}
 		else {
 			messageStoring = "Skýrsla ekki send";
-		}
-		return "send";
-	}
-	
-	public String send() {
-		if (storeRafvertaka()) {
-			createTilkynningVertakaPDF();
 		}
 		return "send";
 	}
@@ -883,18 +932,26 @@ public class TilkynningVertakaBean {
 	}
 
 	
-	public String getDownloadTilkynningVertakaURL() {
-		return downloadTilkynningVertaka;
+	public String getDownloadTilkynningVertakaPDF() {
+		return downloadTilkynningVertakaPDF;
 	}
 	
-	public String getDownloadTilkynningLokVerksURL() {
-		return downloadTilkynningLokVerks;
+	public String getDownloadTilkynningVertakaXML() {
+		return downloadTilkynningVertakaXML;
+	}
+	
+	public String getDownloadTilkynningLokVerksPDF() {
+		return downloadTilkynningLokVerksPDF;
+	}
+	
+	public String getDownloadTilkynningLokVerksXML() {
+		return downloadTilkynningLokVerksXML;
 	}
 	
 	private boolean createTilkynningVertakaPDF()  {
 		try {
-			getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
-			downloadTilkynningVertaka = getElectricalInstallationRendererBusiness().getPDFApplication(getRafverktaka());
+			//getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
+			downloadTilkynningVertakaPDF = getElectricalInstallationRendererBusiness().getPDFApplication(getRafverktaka());
 			return true;
 		}
 		catch (RemoteException e) {
@@ -904,16 +961,36 @@ public class TilkynningVertakaBean {
 			e.printStackTrace();
 			return false;
 		}
-		catch (SAXException e) {
-			// TODO Auto-generated catch block
+//		catch (SAXException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		}
+	}
+	
+	private boolean createTilkynningVertakaXML()  {
+		try {
+			//getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
+			downloadTilkynningVertakaXML = getElectricalInstallationRendererBusiness().getXMLApplication(getRafverktaka());
+			return true;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+//		catch (SAXException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		}
 	}
 	
 	private boolean createTilkynningLokVerksPDF()  {
 		try {
-			downloadTilkynningLokVerks = getElectricalInstallationRendererBusiness().getPDFReport(getRafverktaka());
+			downloadTilkynningLokVerksPDF = getElectricalInstallationRendererBusiness().getPDFReport(getRafverktaka());
 			return true;
 		}
 		catch (RemoteException e) {
@@ -924,5 +1001,17 @@ public class TilkynningVertakaBean {
 		}
 	}
 	
+	private boolean createTilkynningLokVerksXML()  {
+		try {
+			downloadTilkynningLokVerksXML = getElectricalInstallationRendererBusiness().getXMLReport(getRafverktaka());
+			return true;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (IOException e) {
+			return false;
+		}
+	}
 	
 }

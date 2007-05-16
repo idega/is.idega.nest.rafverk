@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationValidator.java,v 1.1 2007/04/20 18:12:25 thomas Exp $
+ * $Id: ElectricalInstallationValidator.java,v 1.2 2007/05/16 15:54:53 thomas Exp $
  * Created on Apr 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,42 +24,44 @@ import com.idega.fop.visitor.PropertyVisitor;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/20 18:12:25 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationValidator implements PropertyVisitor {
 	
 
-	public void visit(PropertyTree propertyTree) throws SAXException {
+	public Object visit(PropertyTree propertyTree)  {
 		Iterator iterator = propertyTree.getValue().iterator();
 		while (iterator.hasNext()) {
 			Property property = (Property) iterator.next();
 			property.accept(this);
 		}
-		
+		return null;
 	}
 
-	public void visit(PropertyImpl propertyImpl) throws SAXException {
+	public Object visit(PropertyImpl propertyImpl) {
 		String key = propertyImpl.getKey();
 		System.out.println(key);
+		return null;
 		
 	}
 
-	public void visit(PropertyWithUnit propertyWithUnit) throws SAXException {
+	public Object visit(PropertyWithUnit propertyWithUnit)  {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 
-	public void visit(PropertyWithValueDescription propertyWithValueDescription) throws SAXException {
+	public Object visit(PropertyWithValueDescription propertyWithValueDescription)  {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
-	public void visit(ThreeValuePropertyWithUnit threeValuePropertyWithUnit) throws SAXException {
+	public Object visit(ThreeValuePropertyWithUnit threeValuePropertyWithUnit)  {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	
 	

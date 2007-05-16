@@ -23,6 +23,9 @@ public class InitialData extends BaseBean {
 	
 	// first step
 	
+	// special key (also used in validators)
+	public static final String ANNAD = "ANNAD";
+	
 	public static final String RAFVEITUR = "Rafveitur";
 	
 	public static final String[] NOTKUNARFLOKKUR = {
@@ -78,7 +81,7 @@ public class InitialData extends BaseBean {
 		"2N-460/230V", "2N-460/230V",
 		"3N-400/230V", "3N-400/230V",
 		"IN-230V", "IN-230V",
-		"Annað", "ANNAD"
+		"Annað", ANNAD
 		};
 
 	public static final String[] MAELI = {
@@ -141,7 +144,7 @@ public class InitialData extends BaseBean {
 		"Nýlögn", "NYLOEGN",
 		"Breyting", "BREYING",
 		"Viðbót", "VIDBOT",
-		"Annað", "ANNAD"
+		"Annað", ANNAD
 		};
 	
 	public static final String[] HUSNAEDIS = {
