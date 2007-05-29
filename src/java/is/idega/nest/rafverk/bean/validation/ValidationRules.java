@@ -1,5 +1,5 @@
 /*
- * $Id: ValidationRules.java,v 1.1 2007/05/16 15:54:53 thomas Exp $
+ * $Id: ValidationRules.java,v 1.2 2007/05/29 11:27:08 thomas Exp $
  * Created on Apr 25, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,20 +24,24 @@ import com.idega.fop.validator.impl.NotEmptyValidator;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/29 11:27:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ValidationRules {
 	
 	Map validators = null;
+	Map userMessages = null;
 	
 	PropertyValidator notEmptyValidator = null; 
 	PropertyValidator ignoreValidator = null;
 	PropertyValidator emptyGreaterThanZeroValidator = null;
 	PropertyValidator voltageSystemGroupValidator = null;
 	PropertyValidator onlyNumberValidator = null;
+	PropertyValidator phaseAmpereRateValidator = null;
+	PropertyValidator deviceValidator = null;
+	PropertyValidator ampereRateValidator = null;
 	
 	public ValidationRules() {
 		initializeValidators();
@@ -54,31 +58,49 @@ public class ValidationRules {
 		// special one only for voltage system other
 		voltageSystemGroupValidator = new RadioButtonPlusInputFieldValidator(FieldID.VOLTAGE_SYSTEM, FieldID.VOLTAGE_SYSTEM_OTHER);
 		// meter 
-		onlyNumberValidator = MeterValidator.getMeterValidatorNumberDevicePhaseAmpere(true, false, false, false, false);
-		
-		
+		onlyNumberValidator = MeterValidator.getMeterValidatorNumberDevicePhaseRateAmpere(true, false, false, false, false);
+		phaseAmpereRateValidator = MeterValidator.getMeterValidatorNumberDevicePhaseRateAmpere(false, false, true, true, true);
+		deviceValidator = MeterValidator.getMeterValidatorNumberDevicePhaseRateAmpere(false, true, false, false, false);
+		ampereRateValidator = MeterValidator.getMeterValidatorNumberDevicePhaseRateAmpere(false, false, false, true, true);
 	}
 	
 	
 	private void initialize() {
 		validators = new HashMap();
-		validators.put(FieldID.TYPE, notEmptyValidator );
-		validators.put(FieldID.CURRENT_LINE_MODIFICATION, notEmptyValidator);
-		validators.put(FieldID.CURRENT_LINE_CONNECTION_MODIFICATION, notEmptyValidator);
-		validators.put(FieldID.HOME_LINE, notEmptyValidator);
-		validators.put(FieldID.SWITCH_PANEL_MODIFICATION, notEmptyValidator);
-		validators.put(FieldID.ELECTRONICAL_PROTECTIVE_MEASURES, notEmptyValidator);
-		validators.put(FieldID.APPLICATION, notEmptyValidator);
-		validators.put(FieldID.POWER, emptyGreaterThanZeroValidator);
-		validators.put(FieldID.PLACE_METER,notEmptyValidator);
-		validators.put(FieldID.SWITCH_PANEL_NUMBER,notEmptyValidator);
-		validators.put(FieldID.VOLTAGE_SYSTEM_GROUP, voltageSystemGroupValidator);
-		// meter 
-
-		
-		
-		
+		userMessages = new HashMap();
+		//
+		put(FieldID)
+		// second page 
+		put(FieldID.TYPE, notEmptyValidator, "type not fine" );
+		put(FieldID.CURRENT_LINE_MODIFICATION, notEmptyValidator);
+		put(FieldID.CURRENT_LINE_CONNECTION_MODIFICATION, notEmptyValidator);
+		put(FieldID.HOME_LINE, notEmptyValidator);
+		put(FieldID.SWITCH_PANEL_MODIFICATION, notEmptyValidator);
+		put(FieldID.ELECTRONICAL_PROTECTIVE_MEASURES, notEmptyValidator);
+		put(FieldID.APPLICATION, notEmptyValidator);
+		put(FieldID.POWER, emptyGreaterThanZeroValidator);
+		put(FieldID.PLACE_METER,notEmptyValidator);
+		put(FieldID.SWITCH_PANEL_NUMBER,notEmptyValidator);
+		put(FieldID.VOLTAGE_SYSTEM_GROUP, voltageSystemGroupValidator);
+		// meters
+		put(InitialData.TAKA, onlyNumberValidator);
+		put(InitialData.FYRIR, onlyNumberValidator);
+		put(InitialData.SETJA, phaseAmpereRateValidator);
+		put(InitialData.FLUTT_A, onlyNumberValidator);
+		put(InitialData.FLUTT_AF, onlyNumberValidator);
+		put(InitialData.HJALPATAEKI, deviceValidator);
+		put(InitialData.STRAUMSPENNA, ampereRateValidator);	
 	}
+	
+	private void put (String key, PropertyValidator propertyValidator) {
+		put(key, propertyValidator, null);
+	}
+	
+	private void put(String key, PropertyValidator propertyValidator, String userMessage) {
+		validators.put(key, propertyValidator);
+		userMessages.put(key, userMessage);
+	}
+	
 	
 	/**
 	 * Returns a validator or a default one. 
@@ -89,6 +111,11 @@ public class ValidationRules {
 	public PropertyValidator getValidator(String key) {
 		PropertyValidator propertyValidator = (PropertyValidator) validators.get(key);
 		return (propertyValidator == null) ? ignoreValidator : propertyValidator;
+	}
+	
+	public  String getUserMessage(String key) {
+		String userMessage = (String) userMessages.get(key);
+		return (userMessage == null) ? "" : userMessage;
 	}
 	
 

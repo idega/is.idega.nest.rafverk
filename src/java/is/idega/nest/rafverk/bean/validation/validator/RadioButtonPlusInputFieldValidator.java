@@ -1,5 +1,5 @@
 /*
- * $Id: RadioButtonPlusInputFieldValidator.java,v 1.1 2007/05/16 15:54:53 thomas Exp $
+ * $Id: RadioButtonPlusInputFieldValidator.java,v 1.2 2007/05/29 11:27:09 thomas Exp $
  * Created on May 15, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -25,10 +25,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/29 11:27:09 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RadioButtonPlusInputFieldValidator implements PropertyValidator, PropertyVisitor {
 	
@@ -53,7 +53,7 @@ public class RadioButtonPlusInputFieldValidator implements PropertyValidator, Pr
 		String otherValue = null;
 		List children = propertyTree.getValue();
 		Iterator iterator = children.iterator();
-		if (iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Property property = (Property) iterator.next();
 			String key = property.getKey();
 			if (radioButtonKey.equals(key)) {

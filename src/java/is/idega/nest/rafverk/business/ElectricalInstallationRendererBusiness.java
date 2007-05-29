@@ -1,13 +1,13 @@
 package is.idega.nest.rafverk.business;
 
 
+import is.idega.nest.rafverk.bean.validation.ValidationRules;
 import java.io.IOException;
-import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
+import java.util.Map;
 import com.idega.business.IBOService;
 import com.idega.user.business.UserBusiness;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.data.MaelirList;
-import org.xml.sax.SAXException;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import com.idega.fop.data.PropertyTree;
 import java.rmi.RemoteException;
@@ -38,7 +38,7 @@ public interface ElectricalInstallationRendererBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#validateApplication
 	 */
-	public ElectricalInstallationValidator validateApplication(Rafverktaka rafverktaka) throws SAXException, RemoteException;
+	public Map validateApplication(Rafverktaka rafverktaka) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getHeadApplication
@@ -164,4 +164,9 @@ public interface ElectricalInstallationRendererBusiness extends IBOService {
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getElectricalInstallationBusiness
 	 */
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getValidationRules
+	 */
+	public ValidationRules getValidationRules() throws RemoteException;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.3 2007/05/16 15:54:53 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.4 2007/05/29 11:27:35 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.business;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.constants.FieldID;
 import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
+import is.idega.nest.rafverk.bean.validation.ValidationRules;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -45,10 +46,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/29 11:27:35 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -65,6 +66,8 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	private UserBusiness userBusiness = null;
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+	
+	private ValidationRules validationRules = null; 
 	
 	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException {
 		Property prop = getApplicationProperty(rafverktaka);
@@ -87,12 +90,11 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 
 	
-	public ElectricalInstallationValidator validateApplication(Rafverktaka rafverktaka) throws SAXException {
+	public Map validateApplication(Rafverktaka rafverktaka) {
 		Property property = getApplicationProperty(rafverktaka);
-		ElectricalInstallationValidator handler = new ElectricalInstallationValidator();
+		ElectricalInstallationValidator handler = new ElectricalInstallationValidator(getValidationRules());
 		property.accept(handler);
-
-		return handler;
+		return handler.getResults();
 	}
 	
 	private Property getApplicationProperty(Rafverktaka rafverktaka) {
@@ -303,10 +305,10 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	public Property getBodyApplication(ElectricalInstallation electricalInstallation) {
 		MaelirList maelirList = getMaelirList(electricalInstallation);
 		PropertyTree prop = new PropertyTree("body", "Þjónustubeiðni");
-		prop.add(getApplication(electricalInstallation))
-		.add(FieldID.PLACE_METER, "Staður mælis", maelirList.getStadurMaelir().getStadur())
-		.add(FieldID.SWITCH_PANEL_NUMBER , "Númer töflu", electricalInstallation.getSwitchPanelNumber())
-		.add(getVoltageSystem(electricalInstallation));
+		prop.add(getApplication(electricalInstallation));
+		prop.add(FieldID.PLACE_METER, "Staður mælis", maelirList.getStadurMaelir().getStadur());
+		prop.add(FieldID.SWITCH_PANEL_NUMBER , "Númer töflu", electricalInstallation.getSwitchPanelNumber());
+		prop.add(getVoltageSystem(electricalInstallation));
 		addAllMaelir(prop, maelirList);
 		prop.add("applicationRemarks", "Skýringar", electricalInstallation.getApplicationRemarks());
 		return prop;
@@ -550,6 +552,13 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 			electricalInstallationBusiness = (ElectricalInstallationBusiness) getServiceBean(ElectricalInstallationBusiness.class);
 		}
 		return electricalInstallationBusiness;
+	}
+	
+	public ValidationRules getValidationRules() {
+		if (validationRules == null) {
+			validationRules = new ValidationRules();
+		}
+		return validationRules;
 	}
 	
 	private IBOService getServiceBean(Class serviceClass ) {
