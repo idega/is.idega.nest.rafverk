@@ -1,5 +1,5 @@
 /*
- * $Id: ValidationRules.java,v 1.2 2007/05/29 11:27:08 thomas Exp $
+ * $Id: ValidationRules.java,v 1.3 2007/05/31 20:54:07 civilis Exp $
  * Created on Apr 25, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import com.idega.fop.validator.impl.NotEmptyValidator;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/29 11:27:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/05/31 20:54:07 $ by $Author: civilis $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ValidationRules {
 	
@@ -69,7 +69,7 @@ public class ValidationRules {
 		validators = new HashMap();
 		userMessages = new HashMap();
 		//
-		put(FieldID)
+		put(FieldID);
 		// second page 
 		put(FieldID.TYPE, notEmptyValidator, "type not fine" );
 		put(FieldID.CURRENT_LINE_MODIFICATION, notEmptyValidator);
