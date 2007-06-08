@@ -40,7 +40,7 @@
         <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.process</artifactId>
-      <version>3.1.11</version>
+      <version>3.1.14</version>
       <type>jar</type>
       <url>http://www.idega.com</url>
             <properties>
@@ -51,6 +51,16 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
       <version>3.1.2</version>
+      <type>jar</type>
+      <url>http://www.idega.com/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+     <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>is.idega.idegaweb.egov.cases</artifactId>
+      <version>1.0.28</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>

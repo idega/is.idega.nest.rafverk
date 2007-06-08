@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.4 2007/05/29 11:27:35 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.5 2007/06/08 17:06:16 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -46,10 +46,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/29 11:27:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/08 17:06:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -99,7 +99,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	private Property getApplicationProperty(Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-		PropertyTree prop = new PropertyTree("pjonustabeidni", "Þjónustubeiðni");
+		PropertyTree prop = new PropertyTree("thjonustubeidni", "Þjónustubeiðni");
 		prop.add(getHeadApplication(electricalInstallation))
 		.add(getBodyApplication(electricalInstallation));
 		return prop;
@@ -158,6 +158,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	private void addHeadData(PropertyTree propertyTree, ElectricalInstallation electricalInstallation) {
 		propertyTree.add(getElectricianData(electricalInstallation))
+		.add(getExternalData(electricalInstallation))
 		.add(getWorkingplaceData(electricalInstallation))
 		.add(getEnergyConsumer(electricalInstallation));
 	}
@@ -169,6 +170,15 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 			energyCompanyString = energyCompany.getName();
 		}
 		return new PropertyImpl("energyCompany","Orkuveitu",energyCompanyString);
+	}
+	
+	public Property getExternalData(ElectricalInstallation electricalInstallation) {
+		PropertyTree propertyTree = new PropertyTree("externalData", "Ytri gögn");
+		String externalProjectID = electricalInstallation.getExternalProjectID();
+		String personInCharge = electricalInstallation.getPersonInCharge();
+		propertyTree.add("externalProjectID", "Verknúmer", externalProjectID);
+		propertyTree.add("personInCharge", "Ábyrgðarmaður", personInCharge);
+		return propertyTree;
 	}
 	
 	public Property getElectricianData(ElectricalInstallation electricalInstallation) {

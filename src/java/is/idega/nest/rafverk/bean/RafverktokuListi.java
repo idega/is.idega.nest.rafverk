@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import java.rmi.RemoteException;
@@ -125,17 +126,17 @@ public class RafverktokuListi extends BaseBean  {
 
 	public List getPossibleStatusesSelects() {
 		ArrayList selects = new ArrayList();
-		List verktokur = Rafverktaka.getPossibleStatuses();
+		List verktokur = ElectricalInstallationState.getPossibleStatuses();
 		SelectItem item0 = new SelectItem();
 		item0.setLabel("Allar");
 		item0.setValue("");
 		selects.add(item0);
-		
 		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
-			String statusString = (String) iter.next();
+			String label = (String) iter.next();
+			String value = (String) iter.next();
 			SelectItem item = new SelectItem();
-			item.setLabel(statusString);
-			item.setValue(statusString);
+			item.setLabel(label);
+			item.setValue(value);
 			selects.add(item);
 		}
 		return selects;

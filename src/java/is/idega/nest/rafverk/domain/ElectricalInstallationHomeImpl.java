@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
 
+import com.idega.user.data.Group;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -25,6 +26,13 @@ public class ElectricalInstallationHomeImpl extends IDOFactory implements Electr
 	public Collection findElectricalInstallationByElectrician(User electrician) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindElectricalInstallationByElectrician(electrician);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindElectricalInstallationByEnergyCompany(energyCompany);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

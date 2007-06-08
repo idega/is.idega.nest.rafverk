@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
 
+import com.idega.user.data.Group;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import com.idega.data.IDOHome;
@@ -14,4 +15,6 @@ public interface ElectricalInstallationHome extends IDOHome {
 	public ElectricalInstallation findByPrimaryKey(Object pk) throws FinderException;
 
 	public Collection findElectricalInstallationByElectrician(User electrician) throws FinderException;
+
+	public Collection findElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException;
 }

@@ -21,14 +21,26 @@ import com.idega.core.location.data.StreetHome;
 public interface ElectricalInstallationBusiness extends IBOService {
 
 	/**
-	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#storeManagedBeans
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplication
 	 */
-	public boolean storeManagedBeans(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean, TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
+	public boolean sendApplication(Rafverktaka rafverktaka) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplicationReport
+	 */
+	public boolean sendApplicationReport(Rafverktaka rafverktaka) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#storeApplication
+	 */
+	public boolean storeApplication(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean,
+			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#initializeManagedBeans
 	 */
-	public void initializeManagedBeans(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean, TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
+	public void initializeManagedBeans(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean,
+			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getMaelirList
@@ -36,9 +48,20 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	public MaelirList getMaelirList(ElectricalInstallation electricalInstallation) throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByPrimaryKey
+	 */
+	public ElectricalInstallation getElectricalInstallationByPrimaryKey(Object primaryKey) throws FinderException,
+			RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByElectrician
 	 */
 	public Collection getElectricalInstallationByElectrician(User electrician) throws FinderException, RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByEnergyCompanyUser
+	 */
+	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationHome

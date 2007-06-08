@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.12 2007/05/16 15:54:53 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.13 2007/06/08 17:06:33 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import javax.faces.model.SelectItem;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/16 15:54:53 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/08 17:06:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -130,38 +130,38 @@ public class TilkynningLokVerksBean {
 		
 	}
 	
-	public void populate(Rafverktaka rafverktaka) {
-		Orkukaupandi orkukaupandi = rafverktaka.getOrkukaupandi();
-		setNafnOrkukaupanda(orkukaupandi.getNafn());
-		setKennitalaOrkukaupanda(orkukaupandi.getKennitala());
-		setHeimasimiOrkukaupanda(orkukaupandi.getHeimasimi());
-		setVinnusimiOrkukaupanda(orkukaupandi.getVinnusimi());
-		
-		Heimilisfang heimilisfang = orkukaupandi.getHeimilisfang();
-		Gata gataObject = heimilisfang.getGata();
-		setGata(gataObject.getNafn());
-		
-		Postnumer postnumerObject = gataObject.getPostnumer();
-		setPostnumer(postnumerObject.getNumer());
-		
-		setGotunumer(heimilisfang.getHusnumer());
-		
-		// second step
-		
-		Maelir tempMaelir = new Maelir(InitialData.METER_IN_REPORT,0);
-		Maelir tempStadurMaelir = rafverktaka.getStadurMaelir();
-		if (tempStadurMaelir != null) {
-			String tempStadur = tempStadurMaelir.getStadur();
-			tempMaelir.setStadur(tempStadur);
-			setMaelir(tempStadurMaelir);
-		}
-		
-		setNotkunarflokkur(rafverktaka.getNotkunarflokkur());
-		setSpennukerfi(rafverktaka.getSpennukerfi());
-		setAnnad(rafverktaka.getAnnad());
-		setVarnarradstoefun(rafverktaka.getVarnarradstoefun());
-		
-	}
+//	public void populate(Rafverktaka rafverktaka) {
+//		Orkukaupandi orkukaupandi = rafverktaka.getOrkukaupandi();
+//		setNafnOrkukaupanda(orkukaupandi.getNafn());
+//		setKennitalaOrkukaupanda(orkukaupandi.getKennitala());
+//		setHeimasimiOrkukaupanda(orkukaupandi.getHeimasimi());
+//		setVinnusimiOrkukaupanda(orkukaupandi.getVinnusimi());
+//		
+//		Heimilisfang heimilisfang = orkukaupandi.getHeimilisfang();
+//		Gata gataObject = heimilisfang.getGata();
+//		setGata(gataObject.getNafn());
+//		
+//		Postnumer postnumerObject = gataObject.getPostnumer();
+//		setPostnumer(postnumerObject.getNumer());
+//		
+//		setGotunumer(heimilisfang.getHusnumer());
+//		
+//		// second step
+//		
+//		Maelir tempMaelir = new Maelir(InitialData.METER_IN_REPORT,0);
+//		Maelir tempStadurMaelir = rafverktaka.getStadurMaelir();
+//		if (tempStadurMaelir != null) {
+//			String tempStadur = tempStadurMaelir.getStadur();
+//			tempMaelir.setStadur(tempStadur);
+//			setMaelir(tempStadurMaelir);
+//		}
+//		
+//		setNotkunarflokkur(rafverktaka.getNotkunarflokkur());
+//		setSpennukerfi(rafverktaka.getSpennukerfi());
+//		setAnnad(rafverktaka.getAnnad());
+//		setVarnarradstoefun(rafverktaka.getVarnarradstoefun());
+//		
+//	}
 	
 	
 	/**

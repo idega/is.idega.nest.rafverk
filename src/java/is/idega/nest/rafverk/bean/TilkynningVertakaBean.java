@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.18 2007/05/29 11:27:09 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.19 2007/06/08 17:06:33 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -26,14 +26,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
+import com.idega.repository.data.NonEJBResource;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.util.StringHandler;
@@ -41,10 +45,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/29 11:27:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/08 17:06:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TilkynningVertakaBean {
 	
@@ -69,6 +73,10 @@ public class TilkynningVertakaBean {
 	private List cachedListOfEnergyCompanies = null;
 	
     private String orkuveitufyrirtaeki = null;
+    
+    private String externalProjectID = null;
+    
+    private String personInCharge = null;
     
     private String postnumer = null;
     
@@ -145,6 +153,8 @@ public class TilkynningVertakaBean {
 	
 	private void initializeForm() {
 	    orkuveitufyrirtaeki = null;
+	    externalProjectID = null;
+	    personInCharge = null;
 	    postnumer = null;
 	    gata = null;
 	    gotunumer = null;
@@ -187,15 +197,43 @@ public class TilkynningVertakaBean {
 	    downloadTilkynningLokVerksXML = null;
 	}
 	
+	
+
+
 	private void initializeValidation() {
 		validationResults = null;
 	}
  	
-	public boolean storeRafvertaka() {
+	public boolean sendApplication() {
+		// store as case
+		boolean success = false;
+		try {
+			success = getElectricalInstallationBusiness().sendApplication(getRafverktaka());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return success;
+	}
+	
+	public boolean sendApplicationReport() {
+		// store as case
+		boolean success = false;
+		try {
+			success = getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return success;
+	}
+	
+	
+	public boolean storeApplication() {
 		// store as case
 		boolean successfullyStored = false;
 		try {
-			successfullyStored = getElectricalInstallationBusiness().storeManagedBeans(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			successfullyStored = getElectricalInstallationBusiness().storeApplication(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
@@ -218,12 +256,12 @@ public class TilkynningVertakaBean {
 	 * @return
 	 */
 	public String store() {
-		isSuccessfullyStored = storeRafvertaka();
+		isSuccessfullyStored = storeApplication();
 		if (isSuccessfullyStored) { 
-			messageStoring = "Skýrsla gleymt";
+			messageStoring = "Skýrsla geymd";
 		}
 		else {
-			messageStoring = "Skýrsla ekki gleymt";
+			messageStoring = "Skýrsla ekki geymd";
 		}
 		return "store";
 	}
@@ -233,10 +271,6 @@ public class TilkynningVertakaBean {
 	 * @return
 	 */
 	public String send() {
-		return sendApplication();
-	}
-	
-	public String sendApplication() {
 		return sendApplicationReport(false);
 	}
 	
@@ -245,14 +279,16 @@ public class TilkynningVertakaBean {
 	}
 	
 	private String sendApplicationReport(boolean alsoReport) {
-		isSuccessfullyStored = storeRafvertaka();
+		isSuccessfullyStored = storeApplication();
 		if (isSuccessfullyStored) {
-			boolean validationSuccessful = validateTilkynningVertaka();
+			boolean validationSuccessful = true; //validateTilkynningVertaka();
 			if (validationSuccessful) {
+				sendApplication();
 				messageStoring = "Skýrsla send";
 				isDownloadTilkynningVertaka = createTilkynningVertakaPDF(); 
 				isDownloadTilkynningVertaka = isDownloadTilkynningVertaka && createTilkynningVertakaXML();
 				if (alsoReport) {
+					sendApplicationReport();
 					isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
 					isDownloadTilkynningLokVerks = isDownloadTilkynningLokVerks && createTilkynningLokVerksXML();
 				}
@@ -329,6 +365,38 @@ public class TilkynningVertakaBean {
 	
 
 	// generated getter and setter methods
+	/**
+	 * @return the externalIdProjectNumber
+	 */
+	public String getExternalProjectID() {
+		return externalProjectID;
+	}
+
+	
+	/**
+	 * @param externalIdProjectNumber the externalIdProjectNumber to set
+	 */
+	public void setExternalProjectID(String externalProjectID) {
+		this.externalProjectID = externalProjectID;
+	}
+
+	
+	/**
+	 * @return the personInCharge
+	 */
+	public String getPersonInCharge() {
+		return personInCharge;
+	}
+
+	
+	/**
+	 * @param personInCharge the personInCharge to set
+	 */
+	public void setPersonInCharge(String personInCharge) {
+		this.personInCharge = personInCharge;
+	}
+	
+	
 	
 	public String getAdaltafla() {
 		return adaltafla;
@@ -711,6 +779,23 @@ public class TilkynningVertakaBean {
 		fasteignaListi = lookup.getFasteignir(addr,getPostnumer());
 		setAvailablefasteign(true);
 	}
+	
+	// called by NestService
+	public void setRealEstateListByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber) {
+		if (StringHandler.isEmpty(postalCode)) {
+			fasteignaListi = null;
+		}
+		StringBuffer buffer = new StringBuffer();
+		if (StringHandler.isNotEmpty(street) && ! InitialData.NONE_STREET.equals(street)) {
+			buffer.append(street).append(" ");
+		}
+		if (StringHandler.isNotEmpty(streetNumber)) {
+			buffer.append(streetNumber);
+		}
+		FMRLookupBean lookup = getFMRLookup();
+		fasteignaListi = lookup.getFasteignir(buffer.toString(),postalCode);
+		setAvailablefasteign(true);
+	}
 
 	public List getFasteignaListi(){
 		return fasteignaListi;
@@ -747,21 +832,28 @@ public class TilkynningVertakaBean {
 		this.fastanumer = fastanumer;
 	}
 
-	public List getFasteignaListiSelects() {
-		ArrayList selects = new ArrayList();
-		List listi = getFasteignaListi();
-		SelectItem noneItem = new SelectItem();
-		noneItem.setLabel("Vinsamlegast veldu rétta fasteign:");
-		noneItem.setValue("");
-		selects.add(noneItem);
-		for (Iterator iter = listi.iterator(); iter.hasNext();) {
-			Fasteign fasteign = (Fasteign) iter.next();
-			SelectItem item = new SelectItem();
-			item.setLabel(fasteign.getDescription());
-			item.setValue(fasteign.getFastaNumer());
-			selects.add(item);
+	public Map getRealEstates() {
+		// keep the order
+		List realEstateList = getFasteignaListi();
+		int size =  (realEstateList == null) ? 1 : realEstateList.size();
+		Map realEstates = new LinkedHashMap(size);
+		realEstates.put("", "Vinsamlegast veldu rétta fasteign:");
+		if (realEstateList == null) {
+			return realEstates;
 		}
-		return selects;
+		Iterator iterator = realEstateList.iterator();
+		while (iterator.hasNext()) {
+			Fasteign fasteign = (Fasteign) iterator.next();
+			String value = fasteign.getFastaNumer();
+			String label = fasteign.getDescription();
+			realEstates.put(value, label);
+		}
+		return realEstates;
+	}
+	
+	public List getFasteignaListiSelects() {
+		Map realEstates = getRealEstates();
+		return getListiSelects(realEstates);
 	}
 
 
@@ -784,29 +876,28 @@ public class TilkynningVertakaBean {
 	}
 	
 	public List getGotuListiSelects(){
-
-		ArrayList selects = new ArrayList();
+		Map streets = getStreets();
+		return getListiSelects(streets);
+	}
+	
+	public Map getStreets() {
+		// keep the order
+		Map streets = new LinkedHashMap();
 		if(postnumer==null||postnumer.equals("")){
-			SelectItem item = new SelectItem();
-			item.setLabel("Veldu póstnúmer fyrst");
-			item.setValue("");
-			selects.add(item);
+			streets.put("", "Veldu póstnúmer fyrst");
 		}
 		else{
-			SelectItem item0 = new SelectItem();
-			item0.setLabel("- Engin gata til staðar");
-			item0.setValue("none");
-			selects.add(item0);
-			List gotuListi = BaseBean.getInitialData().getGotuListiByPostnumer(postnumer);
-			for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
-				Gata gataTemp = (Gata) iter.next();
-				SelectItem item = new SelectItem();
-				item.setLabel(gataTemp.getNafn());
-				item.setValue(gataTemp.getNafn());
-				selects.add(item);
+			streets.put(InitialData.NONE_STREET,"- Engin gata til staðar");
+			List streetList = BaseBean.getInitialData().getGotuListiByPostnumer(postnumer);
+			Iterator iterator = streetList.iterator(); 
+			while (iterator.hasNext()) {
+				Gata tempGata = (Gata) iterator.next();
+				String name = tempGata.getNafn();
+				// value, label
+				streets.put(name, name);
 			}
 		}
-		return selects;
+		return streets;
 	}
 	
 	// lookup fasteign
@@ -1035,4 +1126,17 @@ public class TilkynningVertakaBean {
 		return validationResults;
 	}
 	
+	private List getListiSelects(Map map) {
+		ArrayList selects = new ArrayList(map.size());
+		Iterator iterator = map.keySet().iterator();
+		while (iterator.hasNext()) {
+			String value = (String) iterator.next();
+			String label = (String) map.get(value);
+			SelectItem item = new SelectItem();
+			item.setLabel(label);
+			item.setValue(value);
+			selects.add(item);
+		}
+		return selects;
+	}
 }

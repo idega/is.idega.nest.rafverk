@@ -7,9 +7,10 @@
     <project>com.idega.core</project>
     <project>com.idega.block.process</project>
     <project>com.idega.builder</project>
-    <project>com.idega.location</project>
+    <project>is.idega.idegaweb.egov.cases</project>
     <project>is.fmr.landskra</project>
     <project>is.idega.iceland</project>
+    <project>com.idega.fop</project>
   </projects>
   <buildSpec>
     <buildCommand>

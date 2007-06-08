@@ -1,38 +1,34 @@
 package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.InitialData;
+import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.data.Maelir;
+import is.idega.nest.rafverk.util.DataConverter;
+
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOService;
 import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
 public class Rafverktaka {
 	
+
 	
-	public static final String STADA_MOTTEKIN="MOTTEKIN";
-	public static final String STADA_TILKYNNT_LOK="TILKYNNT_LOK";
-	public static final String STADA_I_SKODUN="I_SKODUN";
-	public static final String STADA_SKODUN_LOKID="SKODUN_LOKID";
-	public static final String STADA_LOKID="LOKID";
-	private static List statusList;
+
 	
 	public static Rafverktaka getInstanceWithCurrentUserAsRafverktaki() {
 		return new Rafverktaka();
 	}
 	
-	public static List getPossibleStatuses(){
-		
-		if(statusList==null){
-			statusList=new ArrayList();
-			statusList.add(STADA_MOTTEKIN);
-			statusList.add(STADA_TILKYNNT_LOK);
-			statusList.add(STADA_I_SKODUN);
-			statusList.add(STADA_SKODUN_LOKID);
-			statusList.add(STADA_LOKID);
-		}
-		return statusList;
+	public static Rafverktaka getInstanceFromElectricalInstallation(ElectricalInstallation electricalInstallation) {
+		return new Rafverktaka(electricalInstallation);
 	}
 	
 	ElectricalInstallation electricalInstallation = null;
@@ -40,11 +36,14 @@ public class Rafverktaka {
 	Fasteign fasteign = null;
 	
 	String id;
+	String externalProjectID;
 	Orkufyrirtaeki orkufyrirtaeki;
 
 	Veitustadur veitustadur;
+	
 	Orkukaupandi orkukaupandi;
-	String stada=STADA_MOTTEKIN;
+	
+	String stada = null;
 	
     private String notkunarflokkur = null;
     
@@ -66,6 +65,9 @@ public class Rafverktaka {
 	
 	public void initialize(ElectricalInstallation electricalInstallation) {
 		setElectricalInstallation(electricalInstallation);
+		externalProjectID = electricalInstallation.getExternalProjectID();
+		id = electricalInstallation.getPrimaryKey().toString();
+		stada = electricalInstallation.getStatus();
 		Group energyCompany = electricalInstallation.getEnergyCompany();
 		setOrkufyrirtaeki(new Orkufyrirtaeki(energyCompany));
 		setOrkukaupandi(new Orkukaupandi(electricalInstallation));
@@ -130,8 +132,19 @@ public class Rafverktaka {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getExternalProjectID() {
+		return externalProjectID;
+	}
+	
+	public void setExternalProjectID(String externalProjectID) {
+		this.externalProjectID = externalProjectID;
+	}
 
-
+	public String getStadaDisplay() {
+		return DataConverter.lookup(ElectricalInstallationState.STADA, getStada());
+	}
+	
 	public String getStada() {
 		return stada;
 	}
@@ -209,7 +222,6 @@ public class Rafverktaka {
 	
 	public void setElectricalInstallation(ElectricalInstallation electricalInstallation) {
 		this.electricalInstallation = electricalInstallation;
-		id = electricalInstallation.getPrimaryKey().toString();
 	}
 	
 	public String getVeitustadurDisplay() {
@@ -218,5 +230,5 @@ public class Rafverktaka {
 		}
 		return null;
 	}
-	
+		
 }

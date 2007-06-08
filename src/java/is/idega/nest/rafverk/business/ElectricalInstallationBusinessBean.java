@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.4 2007/04/18 17:54:46 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.5 2007/06/08 17:06:16 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,9 +24,13 @@ import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.postur.Gata;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,16 +50,17 @@ import com.idega.core.location.data.StreetHome;
 import com.idega.data.IDOHome;
 import com.idega.data.IDOLookup;
 import com.idega.user.business.UserBusiness;
+import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:54:46 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/08 17:06:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -71,15 +76,37 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	
 	private PostalCodeHome postalCodeHome = null;
 	
-	public boolean storeManagedBeans(			
+	private ElectricalInstallationState electricalInstallationState = null;
+	
+	public boolean sendApplication(
+			Rafverktaka rafverktaka) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		getElectricalInstallationState().sendApplication(electricalInstallation);
+		return true;
+	}
+	
+	public boolean sendApplicationReport(
+			Rafverktaka rafverktaka) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		getElectricalInstallationState().sendApplicationReport(electricalInstallation);
+		return true;
+	}
+	
+	public boolean storeApplication(			
 			Rafverktaka rafverktaka ,
 			TilkynningVertakaBean tilkynningVertakaBean, 
 			TilkynningLokVerksBean tilkynningLokVerksBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		// create new electrical installation
 		if (electricalInstallation == null) {
 			try {
 				electricalInstallation = createElectricalInstallation();
+				// set case status
+				getElectricalInstallationState().initialize(electricalInstallation);
+				// set owner of case
+				electricalInstallation.setOwner(rafverktaka.getRafverktaki().getElectrician());
 				rafverktaka.setElectricalInstallation(electricalInstallation);
+
 			}
 			catch (CreateException e) {	
 				e.printStackTrace();
@@ -351,6 +378,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			energyCompanyInteger = null;
 		}		
 		electricalInstallation.setEnergyCompanyID(energyCompanyInteger);
+		// external project id 
+		String externalProjectID = tilkynningVertakaBean.getExternalProjectID();
+		if (StringHandler.isEmpty(externalProjectID)) {
+			externalProjectID = generateExternalProjectID();
+		}
+		electricalInstallation.setExternalProjectID(externalProjectID);
+		electricalInstallation.setPersonInCharge(tilkynningVertakaBean.getPersonInCharge());
 		// energy consumer
 		electricalInstallation.setEnergyConsumerName(tilkynningVertakaBean.getNafnOrkukaupanda());
 		electricalInstallation.setEnergyConsumerPersonalID(tilkynningVertakaBean.getKennitalaOrkukaupanda());
@@ -475,6 +509,28 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		
 	}
 	
+	/**
+	 * Returns number calculated from current time:
+	 * 
+	 * year, month, day and  seconds of the day
+	 * 
+	 *  e.g. 31.05.2007 16:12:45 returns 07053158365
+	 * 
+	 * @return
+	 */
+	private String generateExternalProjectID() {
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyMMdd");
+		String dateString = dateformat.format(date);
+		StringBuffer buffer = new StringBuffer(dateString);
+		int secondsOfDay = calendar.get(Calendar.HOUR_OF_DAY) * 3600;
+		secondsOfDay += calendar.get(Calendar.MINUTE) *60;
+		secondsOfDay += calendar.get(Calendar.SECOND);
+		buffer.append(secondsOfDay);
+		return buffer.toString();
+	}
+	
 	public void initializeManagedBeans(
 			Rafverktaka rafverktaka ,
 			TilkynningVertakaBean tilkynningVertakaBean, 
@@ -515,6 +571,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			}
 		}
 		tilkynningVertakaBean.setOrkuveitufyrirtaeki(energyCompany);
+		tilkynningVertakaBean.setExternalProjectID(electricalInstallation.getExternalProjectID());
+		tilkynningVertakaBean.setPersonInCharge(electricalInstallation.getPersonInCharge());
 		tilkynningVertakaBean.setRafverktaka(rafverktaka);
 		tilkynningVertakaBean.setNotkunarflokkur(electricalInstallation.getType());
 		tilkynningVertakaBean.setHeimtaug(electricalInstallation.getCurrentLineModification());
@@ -671,11 +729,23 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		meter.store();
 	}
 	
-
+	public ElectricalInstallation getElectricalInstallationByPrimaryKey(Object primaryKey) throws FinderException {
+		return getElectricalInstallationHome().findByPrimaryKey(primaryKey);
+	}
 
 		
 	public Collection getElectricalInstallationByElectrician(User electrician) throws FinderException {
 		return getElectricalInstallationHome().findElectricalInstallationByElectrician(electrician);
+	}
+	
+	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) {
+		Group group = energyCompanyUser.getPrimaryGroup();
+		try {
+			return getElectricalInstallationHome().findElectricalInstallationByEnergyCompany(group);
+		}
+		catch (FinderException ex) {
+			return new ArrayList(0);
+		}
 	}
 	
 	
@@ -720,6 +790,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			userBusiness = (UserBusiness) getServiceBean(UserBusiness.class);
 		}
 		return userBusiness;
+	}
+	
+	private ElectricalInstallationState getElectricalInstallationState() {
+		if (electricalInstallationState == null) {
+			electricalInstallationState = new ElectricalInstallationState(getIWApplicationContext());
+		}
+		return electricalInstallationState;
 	}
 	
 	private IBOService getServiceBean(Class serviceClass ) {

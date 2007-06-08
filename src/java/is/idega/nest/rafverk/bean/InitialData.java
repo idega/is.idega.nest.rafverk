@@ -1,5 +1,6 @@
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
@@ -19,9 +20,10 @@ import javax.faces.model.SelectItem;
 
 public class InitialData extends BaseBean {
 	
-	public static final String BUNDLE_IDENTIFIER = "is.idega.nest.rafverk";
-	
 	// first step
+	
+	// special key for none street
+	public static final String NONE_STREET = "none_street";
 	
 	// special key (also used in validators)
 	public static final String ANNAD = "ANNAD";
@@ -34,10 +36,12 @@ public class InitialData extends BaseBean {
 		"Landb./Garðyrkja", "GARDYRKJA",
 		"Iðnaður", "IDNADUR", 
 		"Fiskiðnaður", "FISKIDNADUR",
-		"Verslun/Þjónusta", "PJONUSTA", 
+		"Verslun/Þjónusta", "THJONUSTA", 
 		"Opinber stofnun", "OPINBER_STOFNUN", 
 		"Bráðabirgðanotkun", "BRADABIRGDANOTKUN"
 		};
+	
+	public static final List NOTKUNARFLOKKUR_LIST = Arrays.asList(NOTKUNARFLOKKUR);
 	
 	public static final String[] HEIMTAUG = {
 		"Ný", "NY",
@@ -46,7 +50,11 @@ public class InitialData extends BaseBean {
 		"Tekin", "TEKIN"
 		};
 	
+	public static final List HEIMTAUG_LIST = Arrays.asList(HEIMTAUG);
+	
 	public static final String[] ADALTAFLA = HEIMTAUG;
+	
+	public static final List ADALTAFLA_LIST = Arrays.asList(ADALTAFLA);
 	
 	public static final String[] HEIMTAUG_TENGIST = {
 		"Aðaltöflu", "ADALTOEFLU",
@@ -54,6 +62,8 @@ public class InitialData extends BaseBean {
 		"Mælakassa", "MAELAKASSA",
 		"Stofnvarkassa", "STOFNVARKASSA"
 		};
+	
+	public static final List HEIMTAUG_TENGIST_LIST = Arrays.asList(HEIMTAUG_TENGIST);
 
 	public static final String[] VARNARRADSTOEFUN = {
 		"Núllun", "NULLUN",
@@ -62,7 +72,7 @@ public class InitialData extends BaseBean {
 		"Önnur", "OENNUR"
 		};
 	
-	
+	public static final List VARNARRADSTOEFUN_LIST = Arrays.asList(VARNARRADSTOEFUN);
 	
 	
 	// second step
@@ -75,6 +85,8 @@ public class InitialData extends BaseBean {
 		"Taxtabreytingu", "TAXTABREYTINGU",
 		"Tengingu án mælis", "TENINGU_AN_MAELIS"
 		};
+
+	public static final List BEIDNI_LIST = Arrays.asList(BEIDNI);
 	
 	public static final String[] SPENNUKERFI = {
 		"3-230V", "3-230V",
@@ -83,16 +95,22 @@ public class InitialData extends BaseBean {
 		"IN-230V", "IN-230V",
 		"Annað", ANNAD
 		};
+	
+	public static final List SPENNUKERFI_LIST = Arrays.asList(SPENNUKERFI);
 
 	public static final String[] MAELI = {
 		"1-fasa", "1-FASA",
 		"3-fasa", "3-FASA"
 		};
 	
+	public static final List MAELI_LIST = Arrays.asList(MAELI);
+	
 	public static final String[] FLUTT = {
 		"á","A",
 		"af", "AF"
 		};
+	
+	public static final List FLUTT_LIST = Arrays.asList(FLUTT);
 	
 	public static final String[] TEGUND = {
 		"Aðalheimtaug", "ADALHEIMTAUG",
@@ -100,10 +118,14 @@ public class InitialData extends BaseBean {
 		"Bráðabirgðaheimtaug", "BRADABIRGDAHEIMTAUG"
 		};
 	
+	public static final List TEGUND_LIST = Arrays.asList(TEGUND);
+	
 	public static final String[] STRENGUR = {
 		"Jarðstrengur", "JARDSTRENGUR",
 		"Loftstrengur/ - lina", "LOFTSTRENGUR_LINA"
 		};
+	
+	public static final List STRENGUR_LIST = Arrays.asList(STRENGUR);
 	
 	public static final String[] TENGISTADUR = {
 		"Rofi i dreifistöð", "ROFI_I_DREIFISTOED",
@@ -113,11 +135,14 @@ public class InitialData extends BaseBean {
 		"Vör i stólpa", "VOER_I_STOLPA",
 		};
 	
+	public static final List TENGISTADUR_LIST = Arrays.asList(TENGISTADUR);
+	
 	public static final String[] TENGING = {
 		"Veita uppfyllir tæknilega tengiskilmála rafveitna og tengd", "VEITA",
 		"Ekki tengt", "EKKI",
 		"Athugasemdir sjá bakhlið", "BAKHLID"};
 	
+	public static final List TENGING_LIST = Arrays.asList(TENGING);
 	// third step
 	
 	// !!!! NEVER change the strings of the following maelir types variables since they are referenced in JSF pages !!!!!
@@ -147,16 +172,22 @@ public class InitialData extends BaseBean {
 		"Annað", ANNAD
 		};
 	
+	public static final List TILKYNNT_LIST = Arrays.asList(TILKYNNT);
+	
 	public static final String[] HUSNAEDIS = {
 		"Íbúð", "IBUD",
 		"Sumarhús", "SUMARHUS",
-		"Þjónusta/Iðnaður", "PJONUSTA"
+		"Þjónusta/Iðnaður", "THJONUSTA"
 		};
+	
+	public static final List HUSNAEDIS_LIST = Arrays.asList(HUSNAEDIS);
 	
 	public static final String[] JARDSKAUT = {
 		"Vatnspípukerfi", "VATNSPIPUKERFI",
 		"Sökkulskaut", "SOEKKULSKAUT"
 		};
+	
+	public static final List JARDSKAUT_LIST = Arrays.asList(JARDSKAUT);
 	
 	public static final String LEKASTRAUMSROFI_I_LAGI_KEY = "I_LAGI";
 	public static final String LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY = "EKKI_TIL_STADAR";
@@ -165,7 +196,10 @@ public class InitialData extends BaseBean {
 		"í lagi", LEKASTRAUMSROFI_I_LAGI_KEY,
 		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY
 		};
+	
+	public static final List LEKASTRAUMSROFI_LIST = Arrays.asList(LEKASTRAUMSROFI);
 
+	
 
 	public Orkufyrirtaeki getRarik() {
 		Orkufyrirtaeki rarik = new Orkufyrirtaeki();
@@ -181,80 +215,78 @@ public class InitialData extends BaseBean {
 		return or;
 	}
 	
-
-	
 	public List getNotkunarflokkurListi() {
-		return Arrays.asList(NOTKUNARFLOKKUR);
+		return NOTKUNARFLOKKUR_LIST;
 	}
 	
 	public List getHeimtaugListi() {
-		return Arrays.asList(HEIMTAUG);
+		return HEIMTAUG_LIST;
 	}
 	
 	public List getHeimtaugTengistListi() {
-		return Arrays.asList(HEIMTAUG_TENGIST);
+		return HEIMTAUG_TENGIST_LIST;
 	}
 	
 	public List getAdaltaflaListi() {
-		return Arrays.asList(ADALTAFLA);
+		return ADALTAFLA_LIST;
 	}
 	
 	public List getVarnarradstoefunListi() {
-		return Arrays.asList(VARNARRADSTOEFUN);
+		return VARNARRADSTOEFUN_LIST;
 	}
 	
 	// second page
 	
 	public List getBeidniListi() {
-		return Arrays.asList(BEIDNI);
+		return BEIDNI_LIST;
 	}
 	
 	public List getSpennukerfiListi() {
-		return Arrays.asList(SPENNUKERFI);
+		return SPENNUKERFI_LIST;
 	}
 	
 	public List getMaeliListi() {
-		return Arrays.asList(MAELI);
+		return MAELI_LIST;
 	}
 	
 	public List getFluttListi() {
-		return Arrays.asList(FLUTT);
+		return FLUTT_LIST;
 	}
 	
 	// third page
 	
 	public List getTegundListi() {
-		return Arrays.asList(TEGUND);
+		return TEGUND_LIST;
 	}
 	
 	public List getStrengurListi() {
-		return Arrays.asList(STRENGUR);
+		return STRENGUR_LIST;
 	}
 	
 	public List getTengistadurListi() {
-		return Arrays.asList(TENGISTADUR);
+		return TENGISTADUR_LIST;
 	}
 	
 	public List getTengingListi() {
-		return Arrays.asList(TENGING);
+		return TENGING_LIST;
 	}
 	
 	// tilkynning lok verks
 	
 	public List getTilkynntListi() {
-		return Arrays.asList(TILKYNNT);
+		return TILKYNNT_LIST;
 	}
 	
 	public List getHusnaedisListi() {
-		return Arrays.asList(HUSNAEDIS);
+		return HUSNAEDIS_LIST;
 	}
 	
 	public List getJardskautListi() {
-		return Arrays.asList(JARDSKAUT);
+		return JARDSKAUT_LIST;
 	}
 	
 	public List getLekastraumsrofiListi() {
-		return Arrays.asList(LEKASTRAUMSROFI);
+		return LEKASTRAUMSROFI_LIST;
 	}
 	
 	
@@ -548,7 +580,7 @@ public class InitialData extends BaseBean {
 		verktaka1.setRafverktaki(initialData.getRafverktakiGudmundur());
 		verktaka1.setOrkukaupandi(initialData.getOrkukaupandiSigurdur());
 		verktaka1.setVeitustadur(initialData.getVeitustadurAusturstraeti1());
-		verktaka1.setStada(Rafverktaka.STADA_TILKYNNT_LOK);		
+		verktaka1.setStada(ElectricalInstallationState.TILKYNNT_LOK);		
 		list.add(verktaka1);
 		
 		Rafverktaka verktaka2 = new Rafverktaka();
@@ -557,7 +589,7 @@ public class InitialData extends BaseBean {
 		verktaka2.setRafverktaki(initialData.getRafverktakiJon());
 		verktaka2.setOrkukaupandi(initialData.getOrkukaupandiGunnar());
 		verktaka2.setVeitustadur(initialData.getVeitustadurEngjavegur6());
-		verktaka2.setStada(Rafverktaka.STADA_MOTTEKIN);		
+		verktaka2.setStada(ElectricalInstallationState.MOTTEKIN);		
 		list.add(verktaka2);
 		
 		Rafverktaka verktaka3 = new Rafverktaka();
@@ -566,7 +598,7 @@ public class InitialData extends BaseBean {
 		verktaka3.setRafverktaki(initialData.getRafverktakiGudmundur());
 		verktaka3.setOrkukaupandi(initialData.getOrkukaupandiGunnar());
 		verktaka3.setVeitustadur(initialData.getVeitustadurAusturstraeti1());
-		verktaka3.setStada(Rafverktaka.STADA_LOKID);
+		verktaka3.setStada(ElectricalInstallationState.LOKID);
 		list.add(verktaka3);
 		
 		Rafverktaka verktaka4 = new Rafverktaka();
@@ -575,7 +607,7 @@ public class InitialData extends BaseBean {
 		verktaka4.setRafverktaki(initialData.getRafverktakiJon());
 		verktaka4.setOrkukaupandi(initialData.getOrkukaupandiSigurdur());
 		verktaka4.setVeitustadur(initialData.getVeitustadurEngjavegur6());
-		verktaka4.setStada(Rafverktaka.STADA_I_SKODUN);
+		verktaka4.setStada(ElectricalInstallationState.I_SKODUN);
 		list.add(verktaka4);
 		
 		return list;

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.4 2007/04/18 17:55:58 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.5 2007/06/08 17:06:00 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.domain;
 
+import is.idega.nest.rafverk.bean.constants.CaseConstants;
 import is.idega.nest.rafverk.util.DataConverter;
 
 import java.util.Collection;
@@ -25,10 +26,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:55:58 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/08 17:06:00 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -195,8 +196,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	 * @see com.idega.block.process.data.AbstractCaseBMPBean#getCaseCodeKey()
 	 */
 	public String getCaseCodeKey() {
-		// TODO Auto-generated method stub
-		return "ELINST";
+		return CaseConstants.CASE_CODE_KEY;
 	}
 
 	/* (non-Javadoc)
@@ -660,6 +660,13 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	    IDOQuery query = idoQueryGetSelect();
 	    query.appendWhere();
 	    query.appendEqualsQuoted(COLUMN_ELECTRICIAN_ID, electrician.getPrimaryKey().toString());
+	    return idoFindPKsByQuery(query);
+	}
+	
+	public Collection ejbFindElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException {
+	    IDOQuery query = idoQueryGetSelect();
+	    query.appendWhere();
+	    query.appendEqualsQuoted(COLUMN_ENERGY_COMPANY_ID, energyCompany.getPrimaryKey().toString());
 	    return idoFindPKsByQuery(query);
 	}
 	
