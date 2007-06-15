@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.1 2007/06/08 17:05:12 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.2 2007/06/15 16:21:33 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,19 +12,19 @@ package is.idega.nest.rafverk.dwr;
 import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.idega.business.IBOServiceBean;
-import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:05:12 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/15 16:21:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -46,5 +46,19 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
 		tilkynningVertakaBean.setRealEstateListByPostalCodeStreetStreetNumber(postalCode, street, streetNumber);
 		return tilkynningVertakaBean.getRealEstates();
+	}
+	
+	public List getEnergyConsumerFields(String realEstateNumber) {
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		tilkynningVertakaBean.setRealEstateNumber(realEstateNumber);
+		String realEstateDisplay = tilkynningVertakaBean.getVeitustadurDisplay();
+		String energyConsumerName = tilkynningVertakaBean.getNafnOrkukaupanda();
+		String energyConsumerPersonalID = tilkynningVertakaBean.getKennitalaOrkukaupanda();
+
+		List list = new ArrayList(3);
+		list.add(realEstateDisplay);
+		list.add(energyConsumerName);
+		list.add(energyConsumerPersonalID);
+		return list;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.5 2007/06/08 17:06:00 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.6 2007/06/15 16:21:16 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -26,12 +26,24 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:00 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/15 16:21:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
+	
+	/* Following fields are in application as well as in report -
+	At the beginning the fields are set to be the same that is 
+	after filling in the first form (application) 
+	the fields of the second form (report) are prefilled 
+	by the values in the first form 
+	TYPE 					REPORT_TYPE
+	VOLTAGE_SYSTEM			REPORT_VOLTAGE_SYSTEM	
+	VOLTAGE_SYSTEM_OTHER	REPORT_VOLTAGE_SYSTEM_OTHER
+	EPM						REPORT_EPM
+	METER_ID 				REPORT_METER_ID
+	*/
 	
 	// short input fields for names (equal to size of display field in User)
 	private static final int SHORT_INPUT_FIELDS = 180;

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.5 2007/06/08 17:06:16 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.6 2007/06/15 16:20:34 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -23,6 +23,7 @@ import is.idega.nest.rafverk.domain.MeterHome;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.postur.Gata;
+
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,10 +35,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
+
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.business.IBOServiceBean;
@@ -57,10 +60,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/15 16:20:34 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -82,6 +85,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().sendApplication(electricalInstallation);
+		rafverktaka.initialize(electricalInstallation, this);
 		return true;
 	}
 	
@@ -89,6 +93,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().sendApplicationReport(electricalInstallation);
+		rafverktaka.initialize(electricalInstallation, this);
 		return true;
 	}
 	
@@ -96,13 +101,40 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			Rafverktaka rafverktaka ,
 			TilkynningVertakaBean tilkynningVertakaBean, 
 			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		if (! createElectricalInstallationIfNecessary(rafverktaka)) {
+			return false; 
+		}
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		getElectricalInstallationState().storeApplication(electricalInstallation);
+		boolean result = storeData(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		if (result) {
+			rafverktaka.initialize(electricalInstallation, this);
+		}
+		return result;
+	}
+		
+	public boolean storeApplicationReport(			
+			Rafverktaka rafverktaka ,
+			TilkynningVertakaBean tilkynningVertakaBean, 
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		if (! createElectricalInstallationIfNecessary(rafverktaka)) {
+			return false; 
+		}
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		getElectricalInstallationState().storeApplicationReport(electricalInstallation);
+		boolean result = storeData(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		if (result) {
+			rafverktaka.initialize(electricalInstallation, this);
+		}
+		return result;
+	}
+	
+	private boolean createElectricalInstallationIfNecessary(Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		// create new electrical installation
 		if (electricalInstallation == null) {
 			try {
 				electricalInstallation = createElectricalInstallation();
-				// set case status
-				getElectricalInstallationState().initialize(electricalInstallation);
 				// set owner of case
 				electricalInstallation.setOwner(rafverktaka.getRafverktaki().getElectrician());
 				rafverktaka.setElectricalInstallation(electricalInstallation);
@@ -113,6 +145,15 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				return false;
 			}
 		}
+		return true;
+	}
+	
+	private boolean storeData(			
+			Rafverktaka rafverktaka ,
+			TilkynningVertakaBean tilkynningVertakaBean, 
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		// store real estate
 		try {
 			storeRealEstate(electricalInstallation, tilkynningVertakaBean);
 		}
@@ -147,7 +188,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			return false;
 		}
 		electricalInstallation.store();
-		rafverktaka.initialize(electricalInstallation);
+		rafverktaka.initialize(electricalInstallation, this);
 		return true;
 	}
 	
@@ -536,7 +577,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			TilkynningVertakaBean tilkynningVertakaBean, 
 			TilkynningLokVerksBean tilkynningLokVerksBean) {
 		initializeManagedBean(rafverktaka, tilkynningVertakaBean);
-		initializeManagedBean(rafverktaka, tilkynningLokVerksBean);
+		initializeManagedBean(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 		initializeManagedBeansByMeters(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 	}
 	
@@ -544,6 +585,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	private void initializeManagedBean(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean) {
 		// move all values from the entity to the managed bean
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		if (electricalInstallation == null) {
+			//nothing to do
+			return;
+		}
 		tilkynningVertakaBean.initialize();
 		// energy company
 		Integer energyCompanyInteger = electricalInstallation.getEnergyCompanyID();
@@ -590,17 +635,33 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		tilkynningVertakaBean.setSkyringar(electricalInstallation.getApplicationRemarks());
 	}
 	
-	private void initializeManagedBean(Rafverktaka rafverktaka, TilkynningLokVerksBean tilkynningLokVerksBean) {
+	private void initializeManagedBean(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean, TilkynningLokVerksBean tilkynningLokVerksBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		tilkynningLokVerksBean.initialize();
+		boolean doOnlyCopy = (! getElectricalInstallationState().isApplicationReportStored(electricalInstallation));
 		tilkynningLokVerksBean.setRafverktaka(rafverktaka);
+		
+		String type = (doOnlyCopy) ? tilkynningVertakaBean.getNotkunarflokkur() : electricalInstallation.getTypeInReport();
+		tilkynningLokVerksBean.setNotkunarflokkur(type);
+		
+		String voltageSystem = (doOnlyCopy) ? tilkynningVertakaBean.getSpennukerfi() : electricalInstallation.getVoltageSystemInReport();
+		tilkynningLokVerksBean.setSpennukerfi(voltageSystem);
+		
+		String voltageSystemOther = (doOnlyCopy) ? tilkynningVertakaBean.getAnnad() : electricalInstallation.getVoltageSystemOtherInReport();
+		tilkynningLokVerksBean.setAnnad(voltageSystemOther);
+		
+		List epm = (doOnlyCopy) ? tilkynningVertakaBean.getVarnarradstoefun() : electricalInstallation.getElectronicalProtectiveMeasuresInReport();
+		tilkynningLokVerksBean.setVarnarradstoefun(epm);
+
+		if (doOnlyCopy) {
+			// electricalInstallation might be null!
+			return;
+		}
 		tilkynningLokVerksBean.setTilkynnt(electricalInstallation.getAnnouncement());
 		tilkynningLokVerksBean.setTilkynntAnnad(electricalInstallation.getAnnouncementOther());
-		tilkynningLokVerksBean.setNotkunarflokkur(electricalInstallation.getTypeInReport());
+		
 		tilkynningLokVerksBean.setSkyring(electricalInstallation.getAnnouncementRemarks());
-		tilkynningLokVerksBean.setSpennukerfi(electricalInstallation.getVoltageSystemInReport());
-		tilkynningLokVerksBean.setAnnad(electricalInstallation.getVoltageSystemOtherInReport());
-		tilkynningLokVerksBean.setVarnarradstoefun(electricalInstallation.getElectronicalProtectiveMeasuresInReport());
+		
 		tilkynningLokVerksBean.setJardskaut(electricalInstallation.getGrounding());
 		tilkynningLokVerksBean.setJardskautAnnad(electricalInstallation.getGroundingOther());
 		tilkynningLokVerksBean.setSkyringar(electricalInstallation.getRemarks());
@@ -624,11 +685,17 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		tilkynningLokVerksBean.setSkyringarMaelingar(electricalInstallation.getMeasurementRemarks());
 	}
 	
+	
+	
 	private void initializeManagedBeansByMeters(
 		Rafverktaka rafverktaka, 
 		TilkynningVertakaBean tilkynningVertakaBean,
 		TilkynningLokVerksBean tilkynningLokVerksBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		if (electricalInstallation == null) {
+			//nothing to do
+			return;
+		}
 		MaelirList maelirList = getMaelirList(electricalInstallation);
 		// handling all meters (mapping meter to maelir)
 		tilkynningVertakaBean.initList(maelirList.getMaelirListMap());
@@ -792,7 +859,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return userBusiness;
 	}
 	
-	private ElectricalInstallationState getElectricalInstallationState() {
+	public ElectricalInstallationState getElectricalInstallationState() {
 		if (electricalInstallationState == null) {
 			electricalInstallationState = new ElectricalInstallationState(getIWApplicationContext());
 		}

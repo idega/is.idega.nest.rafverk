@@ -1,18 +1,14 @@
 package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.InitialData;
-import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.data.Maelir;
-import is.idega.nest.rafverk.util.DataConverter;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOService;
+import com.idega.business.IBORuntimeException;
 import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
@@ -27,8 +23,8 @@ public class Rafverktaka {
 		return new Rafverktaka();
 	}
 	
-	public static Rafverktaka getInstanceFromElectricalInstallation(ElectricalInstallation electricalInstallation) {
-		return new Rafverktaka(electricalInstallation);
+	public static Rafverktaka getInstanceFromElectricalInstallation(ElectricalInstallation electricalInstallation, ElectricalInstallationBusiness electricalInstallationBusiness) {
+		return new Rafverktaka(electricalInstallation, electricalInstallationBusiness);
 	}
 	
 	ElectricalInstallation electricalInstallation = null;
@@ -45,6 +41,8 @@ public class Rafverktaka {
 	
 	String stada = null;
 	
+	String stadaDisplay = null;
+	
     private String notkunarflokkur = null;
     
     private String spennukerfi = null;
@@ -59,15 +57,26 @@ public class Rafverktaka {
 	public Rafverktaka() {
 	}
 
-	public Rafverktaka(ElectricalInstallation electricalInstallation){
-		initialize(electricalInstallation);
+	public Rafverktaka(ElectricalInstallation electricalInstallation, ElectricalInstallationBusiness electricalInstallationBusiness){
+		initialize(electricalInstallation, electricalInstallationBusiness);
 	}
 	
-	public void initialize(ElectricalInstallation electricalInstallation) {
+	public void initialize(ElectricalInstallation electricalInstallation, ElectricalInstallationBusiness electricalInstallationBusiness) {
+
 		setElectricalInstallation(electricalInstallation);
 		externalProjectID = electricalInstallation.getExternalProjectID();
 		id = electricalInstallation.getPrimaryKey().toString();
 		stada = electricalInstallation.getStatus();
+		ElectricalInstallationState electricalInstallationState;
+		try {
+			electricalInstallationState = electricalInstallationBusiness.getElectricalInstallationState();
+		}
+		catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IBORuntimeException();
+		}
+		stadaDisplay = electricalInstallationState.getStatusDescription(electricalInstallation);
 		Group energyCompany = electricalInstallation.getEnergyCompany();
 		setOrkufyrirtaeki(new Orkufyrirtaeki(energyCompany));
 		setOrkukaupandi(new Orkukaupandi(electricalInstallation));
@@ -142,7 +151,7 @@ public class Rafverktaka {
 	}
 
 	public String getStadaDisplay() {
-		return DataConverter.lookup(ElectricalInstallationState.STADA, getStada());
+		return stadaDisplay;
 	}
 	
 	public String getStada() {

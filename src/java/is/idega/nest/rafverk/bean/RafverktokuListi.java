@@ -4,14 +4,16 @@ import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.ejb.FinderException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
@@ -19,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+
 import com.idega.business.IBOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
@@ -31,14 +34,13 @@ public class RafverktokuListi extends BaseBean  {
 	Map rafverktokuListi = null;
 	
 	Rafverktaka currentRafverktaka = null;
-
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 
 	public RafverktokuListi() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		IWContext context = IWContext.getIWContext(facesContext);
-		User user = context.getCurrentUser();
+		IWContext iwc = IWContext.getIWContext(facesContext);
+		User user = iwc.getCurrentUser();
 		initialize(user);
 	}
 	
@@ -47,7 +49,7 @@ public class RafverktokuListi extends BaseBean  {
 	}
 	
 	private void initialize(User electrician) {
-		rafverktokuListi = new TreeMap();
+		rafverktokuListi = new TreeMap(Collections.reverseOrder());
 		Collection verktokur = null;
 		try {
 			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByElectrician(electrician);
@@ -62,7 +64,7 @@ public class RafverktokuListi extends BaseBean  {
 			Iterator iterator = verktokur.iterator();
 			while (iterator.hasNext()) {
 				ElectricalInstallation electricalInstallation = (ElectricalInstallation) iterator.next();
-				Rafverktaka verktaka = new Rafverktaka(electricalInstallation);
+				Rafverktaka verktaka = new Rafverktaka(electricalInstallation, getElectricalInstallationBusiness());
 				String id = verktaka.getId();
 				rafverktokuListi.put(id, verktaka);	
 			}
@@ -73,17 +75,17 @@ public class RafverktokuListi extends BaseBean  {
 		rafverktokuListi.put(rafverktaka.getId(), rafverktaka);
 	}
 
-	public List getRafverktokuListiSelects(){
-		ArrayList selects = new ArrayList();
-		for (Iterator iter = rafverktokuListi.values().iterator(); iter.hasNext();) {
-			Rafverktaka verktaka = (Rafverktaka) iter.next();
-			SelectItem item = new SelectItem();
-			item.setLabel(verktaka.getVeitustadur().getVeitustadur());
-			item.setValue(verktaka.getId());
-			selects.add(item);
-		}
-		return selects;
-	}
+//	public List getRafverktokuListiSelects(){
+//		ArrayList selects = new ArrayList();
+//		for (Iterator iter = rafverktokuListi.values().iterator(); iter.hasNext();) {
+//			Rafverktaka verktaka = (Rafverktaka) iter.next();
+//			SelectItem item = new SelectItem();
+//			item.setLabel(verktaka.getVeitustadur().getVeitustadur());
+//			item.setValue(verktaka.getId());
+//			selects.add(item);
+//		}
+//		return selects;
+//	}
 
 	public List getRafverktokur() {
 		String status = getSelectedStatus();
@@ -142,6 +144,13 @@ public class RafverktokuListi extends BaseBean  {
 		return selects;
 	}
 
+	
+	/**
+	 * Called by JSF page (opening existing electrical installation)
+	 * 
+	 * @param actionEvent
+	 * @throws AbortProcessingException
+	 */
 	public void populateForms(ActionEvent actionEvent) throws AbortProcessingException {
 	    Rafverktaka rafverktaka = null;
 
@@ -166,6 +175,7 @@ public class RafverktokuListi extends BaseBean  {
 	    	}
 	    }
 	}
+	
 	
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
 		if (electricalInstallationBusiness == null) {

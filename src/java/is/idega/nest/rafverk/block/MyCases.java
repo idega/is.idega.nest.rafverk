@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.1 2007/06/08 17:08:20 thomas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.2 2007/06/15 16:20:59 thomas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -11,7 +11,6 @@
 package is.idega.nest.rafverk.block;
 
 import is.idega.nest.rafverk.bean.InitialData;
-import is.idega.nest.rafverk.bean.constants.FieldID;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -240,7 +239,7 @@ public class MyCases extends CasesList {
 		addLabelWithValue("Heimtaug tengist í", localizedCurrentLineConnectionModification, section);
 		
 		// link to pdf 
-		Rafverktaka rafverktaka = Rafverktaka.getInstanceFromElectricalInstallation(theCase);
+		Rafverktaka rafverktaka = Rafverktaka.getInstanceFromElectricalInstallation(theCase, getElectricalInstallationBusiness(iwc));
 		String url = "";
 		try {
 			url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka);

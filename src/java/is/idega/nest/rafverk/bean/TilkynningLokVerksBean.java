@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningLokVerksBean.java,v 1.13 2007/06/08 17:06:33 thomas Exp $
+ * $Id: TilkynningLokVerksBean.java,v 1.14 2007/06/15 16:20:34 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,23 +11,22 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
-import is.idega.nest.rafverk.domain.Heimilisfang;
-import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.postur.Gata;
-import is.postur.Postnumer;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.faces.model.SelectItem;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:33 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/15 16:20:34 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TilkynningLokVerksBean {
 	
@@ -165,23 +164,23 @@ public class TilkynningLokVerksBean {
 	
 	
 	/**
-	 * Called by JSF page
+	 * Called by JSF page (report)
 	 * 
 	 * @return
 	 */
 	public String store() {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-		return tilkynningVertakaBean.store();
+		return tilkynningVertakaBean.storeApplicationReport();
 	}
 	
 	/**
-	 * Called by JSF page
+	 * Called by JSF page (report)
 	 * 
 	 * @return
 	 */
 	public String send() {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-		return tilkynningVertakaBean.sendReport();
+		return tilkynningVertakaBean.sendApplicationReport();
 	}
 	
 	public List getGotuListiSelects(){

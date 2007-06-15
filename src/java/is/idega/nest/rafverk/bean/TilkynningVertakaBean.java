@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.19 2007/06/08 17:06:33 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.20 2007/06/15 16:20:34 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,6 +11,7 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.Fasteign;
@@ -18,6 +19,7 @@ import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -29,15 +31,15 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+
 import com.idega.business.IBOLookup;
+import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOService;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
-import com.idega.repository.data.NonEJBResource;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.util.StringHandler;
@@ -45,10 +47,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:33 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/15 16:20:34 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TilkynningVertakaBean {
 	
@@ -204,42 +206,114 @@ public class TilkynningVertakaBean {
 		validationResults = null;
 	}
  	
-	public boolean sendApplication() {
-		// store as case
-		boolean success = false;
+	public String sendApplication() {
+		isSuccessfullyStored = storeApplicationData();
+		if (isSuccessfullyStored) {
+			boolean validationSuccessful = true; //validateTilkynningVertaka();
+			if (validationSuccessful) {
+				if (sendApplicationData()) {
+					messageStoring = "Þjónustubeiðni send";
+					isDownloadTilkynningVertaka = createTilkynningVertakaPDF();
+					if (! isDownloadTilkynningVertaka) {
+						messagePDF = "Problems appeared creating PDF";
+					}
+				}
+				else {
+					messageStoring = "Þjónustubeiðni ekki send";
+				}
+				return "send";
+			}
+			// successfully stored but validation problems, stay on same page
+			return null;
+		}
+		messageStoring = "Þjónustubeiðni ekki geymd";
+		return "send";
+	}
+		
+		
+	private boolean sendApplicationData() {
 		try {
-			success = getElectricalInstallationBusiness().sendApplication(getRafverktaka());
+			return getElectricalInstallationBusiness().sendApplication(getRafverktaka());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
-		return success;
 	}
 	
-	public boolean sendApplicationReport() {
-		// store as case
-		boolean success = false;
-		try {
-			success = getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka());
+	public String sendApplicationReport() {
+		isSuccessfullyStored = storeApplicationReportData();
+		if (isSuccessfullyStored) {
+			boolean validationSuccessful = true; //validateTilkynningLokVertaka();
+			if (validationSuccessful) {
+				if (sendApplicationReportData()) {
+					messageStoring = "Skýrsla send";
+					isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
+					if (! isDownloadTilkynningLokVerks()) {
+						messagePDF = "Problems appeared creating PDF";
+					}
+				}
+				else {
+					messageStoring = "Skýrsla ekki send";
+				}
+				return "send";
+			}
+			// successfully stored but validation problems, stay on same page
+			return null;
 		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
-		}
-		return success;
+		messageStoring = "Skýrsla ekki geymd";
+		return "send";
+		
 	}
 	
-	
-	public boolean storeApplication() {
-		// store as case
-		boolean successfullyStored = false;
+	private boolean sendApplicationReportData() {
 		try {
-			successfullyStored = getElectricalInstallationBusiness().storeApplication(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			return getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
-		BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
-		return successfullyStored;
+	}
+	
+	public String storeApplication() {
+		isSuccessfullyStored = storeApplicationData();
+		if (isSuccessfullyStored) { 
+			BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+			messageStoring = "þjónustubeiðni geymd";
+		}
+		else {
+			messageStoring = "þjónustubeiðni ekki geymd";
+		}
+		return "store";
+	}
+	
+	private boolean storeApplicationData() {
+		try {
+			return getElectricalInstallationBusiness().storeApplication(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public String storeApplicationReport() {
+		isSuccessfullyStored = storeApplicationReportData();
+		if (isSuccessfullyStored) { 
+			BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+			messageStoring = "Skýrsla geymd";
+		}
+		else {
+			messageStoring = "Skýrsla ekki geymd";
+		}
+		return "store";
+	}
+	
+	private boolean storeApplicationReportData() {
+		try {
+			return getElectricalInstallationBusiness().storeApplicationReport(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	public void initList(Map maelirListMap) {
@@ -251,69 +325,34 @@ public class TilkynningVertakaBean {
 	}
 	
 	/**
-	 * Called by JSF page
+	 * Called by JSF page (application form)
 	 * 
 	 * @return
 	 */
 	public String store() {
-		isSuccessfullyStored = storeApplication();
-		if (isSuccessfullyStored) { 
-			messageStoring = "Skýrsla geymd";
-		}
-		else {
-			messageStoring = "Skýrsla ekki geymd";
-		}
-		return "store";
+		return storeApplication();
 	}
 	
 	/**
-	 *  Called by JSF page
+	 *  Called by JSF page (application form)
 	 * @return
 	 */
 	public String send() {
-		return sendApplicationReport(false);
+		return sendApplication();
 	}
 	
-	public String sendReport() {
-		return sendApplicationReport(true);
-	}
-	
-	private String sendApplicationReport(boolean alsoReport) {
-		isSuccessfullyStored = storeApplication();
-		if (isSuccessfullyStored) {
-			boolean validationSuccessful = true; //validateTilkynningVertaka();
-			if (validationSuccessful) {
-				sendApplication();
-				messageStoring = "Skýrsla send";
-				isDownloadTilkynningVertaka = createTilkynningVertakaPDF(); 
-				isDownloadTilkynningVertaka = isDownloadTilkynningVertaka && createTilkynningVertakaXML();
-				if (alsoReport) {
-					sendApplicationReport();
-					isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
-					isDownloadTilkynningLokVerks = isDownloadTilkynningLokVerks && createTilkynningLokVerksXML();
-				}
-				else {
-					isDownloadTilkynningLokVerks = false;
-				}
-				if (!isDownloadTilkynningVertaka ||(alsoReport && ! isDownloadTilkynningLokVerks)) {
-					messagePDF = "Problems appeared creating PDF";
-				}
-			}
-			else {
-				// stay on the same page
-				return null;
-			}
-		}
-		messageStoring = "Skýrsla ekki send";
-		return "send";
-	}
-	
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */
 	public String goToTilkynningLokVerks() {
 		initializeTilkynningLokVerks();
 		return "nextwizard";
 	}
 	
 	/**
+	 * 
+	 * Called by JSF page (Create new)
 	 * Creates an empty electrical installation with the current user as electrician
 	 * 
 	 * @return
@@ -324,6 +363,7 @@ public class TilkynningVertakaBean {
 	}
 	
 	/**
+	 * Called by JSF page (Create new)
 	 * Creates an empty electrical installation with the current user as electrician
 	 * 
 	 * @return
@@ -343,24 +383,15 @@ public class TilkynningVertakaBean {
 	}
 	
 	private void initializeTilkynningLokVerks() {
-		TilkynningLokVerksBean tilkynningLokVersBean = BaseBean.getTilkynningLokVerksBean();
-		// first step
-		tilkynningLokVersBean.setNafnOrkukaupanda(getNafnOrkukaupanda());
-		tilkynningLokVersBean.setKennitalaOrkukaupanda(getKennitalaOrkukaupanda());
-		tilkynningLokVersBean.setHeimasimiOrkukaupanda(getHeimasimiOrkukaupanda());
-		tilkynningLokVersBean.setVinnusimiOrkukaupanda(getVinnusimiOrkukaupanda());
-		
-		tilkynningLokVersBean.setPostnumer(getPostnumer());
-		tilkynningLokVersBean.setGata(getGata());
-		tilkynningLokVersBean.setGotunumer(getGotunumer());
-		// second step
-		tilkynningLokVersBean.setNotkunarflokkur(getNotkunarflokkur());
-		// spennu fields...
-		tilkynningLokVersBean.setSpennukerfi(getSpennukerfi());
-		tilkynningLokVersBean.setAnnad(getAnnad());
-		// ...spennu fields
-		tilkynningLokVersBean.setVarnarradstoefun(getVarnarradstoefun());
-		
+		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
+		try {
+			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, this, tilkynningLokVerksBean);
+		}
+		catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IBORuntimeException();
+		}		
 	}
 	
 
@@ -811,6 +842,11 @@ public class TilkynningVertakaBean {
 		this.fastanumer = fastanumer;
 	}
 	
+	// called by NestService 
+	public void setRealEstateNumber(String realEstateNumber) {
+		setFastanumer(realEstateNumber);
+	}
+	
 	
 	public void setFastanumer(String fastanumer) {
 		if(StringHandler.isNotEmpty(fastanumer)) {
@@ -1014,7 +1050,37 @@ public class TilkynningVertakaBean {
 		this.veitustadurDisplay = veitustadur;
 	}
 	
-	// storing and creating 
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */
+	public boolean isApplicationStorable() {
+		return getElectricalInstallationState().isApplicationStorable(rafverktaka.getElectricalInstallation());
+	}
+	
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */
+	public boolean isApplicationSendable() {
+		return getElectricalInstallationState().isApplicationSendable(rafverktaka.getElectricalInstallation());
+	}
+	
+	/**
+	 * Called by JSF page (application report form)
+	 * @return
+	 */
+	public boolean isApplicationReportStorable() {
+		return getElectricalInstallationState().isApplicationReportStorable(rafverktaka.getElectricalInstallation());
+	}
+	
+	/**
+	 * Called by JSF page (application report form)
+	 * @return
+	 */
+	public boolean isApplicationReportSendable() {
+		return getElectricalInstallationState().isApplicationReportSendable(rafverktaka.getElectricalInstallation());
+	}
 	
 	public boolean isSuccessfullyStored() {
 		return isSuccessfullyStored;
@@ -1138,5 +1204,16 @@ public class TilkynningVertakaBean {
 			selects.add(item);
 		}
 		return selects;
+	}
+	
+	private ElectricalInstallationState getElectricalInstallationState() {
+		try {
+			return getElectricalInstallationBusiness().getElectricalInstallationState();
+		}
+		catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IBORuntimeException();
+		}
 	}
 }

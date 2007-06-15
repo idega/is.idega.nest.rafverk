@@ -1,12 +1,13 @@
 package is.idega.nest.rafverk.domain;
 
 
+import java.util.List;
+
 import com.idega.block.process.data.Case;
 import com.idega.core.location.data.RealEstate;
+import com.idega.data.IDOEntity;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
-import java.util.List;
-import com.idega.data.IDOEntity;
 
 public interface ElectricalInstallation extends IDOEntity, Case {
 

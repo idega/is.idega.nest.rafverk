@@ -37,6 +37,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#storeApplicationReport
+	 */
+	public boolean storeApplicationReport(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean,
+			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#initializeManagedBeans
 	 */
 	public void initializeManagedBeans(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean,
@@ -92,4 +98,9 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getUserBusiness
 	 */
 	public UserBusiness getUserBusiness() throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationState
+	 */
+	public ElectricalInstallationState getElectricalInstallationState() throws RemoteException;
 }
