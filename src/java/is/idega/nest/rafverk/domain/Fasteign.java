@@ -23,6 +23,7 @@ public class Fasteign extends BaseBean{
 	String merking;// 100101 Bygging Hæð Nr. innan hæðar
 	String notkun; //Íbúð, Skrifstofa
 	String skyring;
+	String landnumer;
 	
 	Gata gata;
 	String gotuNumer;
@@ -36,6 +37,7 @@ public class Fasteign extends BaseBean{
 		setNafn(realEstate.getName());
 		setNotkun(realEstate.getUse());
 		setSkyring(realEstate.getComment());
+		setLandnumer(realEstate.getLandRegisterMapNumber());
 		setGotuNumer(realEstate.getStreetNumber());
 		Street street = realEstate.getStreet();
 		if (street != null) {
@@ -56,6 +58,8 @@ public class Fasteign extends BaseBean{
 		}
 		setGotuNumer(eFasteign.getHusnumer());
 		setSkyring(eFasteign.getSkyring());
+		
+		setLandnumer(eFasteign.getLandnr().toString());
 		
 		FasteignaskraFasteignEigandi[] eigendur = eFasteign.getEigandi();
 		if(eigendur!=null&&eigendur.length>=1){
@@ -172,14 +176,35 @@ public class Fasteign extends BaseBean{
 	}
 	
 	public String getDescription(){
-		
-		String desc = getNafn()+" - "+getMerkingHumanReadable();
+		StringBuffer buffer = new StringBuffer();
+		// nafn
+		add(buffer, getNafn());
+		buffer.append(" - ");
+		// merking human readable
+		add(buffer, getMerkingHumanReadable());
+		// eigandi
 		FasteignaEigandi eigandi = getEigandi();
-		if(eigandi!=null){
-			desc+=" ("+eigandi.getNafn()+")";
+		if(StringHandler.isNotEmpty(eigandi)){
+			buffer.append(" (");
+			buffer.append(eigandi.getNafn());
+			buffer.append(")");
 		}
-		desc += " [Fastanúmer "+getFastaNumer()+" "+getMerking()+"]";
-		return desc;
+		// fastanumer
+		buffer.append(" [Fastanúmer ");
+		add(buffer, getFastaNumer());
+		buffer.append(" ");
+		// merking
+		add(buffer, getMerking());
+		buffer.append("]");
+		// landnumer
+		buffer.append(" [Landnúmer ");
+		add(buffer,getLandnumer());
+		buffer.append("] ");
+		return buffer.toString();
+	}
+	
+	private void add(StringBuffer buffer, String value) {
+		buffer.append(StringHandler.getStringOrDash(value));
 	}
 	
 	public String getGotuNumer() {
@@ -196,4 +221,16 @@ public class Fasteign extends BaseBean{
 	public void setSkyring(String skyring) {
 		this.skyring = skyring;
 	}
+
+	
+	public String getLandnumer() {
+		return landnumer;
+	}
+
+	
+	public void setLandnumer(String landnumer) {
+		this.landnumer = landnumer;
+	}
+	
+
 }

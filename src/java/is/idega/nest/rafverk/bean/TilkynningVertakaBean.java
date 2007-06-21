@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.20 2007/06/15 16:20:34 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.21 2007/06/21 15:10:33 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,6 +14,7 @@ import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
+import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
@@ -43,14 +44,15 @@ import com.idega.presentation.IWContext;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.util.StringHandler;
+import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/15 16:20:34 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/21 15:10:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TilkynningVertakaBean {
 	
@@ -215,7 +217,8 @@ public class TilkynningVertakaBean {
 					messageStoring = "Þjónustubeiðni send";
 					isDownloadTilkynningVertaka = createTilkynningVertakaPDF();
 					if (! isDownloadTilkynningVertaka) {
-						messagePDF = "Problems appeared creating PDF";
+						String message = "Problems appeared creating PDF";
+						messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
 					}
 				}
 				else {
@@ -249,7 +252,8 @@ public class TilkynningVertakaBean {
 					messageStoring = "Skýrsla send";
 					isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
 					if (! isDownloadTilkynningLokVerks()) {
-						messagePDF = "Problems appeared creating PDF";
+						String message = "Problems appeared creating PDF";
+						messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
 					}
 				}
 				else {
@@ -1121,9 +1125,15 @@ public class TilkynningVertakaBean {
 	
 	private boolean createTilkynningVertakaPDF()  {
 		try {
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 			//getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
-			downloadTilkynningVertakaPDF = getElectricalInstallationRendererBusiness().getPDFApplication(getRafverktaka());
-			return true;
+			 KeyValuePair downloadURLMessage = getElectricalInstallationBusiness().getPDFApplicationAndSendEmails(electricalInstallation);
+			 downloadTilkynningVertakaPDF = (String) downloadURLMessage.getKey();
+			 String result = (String) downloadURLMessage.getValue();
+			 if (result != null) {
+				 messagePDF = (messagePDF == null) ? result : messagePDF + result;
+			 }
+			 return true;
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
@@ -1136,8 +1146,9 @@ public class TilkynningVertakaBean {
 	
 	private boolean createTilkynningVertakaXML()  {
 		try {
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 			//getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
-			downloadTilkynningVertakaXML = getElectricalInstallationRendererBusiness().getXMLApplication(getRafverktaka());
+			downloadTilkynningVertakaXML = getElectricalInstallationRendererBusiness().getXMLApplication(electricalInstallation);
 			return true;
 		}
 		catch (RemoteException e) {
@@ -1151,7 +1162,8 @@ public class TilkynningVertakaBean {
 	
 	private boolean createTilkynningLokVerksPDF()  {
 		try {
-			downloadTilkynningLokVerksPDF = getElectricalInstallationRendererBusiness().getPDFReport(getRafverktaka());
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			downloadTilkynningLokVerksPDF = getElectricalInstallationRendererBusiness().getPDFReport(electricalInstallation);
 			return true;
 		}
 		catch (RemoteException e) {
@@ -1164,7 +1176,8 @@ public class TilkynningVertakaBean {
 	
 	private boolean createTilkynningLokVerksXML()  {
 		try {
-			downloadTilkynningLokVerksXML = getElectricalInstallationRendererBusiness().getXMLReport(getRafverktaka());
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			downloadTilkynningLokVerksXML = getElectricalInstallationRendererBusiness().getXMLReport(electricalInstallation);
 			return true;
 		}
 		catch (RemoteException e) {
@@ -1177,7 +1190,8 @@ public class TilkynningVertakaBean {
 	
 	private boolean validateTilkynningVertaka()  {
 		try {
-			validationResults =  getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			validationResults =  getElectricalInstallationRendererBusiness().validateApplication(electricalInstallation);
 			return validationResults.isEmpty();
 		}
 		catch (RemoteException e) {

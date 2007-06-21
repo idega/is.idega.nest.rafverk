@@ -1,5 +1,5 @@
 /*
- * $Id: URLDisplayer.java,v 1.2 2007/06/15 16:20:59 thomas Exp $
+ * $Id: URLDisplayer.java,v 1.3 2007/06/21 15:10:33 thomas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -27,10 +27,10 @@ import com.idega.presentation.ui.Window;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/15 16:20:59 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/21 15:10:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class URLDisplayer extends Window {
 	
@@ -54,7 +54,7 @@ public class URLDisplayer extends Window {
 		try {
 			ElectricalInstallation electricalInstallation = getElectricalInstallationBusiness(iwc).getElectricalInstallationByPrimaryKey(casePK);
 			Rafverktaka rafverktaka = Rafverktaka.getInstanceFromElectricalInstallation(electricalInstallation, getElectricalInstallationBusiness(iwc));
-			String url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka);
+			String url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka.getElectricalInstallation());
 			iwc.sendRedirect(url);
 		}
 		catch (FinderException e) {

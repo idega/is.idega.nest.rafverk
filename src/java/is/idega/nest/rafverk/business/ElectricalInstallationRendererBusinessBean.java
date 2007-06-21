@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.5 2007/06/08 17:06:16 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.6 2007/06/21 15:11:24 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -16,15 +16,16 @@ import is.idega.nest.rafverk.bean.validation.ValidationRules;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
-import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.util.DataConverter;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.faces.context.FacesContext;
-import org.xml.sax.SAXException;
+
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.business.IBOServiceBean;
@@ -46,10 +47,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/21 15:11:24 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -69,44 +70,42 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	private ValidationRules validationRules = null; 
 	
-	public String getPDFApplication(Rafverktaka rafverktaka) throws IOException {
-		Property prop = getApplicationProperty(rafverktaka);
+	public String getPDFApplication(ElectricalInstallation electricalInstallation) throws IOException {
+		Property prop = getApplicationProperty(electricalInstallation);
 		return getPDFOutput(prop);
 	}	
 
-	public String getXMLApplication(Rafverktaka rafverktaka) throws IOException {
-		Property prop = getApplicationProperty(rafverktaka);
+	public String getXMLApplication(ElectricalInstallation electricalInstallation) throws IOException {
+		Property prop = getApplicationProperty(electricalInstallation);
 		return getXMLOutput(prop);
 	}		
 	
-	public String getPDFReport(Rafverktaka rafverktaka) throws IOException {
-		Property prop = getReportProperty(rafverktaka);
+	public String getPDFReport(ElectricalInstallation electricalInstallation) throws IOException {
+		Property prop = getReportProperty(electricalInstallation);
 		return getPDFOutput(prop);
 	}
 	
-	public String getXMLReport(Rafverktaka rafverktaka) throws IOException {
-		Property prop = getReportProperty(rafverktaka);
+	public String getXMLReport(ElectricalInstallation electricalInstallation) throws IOException {
+		Property prop = getReportProperty(electricalInstallation);
 		return getXMLOutput(prop);
 	}
 
 	
-	public Map validateApplication(Rafverktaka rafverktaka) {
-		Property property = getApplicationProperty(rafverktaka);
+	public Map validateApplication(ElectricalInstallation electricalInstallation) {
+		Property property = getApplicationProperty(electricalInstallation);
 		ElectricalInstallationValidator handler = new ElectricalInstallationValidator(getValidationRules());
 		property.accept(handler);
 		return handler.getResults();
 	}
 	
-	private Property getApplicationProperty(Rafverktaka rafverktaka) {
-		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+	private Property getApplicationProperty(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("thjonustubeidni", "Þjónustubeiðni");
 		prop.add(getHeadApplication(electricalInstallation))
 		.add(getBodyApplication(electricalInstallation));
 		return prop;
 	}
 	
-	private Property getReportProperty(Rafverktaka rafverktaka) {
-		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+	private Property getReportProperty(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("skyrsla", "Skýrsla um neysluveitu");		
 		prop.add(getHeadReport(electricalInstallation))
 		.add(getBodyReport(electricalInstallation))
@@ -132,7 +131,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		
 	// head application +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-	public Property getHeadApplication(ElectricalInstallation electricalInstallation) {
+	private Property getHeadApplication(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("head", "Upplýsingar um neysluveitu");
 		prop.add(getEnergyCompany(electricalInstallation));
 		addHeadData(prop, electricalInstallation);
@@ -163,7 +162,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		.add(getEnergyConsumer(electricalInstallation));
 	}
 	
-	public Property getEnergyCompany(ElectricalInstallation electricalInstallation) {
+	private Property getEnergyCompany(ElectricalInstallation electricalInstallation) {
 		Group energyCompany = electricalInstallation.getEnergyCompany();
 		String energyCompanyString = null;
 		if (energyCompany != null) {
@@ -172,7 +171,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return new PropertyImpl("energyCompany","Orkuveitu",energyCompanyString);
 	}
 	
-	public Property getExternalData(ElectricalInstallation electricalInstallation) {
+	private Property getExternalData(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("externalData", "Ytri gögn");
 		String externalProjectID = electricalInstallation.getExternalProjectID();
 		String personInCharge = electricalInstallation.getPersonInCharge();
@@ -181,7 +180,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getElectricianData(ElectricalInstallation electricalInstallation) {
+	private Property getElectricianData(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("electrician", "Rafverktaki");
 		// user name
 		User electrician = electricalInstallation.getElectrician();
@@ -254,7 +253,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getWorkingplaceData(ElectricalInstallation electricalInstallation) {
+	private Property getWorkingplaceData(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("workingplace", "Veitustaður");
 		// user name
 		String name = null,
@@ -290,7 +289,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 			
-	public Property getEnergyConsumer(ElectricalInstallation electricalInstallation) {
+	private Property getEnergyConsumer(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("energyConsumer", "Orkukaupandi");	
 		propertyTree.add("name", "Orkukaupandi", electricalInstallation.getEnergyConsumerName())
 		.add("energyConsumerPersonalId", "Kennitala", electricalInstallation.getEnergyConsumerPersonalID())
@@ -299,7 +298,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getElectronicalProtectiveMeasures(ElectricalInstallation electricalInstallation) {
+	private Property getElectronicalProtectiveMeasures(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree(FieldID.ELECTRONICAL_PROTECTIVE_MEASURES, "Varnarráðstöfun");
 		Iterator iterator = electricalInstallation.getElectronicalProtectiveMeasures().iterator();
 		while (iterator.hasNext()) {
@@ -312,7 +311,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	// body application ++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	public Property getBodyApplication(ElectricalInstallation electricalInstallation) {
+	private Property getBodyApplication(ElectricalInstallation electricalInstallation) {
 		MaelirList maelirList = getMaelirList(electricalInstallation);
 		PropertyTree prop = new PropertyTree("body", "Þjónustubeiðni");
 		prop.add(getApplication(electricalInstallation));
@@ -334,7 +333,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 		
 		
-	public Property getApplication(ElectricalInstallation electricalInstallation) {
+	private Property getApplication(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("applicationGroup", "Beiðni um");
 		PropertyTree items = new PropertyTree(FieldID.APPLICATION, "Beiðni");
 		Iterator iterator = electricalInstallation.getApplication().iterator();
@@ -347,7 +346,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getVoltageSystem(ElectricalInstallation electricalInstallation) {
+	private Property getVoltageSystem(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("voltageSystemGroup", "Spennukerfi");
 		String voltageSystem = electricalInstallation.getVoltageSystem();
 		propertyTree.addWithValueDescription(FieldID.VOLTAGE_SYSTEM, "Spennukerfi", voltageSystem, DataConverter.lookup(InitialData.SPENNUKERFI, voltageSystem))
@@ -355,7 +354,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public void addAllMaelir(PropertyTree propertyTree, MaelirList maelirList) {
+	private void addAllMaelir(PropertyTree propertyTree, MaelirList maelirList) {
 		propertyTree.add(getMaelirForContextShowNumber(InitialData.TAKA,"Taka mæli", maelirList))
 		.add(getMaelirForContextShowNumber(InitialData.FYRIR, "Fyrir er", maelirList))
 		.add(getMaelirForContextShowPhaseAmpere(InitialData.SETJA, "Setja mæli", maelirList))
@@ -426,7 +425,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	// report rendering -------------------------------------------------------------------------------------------------------------------------------------------
 	// head report ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	public Property getHeadReport(ElectricalInstallation electricalInstallation) {
+	private Property getHeadReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("head", "");
 		addHeadData(prop, electricalInstallation);
 		prop.add(getAnnouncement(electricalInstallation));
@@ -438,7 +437,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 		
 		
-	public Property getAnnouncement(ElectricalInstallation electricalInstallation) {
+	private Property getAnnouncement(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("announcementGroup", "Tilkynnt er");
 		String announcement = electricalInstallation.getAnnouncement();
 		propertyTree.addWithValueDescription("announcement", "Tilkynnt", announcement ,DataConverter.lookup(InitialData.TILKYNNT, announcement));
@@ -448,7 +447,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	// body report ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	public Property getBodyReport(ElectricalInstallation electricalInstallation) {
+	private Property getBodyReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("bodyReport", "Upplýsingar um neysluveitu");
 		propertyTree.add(getVoltageSystemInReport(electricalInstallation))
 		.add(getElectronicalProtectiveMeasuresInReport(electricalInstallation))
@@ -459,7 +458,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getVoltageSystemInReport(ElectricalInstallation electricalInstallation) {
+	private Property getVoltageSystemInReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("voltageSystemInReportGroup", "Veitukerfi");
 		String voltageSystemInReport = electricalInstallation.getVoltageSystemInReport();
 		propertyTree.addWithValueDescription("voltageSystemInReport", "Veitukerfi",voltageSystemInReport ,DataConverter.lookup(InitialData.SPENNUKERFI, voltageSystemInReport));
@@ -467,7 +466,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getElectronicalProtectiveMeasuresInReport(ElectricalInstallation electricalInstallation) {
+	private Property getElectronicalProtectiveMeasuresInReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("electronicalProtectiveMeasuresInReport", "Varnarráðstöfun");
 		Iterator iterator = electricalInstallation.getElectronicalProtectiveMeasuresInReport().iterator();
 		while (iterator.hasNext()) {
@@ -477,7 +476,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getGrounding(ElectricalInstallation electricalInstallation) {
+	private Property getGrounding(ElectricalInstallation electricalInstallation) {
 		PropertyTree propTree = new PropertyTree("groundingGroup", "Jarðskaut/sp.jöfnun");
 		PropertyTree propertyTree = new PropertyTree("grounding", "Jarðskaut/sp.jöfnun");
 		Iterator iterator = electricalInstallation.getGrounding().iterator();
@@ -490,7 +489,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public Property getMeter(MaelirList maelirList) {
+	private Property getMeter(MaelirList maelirList) {
 		PropertyTree propertyTree = new PropertyTree("meterGroup", "Mælir");
 		Maelir maelir = maelirList.getStadurMaelir();
 		propertyTree.add("meterNumber", "Númer mælis rafveitu", maelir.getNumer())
@@ -500,7 +499,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	// bottom report ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	public Property getBottomReport(ElectricalInstallation electricalInstallation) {
+	private Property getBottomReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("bottomReport", "Mælingar og prófanir");
 		propertyTree.add(getSwitchPanel(electricalInstallation))
 		.add(getInsulation(electricalInstallation))
@@ -512,35 +511,35 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 	
 	
-	public Property getSwitchPanel(ElectricalInstallation electricalInstallation) {
+	private Property getSwitchPanel(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("switchPanel", "");
 		propertyTree.addWithUnit("switchPanelResistence", "Hringrásarviðnám aðal-/greinitöflu",electricalInstallation.getSwitchPanelResistence(),OHM)
 		.addWithUnit("switchPanelAmpere", "Skammhlaupsstraumur aðal-/greinitöflu",electricalInstallation.getSwitchPanelAmpere(),AMPERE);
 		return propertyTree;
 	}
 	
-	public Property getInsulation(ElectricalInstallation electricalInstallation) {
+	private Property getInsulation(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("insulation", "");
 		propertyTree.addWithUnit("insulationResistence", "Einangrun neysluveitu",electricalInstallation.getInsulationResistence(),MEGA_OHM)
 		.addWithUnit("groundingResistence", "Hringrásarviðnámsmæling jarðskauts/sp.jöfnunar",electricalInstallation.getGroundingResistence(),AMPERE);
 		return propertyTree;
 	}
 	
-	public Property getShortCircuit(ElectricalInstallation electricalInstallation) {
+	private Property getShortCircuit(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("shortCircuit", "");
 		propertyTree.addWithUnit("ShortCircuitAmpere", "Skammhlaupsstraumur neysluveitu",electricalInstallation.getShortCircuitAmpere(),AMPERE)
 		.addWithUnit("resistence", "Hringrásarviðnámsmæling neysluveitu",electricalInstallation.getResistence(),OHM);
 		return propertyTree;
 	}
 	
-	public Property getVoltage(ElectricalInstallation electricalInstallation) {
+	private Property getVoltage(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("voltage", "");
 		propertyTree.addWithUnit("voltagePhaseN", "Maeld spenna Fasi-N",electricalInstallation.getVoltagePhaseN(),VOLT)
 		.addWithUnit("voltagePhasePhase", "Maeld spenna Fasi-Fasi",electricalInstallation.getVoltagePhasePhase(),VOLT);
 		return propertyTree;
 	}
 	
-	public Property isFuseAttached(ElectricalInstallation electricalInstallation) {
+	private Property isFuseAttached(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("fuse","");
 		String key = (electricalInstallation.isFuseAttached()) ? InitialData.LEKASTRAUMSROFI_I_LAGI_KEY : InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY;
 		String description = DataConverter.lookup(InitialData.LEKASTRAUMSROFI, key);
@@ -550,21 +549,21 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	public UserBusiness getUserBusiness() {
+	private UserBusiness getUserBusiness() {
 		if (userBusiness == null) {
 			userBusiness = (UserBusiness) getServiceBean(UserBusiness.class);
 		}
 		return userBusiness;
 	}
 	
-	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
+	private ElectricalInstallationBusiness getElectricalInstallationBusiness() {
 		if (electricalInstallationBusiness == null) {
 			electricalInstallationBusiness = (ElectricalInstallationBusiness) getServiceBean(ElectricalInstallationBusiness.class);
 		}
 		return electricalInstallationBusiness;
 	}
 	
-	public ValidationRules getValidationRules() {
+	private ValidationRules getValidationRules() {
 		if (validationRules == null) {
 			validationRules = new ValidationRules();
 		}

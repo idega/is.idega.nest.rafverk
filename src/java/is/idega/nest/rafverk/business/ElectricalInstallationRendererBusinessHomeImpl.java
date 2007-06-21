@@ -4,7 +4,8 @@ package is.idega.nest.rafverk.business;
 import javax.ejb.CreateException;
 import com.idega.business.IBOHomeImpl;
 
-public class ElectricalInstallationRendererBusinessHomeImpl extends IBOHomeImpl implements ElectricalInstallationRendererBusinessHome {
+public class ElectricalInstallationRendererBusinessHomeImpl extends IBOHomeImpl implements
+		ElectricalInstallationRendererBusinessHome {
 
 	public Class getBeanInterfaceClass() {
 		return ElectricalInstallationRendererBusiness.class;

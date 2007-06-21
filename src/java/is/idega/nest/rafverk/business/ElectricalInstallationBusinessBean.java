@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.6 2007/06/15 16:20:34 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.7 2007/06/21 15:11:24 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,6 +24,7 @@ import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.postur.Gata;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,20 +57,25 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
+import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/15 16:20:34 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/21 15:11:24 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
 	private UserBusiness userBusiness = null;
 	
 	private ElectricalInstallationHome electricalInstallationHome = null;
+	
+	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
+	
+	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
 	
 	private MeterHome meterHome = null;
 	
@@ -374,6 +380,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		RealEstate realEstate = getRealEstateHome().create();
 		realEstate.setRealEstateNumber(realEstateNumber);
+		realEstate.setLandRegisterMapNumber(fasteign.getLandnumer());
 		realEstate.setRealEstateCode(fasteign.getMerking());
 		realEstate.setUse(fasteign.getNotkun());
 		realEstate.setComment(fasteign.getSkyring());
@@ -581,6 +588,25 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		initializeManagedBeansByMeters(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 	}
 	
+	
+	public KeyValuePair getPDFApplicationAndSendEmails(ElectricalInstallation electricalInstallation) throws IOException {
+		String downloadURL = getElectricalInstallationRendererBusiness().getPDFApplication(electricalInstallation);
+		User electrician = electricalInstallation.getElectrician();
+		String name = (electrician == null) ? null : electrician.getName();
+		String subject = "Þjónustubeiðni";
+		subject = (name == null) ? subject : subject + ": " + name;
+		String text = null;
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		if (realEstate != null) {
+			Fasteign fasteign = new Fasteign(realEstate);
+			text = fasteign.getDescription();
+		}
+		else {
+			text = StringHandler.EMPTY_STRING;
+		}
+		String result = getElectricalInstallationMessageBusiness().sendDataToEnergyCompany(electricalInstallation, subject, text, downloadURL);
+		return new KeyValuePair(downloadURL, result);
+	}
 	
 	private void initializeManagedBean(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean) {
 		// move all values from the entity to the managed bean
@@ -816,14 +842,14 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 	
-	public ElectricalInstallationHome getElectricalInstallationHome() {
+	private ElectricalInstallationHome getElectricalInstallationHome() {
 		if (electricalInstallationHome == null) {
 			electricalInstallationHome = (ElectricalInstallationHome) retrieveHome(ElectricalInstallation.class);
 		}
 		return electricalInstallationHome;
 	}
 	
-	public MeterHome getMeterHome() {
+	private MeterHome getMeterHome() {
 		if (meterHome == null) {
 			meterHome = (MeterHome) retrieveHome(Meter.class);
 		}
@@ -831,32 +857,46 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 
 	
-	public RealEstateHome getRealEstateHome() {
+	private RealEstateHome getRealEstateHome() {
 		if (realEstateHome == null) {
 			realEstateHome = (RealEstateHome) retrieveHome(RealEstate.class);
 		}
 		return realEstateHome;
 	}
 	
-	public StreetHome getStreetHome() {
+	private StreetHome getStreetHome() {
 		if (streetHome == null) {
 			streetHome = (StreetHome)  retrieveHome(Street.class);
 		}
 		return streetHome;
 	}
 	
-	public PostalCodeHome getPostalCodeHome() {
+	private PostalCodeHome getPostalCodeHome() {
 		if (postalCodeHome == null) {
 			postalCodeHome = (PostalCodeHome) retrieveHome(PostalCode.class);
 		}
 		return postalCodeHome;
 	}
 	
-	public UserBusiness getUserBusiness() {
+	private UserBusiness getUserBusiness() {
 		if (userBusiness == null) {
 			userBusiness = (UserBusiness) getServiceBean(UserBusiness.class);
 		}
 		return userBusiness;
+	}
+	
+	private ElectricalInstallationRendererBusiness getElectricalInstallationRendererBusiness() {
+		if (electricalInstallationRendererBusiness == null) {
+			electricalInstallationRendererBusiness = (ElectricalInstallationRendererBusiness) getServiceBean(ElectricalInstallationRendererBusiness.class);
+		}
+		return electricalInstallationRendererBusiness;
+	}
+	
+	private ElectricalInstallationMessageBusiness  getElectricalInstallationMessageBusiness() {
+		if (electricalInstallationMessageBusiness == null) {
+			electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness) getServiceBean(ElectricalInstallationMessageBusiness.class);
+		}
+		return electricalInstallationMessageBusiness;
 	}
 	
 	public ElectricalInstallationState getElectricalInstallationState() {

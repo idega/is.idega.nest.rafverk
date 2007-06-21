@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.2 2007/06/15 16:20:59 thomas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.3 2007/06/21 15:10:33 thomas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.block;
 
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationMessageBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
@@ -135,7 +136,7 @@ public class MyCases extends CasesList {
 		statuses.addMenuElement(getBusiness().getCaseStatusWaiting().getStatus(), getBusiness().getLocalizedCaseStatusDescription(theCase, getBusiness().getCaseStatusWaiting(), iwc.getCurrentLocale()));
 		statuses.addMenuElement(getBusiness().getCaseStatusReady().getStatus(), getBusiness().getLocalizedCaseStatusDescription(theCase, getBusiness().getCaseStatusReady(), iwc.getCurrentLocale()));
 		statuses.setSelectedElement(theCase.getStatus());
-		statuses.setStyleClass("caseStatusDropdown");
+		//statuses.setStyleClass("caseStatusDropdown");
 
 //		Layer message = new Layer(Layer.SPAN);
 //		message.add(new Text(TextSoap.formatText(theCase.getMessage())));
@@ -242,7 +243,7 @@ public class MyCases extends CasesList {
 		Rafverktaka rafverktaka = Rafverktaka.getInstanceFromElectricalInstallation(theCase, getElectricalInstallationBusiness(iwc));
 		String url = "";
 		try {
-			url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka);
+			url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka.getElectricalInstallation());
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -288,9 +289,9 @@ public class MyCases extends CasesList {
 //			section.add(element);
 //		}
 
-		element = new Layer(Layer.DIV);
-		element.setStyleClass("formItem");
-		element.setStyleClass("informationItem");
+//		element = new Layer(Layer.DIV);
+//		element.setStyleClass("formItem");
+//		element.setStyleClass("informationItem");
 //		label = new Label();
 //		label.setLabel(getResourceBundle().getLocalizedString(getPrefix() + "message", "Message"));
 //		element.add(label);
@@ -298,6 +299,8 @@ public class MyCases extends CasesList {
 //		section.add(element);
 
 		section.add(clear);
+
+		
 
 		heading = new Heading1(getResourceBundle().getLocalizedString("handler_overview", "Handler overview"));
 		heading.setStyleClass("subHeader");
@@ -322,6 +325,45 @@ public class MyCases extends CasesList {
 		section.add(element);
 
 		section.add(clear);
+		
+		
+//		heading = new Heading1(getResourceBundle().getLocalizedString("handler_overview", "Handler overview"));
+//		heading.setStyleClass("subHeader");
+//		form.add(heading);
+//
+//		section = new Layer(Layer.DIV);
+//		section.setStyleClass("formSection");
+//		form.add(section);
+//		section.add(clear);
+//
+////		element = new Layer(Layer.DIV);
+////		element.setStyleClass("formItem");
+////		
+////		label = new Label(getResourceBundle().getLocalizedString("status", "status"), statuses);
+////		element.add(label);
+////		element.add(statuses);
+////		section.add(element);
+//	
+//		element = new Layer(Layer.DIV);
+//		element.setStyleClass("formItem");
+//		
+//		label = new Label();
+//		label.setLabel(getResourceBundle().getLocalizedString("status", "status"));
+//		element.add(label);
+//		Layer span = new Layer(Layer.SPAN);
+//		span.add(statuses);
+//		element.add(span);
+//		section.add(element);
+//		
+//
+//		element = new Layer(Layer.DIV);
+//		element.setStyleClass("formItem");
+//		label = new Label(getResourceBundle().getLocalizedString("reply", "Reply"), reply);
+//		element.add(label);
+//		element.add(reply);
+//		section.add(element);
+
+
 
 //		Collection logs = getCasesBusiness(iwc).getCaseLogs(theCase);
 //		if (!logs.isEmpty()) {
@@ -350,23 +392,23 @@ public class MyCases extends CasesList {
 		add(form);
 	}
 
-	protected void save(IWContext iwc) throws RemoteException {
+	protected String save(IWContext iwc) throws RemoteException {
 		Object casePK = iwc.getParameter(PARAMETER_CASE_PK);
-		Object caseCategoryPK = iwc.getParameter(PARAMETER_CASE_CATEGORY_PK);
-		Object subCaseCategoryPK = iwc.getParameter(PARAMETER_SUB_CASE_CATEGORY_PK);
-		Object caseTypePK = iwc.getParameter(PARAMETER_CASE_TYPE_PK);
+//		Object caseCategoryPK = iwc.getParameter(PARAMETER_CASE_CATEGORY_PK);
+//		Object subCaseCategoryPK = iwc.getParameter(PARAMETER_SUB_CASE_CATEGORY_PK);
+//		Object caseTypePK = iwc.getParameter(PARAMETER_CASE_TYPE_PK);
 		String status = iwc.getParameter(PARAMETER_STATUS);
 		String reply = iwc.getParameter(PARAMETER_REPLY);
 
 		ElectricalInstallation electricalInstallation = getElectricalInstallation(casePK, iwc);
 		electricalInstallation.setStatus(status);
 		electricalInstallation.store();
-//		try {
-//			//getBusiness().handleCase(casePK, subCaseCategoryPK != null ? subCaseCategoryPK : caseCategoryPK, caseTypePK, status, iwc.getCurrentUser(), reply, iwc);
-//		}
-//		catch (FinderException fe) {
-//			fe.printStackTrace();
-//		}
+		
+		// send user message
+		
+		ElectricalInstallationMessageBusiness messageBusiness = getElectricalInstallationMessageBusiness(iwc);
+		User sender = iwc.getCurrentUser();
+		return messageBusiness.createStatusChangedUserMessage(electricalInstallation, sender, reply);
 	}
 
 	protected boolean showCheckBox() {
@@ -412,6 +454,10 @@ public class MyCases extends CasesList {
 	
 	private ElectricalInstallationRendererBusiness getElectricalInstallationRendererBusiness(IWContext iwc) {
 		return (ElectricalInstallationRendererBusiness) getServiceBean(ElectricalInstallationRendererBusiness.class,iwc);
+	}
+	
+	private ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness(IWContext iwc) {
+		return (ElectricalInstallationMessageBusiness) getServiceBean(ElectricalInstallationMessageBusiness.class, iwc);
 	}
 	
 	private IBOService getServiceBean(Class serviceClass, IWContext iwc ) {

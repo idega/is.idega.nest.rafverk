@@ -1,5 +1,5 @@
 /*
- * $Id: CasesList.java,v 1.1 2007/06/08 17:08:20 thomas Exp $
+ * $Id: CasesList.java,v 1.2 2007/06/21 15:10:33 thomas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -21,6 +21,8 @@ import java.util.Iterator;
 
 import javax.ejb.FinderException;
 
+import com.idega.block.process.business.CaseBusiness;
+import com.idega.block.process.business.CaseCodeManager;
 import com.idega.block.process.data.Case;
 import com.idega.block.process.data.CaseStatus;
 import com.idega.business.IBORuntimeException;
@@ -53,10 +55,10 @@ import com.idega.util.text.Name;
  * 
  * NOTE: This is a quick hack, need to be reviewed/refactored
  * 
- *  Last modified: $Date: 2007/06/08 17:08:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/06/21 15:10:33 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class CasesList extends CasesBlock {
 
@@ -88,8 +90,13 @@ public abstract class CasesList extends CasesBlock {
 				break;
 
 			case ACTION_SAVE:
-				save(iwc);
-				showList(iwc);
+				String error = save(iwc);
+				if (error == null) {
+					showList(iwc);
+				}
+				else {
+					showError(error);
+				}
 				break;
 
 			case ACTION_MULTI_PROCESS_FORM:
@@ -114,6 +121,12 @@ public abstract class CasesList extends CasesBlock {
 		return ACTION_VIEW;
 	}
 
+	private void showError(String error) { 
+		Text text = new Text(error);
+		add(text);
+	}
+	
+	
 	private void showList(IWContext iwc) throws RemoteException {
 		Form form = new Form();
 		form.addParameter(PARAMETER_ACTION, ACTION_MULTI_PROCESS_FORM);
@@ -182,6 +195,7 @@ public abstract class CasesList extends CasesBlock {
 		Iterator iter = cases.iterator();
 		while (iter.hasNext()) {
 			ElectricalInstallation theCase = (ElectricalInstallation) iter.next();
+			CaseBusiness caseBusiness = CaseCodeManager.getInstance().getCaseBusinessOrDefault(theCase.getCaseCode(), iwc);
 			CaseStatus status = theCase.getCaseStatus();
 			User owner = theCase.getElectrician();
 			IWTimestamp created = new IWTimestamp(theCase.getCreated());
@@ -193,7 +207,7 @@ public abstract class CasesList extends CasesBlock {
 			else if (!iter.hasNext()) {
 				row.setStyleClass("lastRow");
 			}
-			if (status.equals(getCasesBusiness(iwc).getCaseStatusReview())) {
+			if (status.equals(caseBusiness.getCaseStatusReview())) {
 				row.setStyleClass("isReview");
 			}
 
@@ -217,7 +231,7 @@ public abstract class CasesList extends CasesBlock {
 
 			cell = row.createCell();
 			cell.setStyleClass("status");
-			cell.add(new Text(getBusiness().getLocalizedCaseStatusDescription(theCase, status, iwc.getCurrentLocale())));
+			cell.add(new Text(caseBusiness.getLocalizedCaseStatusDescription(theCase, status, iwc.getCurrentLocale())));
 
 			cell = row.createCell();
 			if (!showCheckBoxes) {
@@ -440,7 +454,7 @@ public abstract class CasesList extends CasesBlock {
 
 	protected abstract void showProcessor(IWContext iwc, Object casePK) throws RemoteException;
 
-	protected abstract void save(IWContext iwc) throws RemoteException;
+	protected abstract String save(IWContext iwc) throws RemoteException;
 
 	protected abstract boolean showCheckBox();
 
