@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.8 2007/07/10 13:01:37 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.9 2007/07/10 15:03:56 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -62,10 +62,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/10 13:01:37 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/10 15:03:56 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -239,7 +239,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				return;
 			}
 			// application replaces the existing real estate with incomplete real estate
-			setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
+			// no, we are not doing that - keep the old one!
+			// setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
 			return;
 		}
 		// there is a dummy real estate 
