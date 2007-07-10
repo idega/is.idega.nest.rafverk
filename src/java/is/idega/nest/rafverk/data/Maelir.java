@@ -1,5 +1,5 @@
 /*
- * $Id: Maelir.java,v 1.5 2007/04/05 22:28:49 thomas Exp $
+ * $Id: Maelir.java,v 1.6 2007/07/10 11:58:36 thomas Exp $
  * Created on Feb 12, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,17 +9,24 @@
  */
 package is.idega.nest.rafverk.data;
 
+import is.idega.nest.rafverk.bean.constants.JSFPageID;
+
+import java.io.IOException;
 import java.util.List;
+
+import javax.faces.context.FacesContext;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/04/05 22:28:49 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/10 11:58:36 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class Maelir {
+	
+	
 	
 	public static Maelir addInvalidInstance(String context, int priorityWithinList, List myList) {
 		Maelir maelir = new Maelir(context, priorityWithinList);
@@ -58,17 +65,19 @@ public class Maelir {
 	/**
 	 * Set this instance to valid and 
 	 * add an invalid instance at the end
-	 * of myList
+	 * of myList, goes to the desired anchor
 	 *
 	 */
 	public void add() {
 		valid = true;
 		int newPriority = priorityWithinContext + 1;
 		Maelir.addInvalidInstance(getContext(), newPriority, myList);
+		goBackToAnchor();
 	}
 	
 	public void delete() {
 		myList.remove(this);
+		goBackToAnchor();
 	}
 
 	
@@ -171,6 +180,20 @@ public class Maelir {
 	
 	public void setMyList(List myList) {
 		this.myList = myList;
+	}
+	
+	private void goBackToAnchor() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String anchorNameValue = (String) context.getExternalContext().getRequestParameterMap().get(JSFPageID.PARAMETER_ANCHOR_NAME);
+        StringBuffer buffer = new StringBuffer(JSFPageID.PAGE_URI_APPLICATION_FORM_STEP_3);
+        buffer.append("#").append(anchorNameValue);
+		try {
+			// (e.g., "/pages/rafverktaki/rafverk/tilkynningvertakaskref3/#takaAdd")
+			context.getExternalContext().redirect(buffer.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

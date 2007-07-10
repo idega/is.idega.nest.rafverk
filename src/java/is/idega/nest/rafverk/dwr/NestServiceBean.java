@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.2 2007/06/15 16:21:33 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.3 2007/07/10 11:59:21 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -16,15 +16,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+
+import com.idega.builder.business.BuilderLogic;
+import com.idega.builder.business.CachedBuilderPage;
 import com.idega.business.IBOServiceBean;
+import com.idega.core.view.ViewManager;
+import com.idega.core.view.ViewNode;
+import com.idega.faces.IWJspViewHandler;
+import com.idega.faces.IWViewHandlerImpl;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/15 16:21:33 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/10 11:59:21 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -60,5 +72,28 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		list.add(energyConsumerName);
 		list.add(energyConsumerPersonalID);
 		return list;
+	}
+	
+	public void updateMeter(String pageURI, String componentID) {
+		ViewManager viewManager = ViewManager.getInstance(getIWMainApplication());
+		ViewNode viewNode = viewManager.calculateViewNodeForUrl(pageURI);
+		String resourceURI = viewNode.getResourceURI();
+		
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application application = context.getApplication();
+		ViewHandler viewHandler = application.getViewHandler();
+
+		ViewHandler parent = ((IWViewHandlerImpl) viewHandler).getParentViewHandler();
+		IWJspViewHandler jspViewHandler = new IWJspViewHandler(parent);
+		
+		UIViewRoot viewRoot = jspViewHandler.restoreView(context, resourceURI);
+		String renderkit = parent.calculateRenderKitId(context);
+		UIViewRoot root = context.getViewRoot();
+		UIComponent component = viewRoot.findComponent(componentID);
+		component.getChildren();
+		BuilderLogic builderLogic = BuilderLogic.getInstance();
+		String pageKey = builderLogic.getPageKeyByURI(pageURI);
+		CachedBuilderPage page = builderLogic.getCachedBuilderPage(pageKey);
 	}
 }

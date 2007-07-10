@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.21 2007/06/21 15:10:33 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.22 2007/07/10 11:58:37 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/21 15:10:33 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/10 11:58:37 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class TilkynningVertakaBean {
 	
@@ -281,7 +281,6 @@ public class TilkynningVertakaBean {
 	public String storeApplication() {
 		isSuccessfullyStored = storeApplicationData();
 		if (isSuccessfullyStored) { 
-			BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
 			messageStoring = "þjónustubeiðni geymd";
 		}
 		else {
@@ -292,7 +291,12 @@ public class TilkynningVertakaBean {
 	
 	private boolean storeApplicationData() {
 		try {
-			return getElectricalInstallationBusiness().storeApplication(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			boolean result = getElectricalInstallationBusiness().storeApplication(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			if (result) {
+				// updating the list
+				BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+			}
+			return result;
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
@@ -302,7 +306,6 @@ public class TilkynningVertakaBean {
 	public String storeApplicationReport() {
 		isSuccessfullyStored = storeApplicationReportData();
 		if (isSuccessfullyStored) { 
-			BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
 			messageStoring = "Skýrsla geymd";
 		}
 		else {
@@ -313,7 +316,12 @@ public class TilkynningVertakaBean {
 	
 	private boolean storeApplicationReportData() {
 		try {
-			return getElectricalInstallationBusiness().storeApplicationReport(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			boolean result = getElectricalInstallationBusiness().storeApplicationReport(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			if (result) {
+				// updating the list
+				BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+			}
+			return result;
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());

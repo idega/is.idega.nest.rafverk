@@ -27,5 +27,10 @@ public interface NestService extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getEnergyConsumerFields
 	 */
-	public List getEnergyConsumerFields(String realEstate) throws RemoteException;
+	public List getEnergyConsumerFields(String realEstateNumber) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#updateMeter
+	 */
+	public void updateMeter(String pageURI, String componentID) throws RemoteException;
 }
