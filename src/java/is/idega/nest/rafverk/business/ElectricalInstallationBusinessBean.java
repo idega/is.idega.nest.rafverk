@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.7 2007/06/21 15:11:24 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.8 2007/07/10 13:01:37 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -62,10 +62,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/21 15:11:24 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/10 13:01:37 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -91,6 +91,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().sendApplication(electricalInstallation);
+		electricalInstallation.store();
 		rafverktaka.initialize(electricalInstallation, this);
 		return true;
 	}
@@ -99,6 +100,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().sendApplicationReport(electricalInstallation);
+		electricalInstallation.store();
 		rafverktaka.initialize(electricalInstallation, this);
 		return true;
 	}
