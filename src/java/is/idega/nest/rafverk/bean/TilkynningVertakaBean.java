@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.22 2007/07/10 11:58:37 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.23 2007/07/11 16:23:07 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/10 11:58:37 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/11 16:23:07 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TilkynningVertakaBean {
 	
@@ -861,12 +861,15 @@ public class TilkynningVertakaBean {
 	
 	
 	public void setFastanumer(String fastanumer) {
+		if (InitialData.NONE_REAL_ESTATE_SELECTION.equals(fastanumer)) {
+			// do nothing, leave everything unchanged
+			return;
+		}
 		if(StringHandler.isNotEmpty(fastanumer)) {
 			// do not do anything if there is no change
 			if (fastanumer.equals(this.fastanumer)) {
 				return;
 			}
-			String postnumer = getPostnumer();
 			Fasteign fasteign = lookupFasteign(fastanumer);
 			FasteignaEigandi eigandi = fasteign.getEigandi();
 			if(eigandi!=null){
@@ -885,7 +888,7 @@ public class TilkynningVertakaBean {
 		List realEstateList = getFasteignaListi();
 		int size =  (realEstateList == null) ? 1 : realEstateList.size();
 		Map realEstates = new LinkedHashMap(size);
-		realEstates.put("", "Vinsamlegast veldu rétta fasteign:");
+		realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Vinsamlegast veldu rétta fasteign:");
 		if (realEstateList == null) {
 			return realEstates;
 		}

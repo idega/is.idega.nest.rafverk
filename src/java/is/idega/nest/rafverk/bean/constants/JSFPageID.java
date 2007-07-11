@@ -1,5 +1,5 @@
 /*
- * $Id: JSFPageID.java,v 1.2 2007/07/10 15:03:55 thomas Exp $
+ * $Id: JSFPageID.java,v 1.3 2007/07/11 16:23:07 thomas Exp $
  * Created on Jul 4, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,5 +14,5 @@ public class JSFPageID {
 	
 	public static String PARAMETER_ANCHOR_NAME = "anchorName";
 	
-	public static String PAGE_URI_APPLICATION_FORM_STEP_3 = "/pages/rafverktaki/rafverk/tilkynningvertakaskref3/";
+	public static String PAGE_URI_APPLICATION_FORM_STEP_3 = "/pages/rafverktaki/rafverk/tilkynningvertakaskref3";
 }

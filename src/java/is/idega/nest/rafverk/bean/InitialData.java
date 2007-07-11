@@ -25,6 +25,8 @@ public class InitialData extends BaseBean {
 	// special key for none street
 	public static final String NONE_STREET = "none_street";
 	
+	public static final String NONE_REAL_ESTATE_SELECTION = "none_real_estate_selection";
+	
 	// special key (also used in validators)
 	public static final String ANNAD = "ANNAD";
 	
