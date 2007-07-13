@@ -5,6 +5,7 @@ import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import com.idega.business.IBOLookup;
@@ -151,7 +153,7 @@ public class RafverktokuListi extends BaseBean  {
 	 * @param actionEvent
 	 * @throws AbortProcessingException
 	 */
-	public void populateForms(ActionEvent actionEvent) throws AbortProcessingException {
+	public void populateFormsForOverview(ActionEvent actionEvent) throws AbortProcessingException {
 	    Rafverktaka rafverktaka = null;
 
 	    UIComponent tmpComponent = actionEvent.getComponent();
@@ -168,12 +170,15 @@ public class RafverktokuListi extends BaseBean  {
 	    		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
 	    		try {
 	    			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	    			tilkynningVertakaBean.createApplicationPDF();
+	    			tilkynningVertakaBean.createApplicationReportPDF();
 	    		}
 	    		catch (RemoteException e) {
 	    			throw new RuntimeException(e.getMessage());
 	    		}
 	    	}
 	    }
+	    
 	}
 	
 	
@@ -191,6 +196,38 @@ public class RafverktokuListi extends BaseBean  {
 			}
 		}
 		return electricalInstallationBusiness;
+	}
+
+	public void populateFormsForForms(ValueChangeEvent valueChangeEvent) throws AbortProcessingException {
+	    String target = (String) valueChangeEvent.getNewValue();
+	    if (InitialData.NONE_URI.equals(target)) {
+	    	// do nothing
+	    	return;
+	    }
+		UIComponent tmpComponent = valueChangeEvent.getComponent();
+	    while (null != tmpComponent && !(tmpComponent instanceof UIData)) {
+	    	tmpComponent = tmpComponent.getParent();
+		}
+	    if (tmpComponent instanceof UIData) {
+	    	Object tmpRowData = ((UIData) tmpComponent).getRowData();
+	    	if (tmpRowData instanceof Rafverktaka) {
+	    		Rafverktaka rafverktaka = (Rafverktaka) tmpRowData;
+	    		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+	    		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
+	    		try {
+	    			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	    		}
+	    		catch (RemoteException e) {
+	    			throw new RuntimeException(e.getMessage());
+	    		}
+	    	}
+	    }
+	    try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect(target);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 

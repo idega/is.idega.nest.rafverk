@@ -6,7 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
- version="1.2">
+version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
@@ -112,7 +112,6 @@ function updateStreets() {
 var postalCodeDrop = document.getElementById("form1:postnumerDrop");
 NestService.getStreetsByPostalCode(postalCodeDrop.options[postalCodeDrop.selectedIndex].value, {
 callback:changeStreets,
-timeout:5,
 errorHandler:function(message) { alert("Error: " + message); }
 });
 }
@@ -156,7 +155,10 @@ var streetNumber = document.getElementById("form1:gotunumer");
 var postalCodeSelection = postalCodeDrop.options[postalCodeDrop.selectedIndex].value;
 var streetSelection = streetDrop.options[streetDrop.selectedIndex].value;
 var streetNumberValue = streetNumber.value;
-NestService.getRealEstatesByPostalCodeStreetStreetNumber(changeRealEstates, postalCodeSelection, streetSelection, streetNumberValue);
+NestService.getRealEstatesByPostalCodeStreetStreetNumber(postalCodeSelection, streetSelection, streetNumberValue,
+{callback:changeRealEstates,
+errorHandler:function(message) { alert("Error: " + message); }
+});
 }
 
 function changeRealEstates(data) {
@@ -166,7 +168,10 @@ DWRUtil.addOptions("form1:fasteignirDrop", data);
 
 function updateEnergyConsumerFields() {
 var realEstateDrop = document.getElementById("form1:fasteignirDrop");
-NestService.getEnergyConsumerFields(changeEnergyConsumerFields, realEstateDrop.options[realEstateDrop.selectedIndex].value);
+NestService.getEnergyConsumerFields(realEstateDrop.options[realEstateDrop.selectedIndex].value,
+{callback:changeEnergyConsumerFields,
+errorHandler:function(message) { alert("Error: " + message); }
+});
 }
 
 function changeEnergyConsumerFields(data) {
@@ -237,7 +242,7 @@ Upplysingar um rafveitu/orkuveitu
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="orkuveituDrop" value="Orkuveitufyrirtæki"/>
-<h:selectOneMenu 
+<h:selectOneMenu
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="orkuveituDrop" value="#{TilkynningVertakaBean.orkuveitufyrirtaeki}">
 <f:selectItems value="#{TilkynningVertakaBean.rafveituListiSelects}">
@@ -261,14 +266,14 @@ Ytri gögn
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="externalProjectID" value="Verknúmer"/>
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="externalProjectID" value="#{TilkynningVertakaBean.externalProjectID}"/>
 </wf:container>
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="personInCharge" value="Umsjónarmaður"/>
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="personInCharge" value="#{TilkynningVertakaBean.personInCharge}"/>
 </wf:container>
@@ -287,15 +292,15 @@ Upplysingar um rafverktaka
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="rafverktakaFyrirtaeki" value="Rafverktakafyrirtæki"/>
-<h:inputText 
-id="rafverktakaFyrirtaeki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafnFyrirtaekis}" 
+<h:inputText
+id="rafverktakaFyrirtaeki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafnFyrirtaekis}"
 disabled="true"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="loggilturRafverktaki" value="Löggiltur rafverktaki"/>
-<h:inputText 
-id="loggilturRafverktaki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafn}" 
+<h:inputText
+id="loggilturRafverktaki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafn}"
 disabled="true"/>
 </wf:container>
 
@@ -308,19 +313,19 @@ disabled="true"/>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="kennitalaRafverktaka" value="Kennitala rafverktaka"/>
-<h:inputText id="kennitalaRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.kennitala}" 
+<h:inputText id="kennitalaRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.kennitala}"
 disabled="true"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="heimasimiRafverktaka" value="Heimasími"/>
-<h:inputText id="heimasimiRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.heimasimi}" 
+<h:inputText id="heimasimiRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.heimasimi}"
 disabled="true"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="vinnusimiRafverktaka" value="Vinnusími"/>
-<h:inputText id="vinnusimiRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.vinnusimi}" 
+<h:inputText id="vinnusimiRafverktaka" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.vinnusimi}"
 disabled="true"/>
 </wf:container>
 
@@ -339,30 +344,30 @@ Upplysingar um veitustad
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="postnumerDrop" value="Póstnúmer"/>
-<h:selectOneMenu 
+<h:selectOneMenu
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}" onchange="updateStreets();">
 <f:selectItems value="#{RafverktakaInitialdata.postnumeraListiSelects}"/>
 </h:selectOneMenu>
 <h:outputLabel for="gotuDrop" value="Gata" />
-<h:selectOneMenu 
+<h:selectOneMenu
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="gotuDrop" value="#{TilkynningVertakaBean.gata}" onchange="updateStreetNumberLabel();">
 <f:selectItems value="#{TilkynningVertakaBean.gotuListiSelects}"/>
 </h:selectOneMenu>
 <h:outputLabel id="gotunumerLabel" for="gotunumer" value="Götunúmer" />
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="gotunumer" value="#{TilkynningVertakaBean.gotunumer}"/>
 </wf:container>
 
-<wf:container 
+<wf:container
 rendered="#{TilkynningVertakaBean.applicationStorable}"
 styleClass="formItem required">
 <f:verbatim><input type="button" name="Text 1" value="Fletta upp í Landskrá Fasteigna" onclick="updateRealEstates();"></input></f:verbatim>
 <!--h:commandButton id="flettaUppIFasteignaskraButton" action="#{TilkynningVertakaBean.flettaUppIFasteignaskra}" value="Fletta upp í Landskrá Fasteigna"/-->
 <!--h:selectOneMenu id="fasteignirDrop" rendered="#{TilkynningVertakaBean.availablefasteign}" value="#{TilkynningVertakaBean.fastanumer}" onchange="submit();"-->
-<h:selectOneMenu 
+<h:selectOneMenu
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateEnergyConsumerFields();" >
 <f:selectItems value="#{TilkynningVertakaBean.fasteignaListiSelects}"/>
@@ -375,28 +380,28 @@ id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateE
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="orkukaupandi" value="Nafn orkukaupanda" />
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="orkukaupandi" value="#{TilkynningVertakaBean.nafnOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="kennitalaOrkukaupanda" value="Kennitala" />
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="kennitalaOrkukaupanda" value="#{TilkynningVertakaBean.kennitalaOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="heimasimiOrkukaupanda" value="Heimasími"/>
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="heimasimiOrkukaupanda" value="#{TilkynningVertakaBean.heimasimiOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="vinnusimiOrkukaupanda" value="Vinnusími" />
-<h:inputText 
+<h:inputText
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="vinnusimiOrkukaupanda" value="#{TilkynningVertakaBean.vinnusimiOrkukaupanda}"/>
 </wf:container>

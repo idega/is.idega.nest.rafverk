@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.10 2007/07/11 16:23:08 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.11 2007/07/13 16:14:09 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -62,10 +62,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/11 16:23:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/13 16:14:09 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -588,6 +588,11 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		initializeManagedBean(rafverktaka, tilkynningVertakaBean);
 		initializeManagedBean(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 		initializeManagedBeansByMeters(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	}
+	
+	public KeyValuePair getPDFApplication(ElectricalInstallation electricalInstallation) throws IOException {
+		String downloadURL = getElectricalInstallationRendererBusiness().getPDFApplication(electricalInstallation);
+		return new KeyValuePair(downloadURL, null);
 	}
 	
 	

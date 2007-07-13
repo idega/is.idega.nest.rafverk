@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.23 2007/07/11 16:23:07 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.24 2007/07/13 16:14:09 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/11 16:23:07 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/13 16:14:09 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TilkynningVertakaBean {
 	
@@ -207,6 +207,10 @@ public class TilkynningVertakaBean {
 	private void initializeValidation() {
 		validationResults = null;
 	}
+	
+	public void createApplicationPDF() {
+		createApplicationPDFSendEmails(false);
+	}
  	
 	public String sendApplication() {
 		isSuccessfullyStored = storeApplicationData();
@@ -215,11 +219,7 @@ public class TilkynningVertakaBean {
 			if (validationSuccessful) {
 				if (sendApplicationData()) {
 					messageStoring = "Þjónustubeiðni send";
-					isDownloadTilkynningVertaka = createTilkynningVertakaPDF();
-					if (! isDownloadTilkynningVertaka) {
-						String message = "Problems appeared creating PDF";
-						messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
-					}
+					createApplicationPDFSendEmails(true);
 				}
 				else {
 					messageStoring = "Þjónustubeiðni ekki send";
@@ -231,6 +231,14 @@ public class TilkynningVertakaBean {
 		}
 		messageStoring = "Þjónustubeiðni ekki geymd";
 		return "send";
+	}
+	
+	private void createApplicationPDFSendEmails(boolean sendEmails) {
+		isDownloadTilkynningVertaka = createTilkynningVertakaPDFAndSendEmails(sendEmails);
+		if (! isDownloadTilkynningVertaka) {
+			String message = "Problems appeared creating PDF";
+			messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
+		}
 	}
 		
 		
@@ -250,11 +258,7 @@ public class TilkynningVertakaBean {
 			if (validationSuccessful) {
 				if (sendApplicationReportData()) {
 					messageStoring = "Skýrsla send";
-					isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
-					if (! isDownloadTilkynningLokVerks()) {
-						String message = "Problems appeared creating PDF";
-						messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
-					}
+					createApplicationReportPDF();
 				}
 				else {
 					messageStoring = "Skýrsla ekki send";
@@ -266,6 +270,15 @@ public class TilkynningVertakaBean {
 		}
 		messageStoring = "Skýrsla ekki geymd";
 		return "send";
+		
+	}
+	
+	public void createApplicationReportPDF() {
+		isDownloadTilkynningLokVerks = createTilkynningLokVerksPDF();
+		if (! isDownloadTilkynningLokVerks()) {
+			String message = "Problems appeared creating PDF";
+			messagePDF = (messagePDF == null) ? message : (messagePDF + " " + message);
+		}
 		
 	}
 	
@@ -1134,11 +1147,13 @@ public class TilkynningVertakaBean {
 		return downloadTilkynningLokVerksXML;
 	}
 	
-	private boolean createTilkynningVertakaPDF()  {
+	private boolean createTilkynningVertakaPDFAndSendEmails(boolean sendEmails)  {
 		try {
 			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 			//getElectricalInstallationRendererBusiness().validateApplication(getRafverktaka());
-			 KeyValuePair downloadURLMessage = getElectricalInstallationBusiness().getPDFApplicationAndSendEmails(electricalInstallation);
+			 KeyValuePair downloadURLMessage = (sendEmails) ? 
+				getElectricalInstallationBusiness().getPDFApplicationAndSendEmails(electricalInstallation):
+				getElectricalInstallationBusiness().getPDFApplication(electricalInstallation);	
 			 downloadTilkynningVertakaPDF = (String) downloadURLMessage.getKey();
 			 String result = (String) downloadURLMessage.getValue();
 			 if (result != null) {
@@ -1170,6 +1185,7 @@ public class TilkynningVertakaBean {
 			return false;
 		}
 	}
+	
 	
 	private boolean createTilkynningLokVerksPDF()  {
 		try {

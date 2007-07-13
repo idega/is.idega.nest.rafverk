@@ -45,6 +45,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getPDFApplication
+	 */
+	public KeyValuePair getPDFApplication(ElectricalInstallation electricalInstallation) throws IOException,
+			RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getPDFApplicationAndSendEmails
 	 */
 	public KeyValuePair getPDFApplicationAndSendEmails(ElectricalInstallation electricalInstallation)

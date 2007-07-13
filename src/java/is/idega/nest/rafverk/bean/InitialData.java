@@ -22,6 +22,13 @@ public class InitialData extends BaseBean {
 	
 	// first step
 	
+	// navigation
+	public static final String TILKYNNING_VERTAKA_URI = "/pages/rafverktaki/rafverk/tilkynningvertaka/";
+	
+	public static final String TILKYNNING_LOK_VERKS_URI = "/pages/rafverktaki/rafverk/tilkynninglokverks/";
+	
+	public static final String NONE_URI = "none_uri";
+	
 	// special key for none street
 	public static final String NONE_STREET = "none_street";
 	
@@ -201,6 +208,15 @@ public class InitialData extends BaseBean {
 	
 	public static final List LEKASTRAUMSROFI_LIST = Arrays.asList(LEKASTRAUMSROFI);
 
+	// rafverktoekur page
+	
+	public static final String[] OPTIONS_PER_ELECTRICAL_INSTALLATION = {
+		"Fara á...", NONE_URI,
+		"Þjónustubeiðni", TILKYNNING_VERTAKA_URI,
+		"Skýrsla", TILKYNNING_LOK_VERKS_URI
+	};
+	
+	public static final List OPTIONS_PER_ELECTRICAL_INSTALLATION_LIST = Arrays.asList(OPTIONS_PER_ELECTRICAL_INSTALLATION);
 	
 
 	public Orkufyrirtaeki getRarik() {
@@ -289,6 +305,12 @@ public class InitialData extends BaseBean {
 	
 	public List getLekastraumsrofiListi() {
 		return LEKASTRAUMSROFI_LIST;
+	}
+	
+	// rafverktoekur page
+	
+	public List getOptionsPerElectricalInstallationListi() {
+		return OPTIONS_PER_ELECTRICAL_INSTALLATION_LIST;
 	}
 	
 	
@@ -701,6 +723,12 @@ public class InitialData extends BaseBean {
 	
 	public List getLekastraumsrofiListiSelects() {
 		return getSelectItemList(getLekastraumsrofiListi());
+	}
+	
+	// rafverktoekur page
+	
+	public List getOptionsPerElectricalInstallationListiSelects() {
+		return getSelectItemList(getOptionsPerElectricalInstallationListi());
 	}
 	                      
 	

@@ -11,6 +11,177 @@ version="1.2">
 <builder:page id="builderpage_345" template="93">
 <builder:region id="left" label="left">
 <h:form id="form1" styleClass="rafverk">
+<f:verbatim>
+<script type="text/javascript" src="/dwr/interface/NestService.js"><!-- dont remove --></script>
+
+<script type="text/javascript" src="/dwr/engine.js"><!-- dont remove --></script>
+
+<script type='text/javascript' src='/dwr/util.js'><!-- dont remove --></script>
+
+<script type="text/javascript">
+
+var image1 = new Image();
+image1.src = '/idegaweb/bundles/com.idega.core.bundle/resources/loading_notext.gif';
+
+var image2 = new Image();
+image2.src='/idegaweb/bundles/com.idega.core.bundle/resources/style/images/transparent.png';
+
+var image3 = new Image();
+image3.src='/idegaweb/bundles/com.idega.core.bundle/resources/style/images/whitetransparent.png';
+
+
+function useLoadingMessage(message) {
+var loadingMessage;
+if (message) loadingMessage = message;
+else loadingMessage = "please wait";
+
+DWREngine.setPreHook(function() {
+var disabledZone = $('busybuddy');
+if (!disabledZone) {
+var outer = document.createElement('div');
+outer.setAttribute('id', 'busybuddy');
+outer.setAttribute('class', 'LoadLayer');
+//IE class workaround:
+outer.setAttribute('className', 'LoadLayer');
+
+var middle = document.createElement('div');
+middle.setAttribute('id', 'busybuddy-middle');
+middle.setAttribute('class', 'LoadLayerMiddle');
+//IE class workaround:
+middle.setAttribute('className', 'LoadLayerMiddle');
+outer.appendChild(middle);
+
+var inner = document.createElement('div');
+inner.setAttribute('id', 'busybuddy-contents');
+inner.setAttribute('class', 'LoadLayerContents');
+//IE class workaround:
+inner.setAttribute('className', 'LoadLayerContents');
+middle.appendChild(inner);
+
+var image = document.createElement('img');
+image.setAttribute('id', 'loadingimage');
+image.setAttribute('src',image1.src);
+image.src=image1.src;
+inner.appendChild(image);
+
+var span = document.createElement('span');
+span.setAttribute('id', 'loadingtext');
+inner.appendChild(span);
+
+var text = document.createTextNode("Loading");
+span.appendChild(text);
+
+var bodyArray = document.getElementsByTagName('body');
+var bodyTag = bodyArray[0];
+bodyTag.appendChild(outer);
+//alert('bodyTag:'+bodyTag);
+}
+else {
+
+disabledZone.style.visibility = 'visible';
+}
+});
+
+DWREngine.setPostHook(function() {
+$('busybuddy').style.visibility = 'hidden';
+});
+}
+
+
+
+function init() {
+useLoadingMessage();
+}
+
+if (window.addEventListener) {
+window.addEventListener("load", init, false);
+}
+else if (window.attachEvent) {
+window.attachEvent("onload", init);
+}
+else {
+window.onload = init;
+}
+
+
+
+function updateStreets() {
+var postalCodeDrop = document.getElementById("form1:postnumerDrop");
+NestService.getStreetsByPostalCode(postalCodeDrop.options[postalCodeDrop.selectedIndex].value, {
+callback:changeStreets,
+errorHandler:function(message) { alert("Error: " + message); }
+});
+}
+
+function changeStreets(data) {
+DWRUtil.removeAllOptions("form1:gotuDrop");
+DWRUtil.addOptions("form1:gotuDrop", data);
+var streetDrop = document.getElementById("form1:gotuDrop");
+var streetNumberLabel = document.getElementById("form1:gotunumerLabel");
+if (streetDrop.options.length == 1) {
+var valueStreet = streetDrop.options[0].value;
+if (valueStreet != "") {
+streetNumberLabel.innerHTML = "Frjáls texti"
+}
+else {
+streetNumberLabel.innerHTML = ""
+}
+}
+else {
+streetDrop.selectedIndex = 1;
+streetNumberLabel.innerHTML= "Götunúmer"
+}
+}
+
+function updateStreetNumberLabel() {
+var streetDrop = document.getElementById("form1:gotuDrop");
+var streetNumberLabel = document.getElementById("form1:gotunumerLabel");
+var selection = streetDrop.options[streetDrop.selectedIndex].value;
+if (selection == "none_street") {
+streetNumberLabel.innerHTML = "Frjáls texti"
+}
+else {
+streetNumberLabel.innerHTML = "Götunúmer"
+}
+}
+
+function updateRealEstates() {
+var postalCodeDrop = document.getElementById("form1:postnumerDrop");
+var streetDrop = document.getElementById("form1:gotuDrop");
+var streetNumber = document.getElementById("form1:gotunumer");
+var postalCodeSelection = postalCodeDrop.options[postalCodeDrop.selectedIndex].value;
+var streetSelection = streetDrop.options[streetDrop.selectedIndex].value;
+var streetNumberValue = streetNumber.value;
+NestService.getRealEstatesByPostalCodeStreetStreetNumber(postalCodeSelection, streetSelection, streetNumberValue,
+{callback:changeRealEstates,
+errorHandler:function(message) { alert("Error: " + message); }
+});
+}
+
+function changeRealEstates(data) {
+DWRUtil.removeAllOptions("form1:fasteignirDrop");
+DWRUtil.addOptions("form1:fasteignirDrop", data);
+}
+
+function updateEnergyConsumerFields() {
+var realEstateDrop = document.getElementById("form1:fasteignirDrop");
+NestService.getEnergyConsumerFields(realEstateDrop.options[realEstateDrop.selectedIndex].value,
+{callback:changeEnergyConsumerFields,
+errorHandler:function(message) { alert("Error: " + message); }
+});
+}
+
+function changeEnergyConsumerFields(data) {
+var realEstateDisplay = document.getElementById("form1:veitustadurDisplay");
+var energyConsumer = document.getElementById("form1:orkukaupandi");
+var personalIDEnergyConsumer = document.getElementById("form1:kennitalaOrkukaupanda");
+realEstateDisplay.innerHTML = data[0];
+energyConsumer.value = data[1];
+personalIDEnergyConsumer.value = data[2];
+}
+
+</script>
+</f:verbatim>
 <!--div class="generalContent"-->
 
 <f:verbatim><h1 class="applicationHeading">Skyrsla</h1></f:verbatim>
@@ -117,47 +288,67 @@ Upplysingar um veitustad
 </f:verbatim>
 </wf:container>
 <wf:container styleClass="formItem required">
-<h:outputLabel for="postnumerDrop" value="Postnumer"/>
-<h:selectOneMenu id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}" onchange="submit();">
+<h:outputLabel for="postnumerDrop" value="Póstnúmer"/>
+<h:selectOneMenu
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}" onchange="updateStreets();">
 <f:selectItems value="#{RafverktakaInitialdata.postnumeraListiSelects}"/>
 </h:selectOneMenu>
 <h:outputLabel for="gotuDrop" value="Gata" />
-<h:selectOneMenu id="gotuDrop" value="#{TilkynningVertakaBean.gata}">
+<h:selectOneMenu
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="gotuDrop" value="#{TilkynningVertakaBean.gata}" onchange="updateStreetNumberLabel();">
 <f:selectItems value="#{TilkynningVertakaBean.gotuListiSelects}"/>
 </h:selectOneMenu>
-<h:outputLabel for="gotunumer" value="Gotunumer" />
-<h:inputText id="gotunumer" value="#{TilkynningVertakaBean.gotunumer}"/>
+<h:outputLabel id="gotunumerLabel" for="gotunumer" value="Götunúmer" />
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="gotunumer" value="#{TilkynningVertakaBean.gotunumer}"/>
 </wf:container>
 
-<wf:container styleClass="formItem required">
-<h:commandButton id="flettaUppIFasteignaskraButton" action="#{TilkynningVertakaBean.flettaUppIFasteignaskra}" value="Fletta upp í Landskrá Fasteigna"/>
-<h:selectOneMenu id="fasteignirDrop" rendered="#{TilkynningVertakaBean.availablefasteign}" value="#{TilkynningVertakaBean.fastanumer}" onchange="submit();" >
+<wf:container
+rendered="#{TilkynningVertakaBean.applicationReportStorable}"
+styleClass="formItem required">
+<f:verbatim><input type="button" name="Text 1" value="Fletta upp í Landskrá Fasteigna" onclick="updateRealEstates();"></input></f:verbatim>
+<!--h:commandButton id="flettaUppIFasteignaskraButton" action="#{TilkynningVertakaBean.flettaUppIFasteignaskra}" value="Fletta upp í Landskrá Fasteigna"/-->
+<!--h:selectOneMenu id="fasteignirDrop" rendered="#{TilkynningVertakaBean.availablefasteign}" value="#{TilkynningVertakaBean.fastanumer}" onchange="submit();"-->
+<h:selectOneMenu
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateEnergyConsumerFields();" >
 <f:selectItems value="#{TilkynningVertakaBean.fasteignaListiSelects}"/>
 </h:selectOneMenu>
 </wf:container>
 <wf:container styleClass="formItem">
-<h:outputText value="#{TilkynningVertakaBean.veitustadurDisplay}" />
+<h:outputText id="veitustadurDisplay" value="#{TilkynningVertakaBean.veitustadurDisplay}" />
 </wf:container>
 
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="orkukaupandi" value="Nafn orkukaupanda" />
-<h:inputText id="orkukaupandi" value="#{TilkynningVertakaBean.nafnOrkukaupanda}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="orkukaupandi" value="#{TilkynningVertakaBean.nafnOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
 <h:outputLabel for="kennitalaOrkukaupanda" value="Kennitala" />
-<h:inputText id="kennitalaOrkukaupanda" value="#{TilkynningVertakaBean.kennitalaOrkukaupanda}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="kennitalaOrkukaupanda" value="#{TilkynningVertakaBean.kennitalaOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="heimasimiOrkukaupanda" value="Heimasimi"/>
-<h:inputText id="heimasimiOrkukaupanda" value="#{TilkynningVertakaBean.heimasimiOrkukaupanda}"/>
+<h:outputLabel for="heimasimiOrkukaupanda" value="Heimasími"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="heimasimiOrkukaupanda" value="#{TilkynningVertakaBean.heimasimiOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="vinnusimiOrkukaupanda" value="Vinnusimi" />
-<h:inputText id="vinnusimiOrkukaupanda" value="#{TilkynningVertakaBean.vinnusimiOrkukaupanda}"/>
+<h:outputLabel for="vinnusimiOrkukaupanda" value="Vinnusími" />
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="vinnusimiOrkukaupanda" value="#{TilkynningVertakaBean.vinnusimiOrkukaupanda}"/>
 </wf:container>
 
 </wf:container>
