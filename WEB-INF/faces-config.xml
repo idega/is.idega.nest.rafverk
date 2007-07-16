@@ -73,6 +73,11 @@
   	<managed-bean-scope>session</managed-bean-scope>
   </managed-bean>
   <managed-bean>
+  	<managed-bean-name>InitialData</managed-bean-name>
+  	<managed-bean-class>is.idega.nest.rafverk.bean.InitialData</managed-bean-class>
+  	<managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean>
   	<managed-bean-name>RafverktakaInitialdata</managed-bean-name>
   	<managed-bean-class>is.idega.nest.rafverk.bean.InitialData</managed-bean-class>
   	<managed-bean-scope>session</managed-bean-scope>
@@ -156,7 +161,7 @@
     	<description>
   		Tilkynning vertaka step 3
   	</description>
-  	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref3/</from-view-id>
+  	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref3*</from-view-id>
   	<navigation-case>
   		<from-outcome>back</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref2/</to-view-id>
@@ -250,6 +255,10 @@
   		raverktoekur
   	</description>
   	<from-view-id>/pages/rafverktaki/rafverk/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>yfirlit</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/yfirlit/</to-view-id>
+  	</navigation-case>
   	<navigation-case>
   		<from-outcome>tilkynningvertaka</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>

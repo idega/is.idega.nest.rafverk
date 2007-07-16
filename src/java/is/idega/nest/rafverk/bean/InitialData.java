@@ -27,6 +27,8 @@ public class InitialData extends BaseBean {
 	
 	public static final String TILKYNNING_LOK_VERKS_URI = "/pages/rafverktaki/rafverk/tilkynninglokverks/";
 	
+	public static final String YFIRLIT_URI = "/pages/rafverktaki/rafverk/yfirlit/";
+	
 	public static final String NONE_URI = "none_uri";
 	
 	// special key for none street
@@ -213,7 +215,8 @@ public class InitialData extends BaseBean {
 	public static final String[] OPTIONS_PER_ELECTRICAL_INSTALLATION = {
 		"Fara á...", NONE_URI,
 		"Þjónustubeiðni", TILKYNNING_VERTAKA_URI,
-		"Skýrsla", TILKYNNING_LOK_VERKS_URI
+		"Skýrsla", TILKYNNING_LOK_VERKS_URI,
+		"Yfirlit", YFIRLIT_URI
 	};
 	
 	public static final List OPTIONS_PER_ELECTRICAL_INSTALLATION_LIST = Arrays.asList(OPTIONS_PER_ELECTRICAL_INSTALLATION);

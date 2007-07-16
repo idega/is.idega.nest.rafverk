@@ -30,7 +30,7 @@ version="1.2">
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
 </wf:container>
-<h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
+<h:commandButton id="filterVerktakaStatusesButton" value="Finna"/>
 
 </wf:container>
 <wf:container styleClass="formSection">
@@ -64,49 +64,45 @@ paginatorMaxPages="9">
 <f:facet name="header">
 <h:outputText value=""/>
 </f:facet>
-<h:commandLink action="tilkynningvertaka" actionListener="#{RafverktokuListi.populateForms}"
-value=">"/>
-</h:column>
-<h:column>
-<f:facet name="header">
-<h:outputText value=""/>
-</f:facet>
-<h:commandLink action="tilkynninglokverks" actionListener="#{RafverktokuListi.populateForms}"
-value=">>"/>
+<h:selectOneMenu onchange="submit()" valueChangeListener="#{RafverktokuListi.populateFormsForForms}">
+<f:selectItems value="#{InitialData.optionsPerElectricalInstallationListiSelects}">
+</f:selectItems>
+</h:selectOneMenu>
 </h:column>
 <h:column>
 <f:facet name="header">
 <h:outputText value="Verknúmer"/>
 </f:facet>
-<h:outputText value="#{verktaka.externalProjectID}"/>
+<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
+value="#{verktaka.externalProjectID}"/>
 </h:column>
 <h:column>
 <f:facet name="header">
 <h:outputText value="Rafveita"/>
 </f:facet>
-<h:outputText value="#{verktaka.orkufyrirtaeki.name}"/>
+<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
+value="#{verktaka.orkufyrirtaeki.name}"/>
 </h:column>
 <h:column>
 <f:facet name="header">
 <h:outputText value="Orkukaupandi"/>
 </f:facet>
-
-<h:outputText value="#{verktaka.orkukaupandi.nafn}"/>
-
+<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
+value="#{verktaka.orkukaupandi.nafn}"/>
 </h:column>
 <h:column>
 <f:facet name="header">
 <h:outputText value="Veitustaður"/>
 </f:facet>
-
-<h:outputText value="#{verktaka.veitustadurDisplay}"/>
-
+<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
+value="#{verktaka.veitustadurDisplay}"/>
 </h:column>
 <h:column>
 <f:facet name="header">
 <h:outputText value="Staða"/>
 </f:facet>
-<h:outputText value="#{verktaka.stadaDisplay}"/>
+<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
+value="#{verktaka.stadaDisplay}"/>
 </h:column>
 
 

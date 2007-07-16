@@ -21,6 +21,7 @@ import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -108,7 +109,7 @@ public class RafverktokuListi extends BaseBean  {
 		List list = new ArrayList();
 		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
 			Rafverktaka verktaka = (Rafverktaka) iter.next();
-			if(verktaka.getStada().equals(status)){
+			if(status.startsWith(verktaka.getStada())){
 				list.add(verktaka);
 			}
 		}
@@ -146,42 +147,6 @@ public class RafverktokuListi extends BaseBean  {
 		return selects;
 	}
 
-	
-	/**
-	 * Called by JSF page (opening existing electrical installation)
-	 * 
-	 * @param actionEvent
-	 * @throws AbortProcessingException
-	 */
-	public void populateFormsForOverview(ActionEvent actionEvent) throws AbortProcessingException {
-	    Rafverktaka rafverktaka = null;
-
-	    UIComponent tmpComponent = actionEvent.getComponent();
-
-	    while (null != tmpComponent && !(tmpComponent instanceof UIData)) {
-	      tmpComponent = tmpComponent.getParent();
-	    }
-
-	    if (tmpComponent instanceof UIData) {
-	    	Object tmpRowData = ((UIData) tmpComponent).getRowData();
-	    	if (tmpRowData instanceof Rafverktaka) {
-	    		rafverktaka = (Rafverktaka) tmpRowData;
-	    		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-	    		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
-	    		try {
-	    			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
-	    			tilkynningVertakaBean.createApplicationPDF();
-	    			tilkynningVertakaBean.createApplicationReportPDF();
-	    		}
-	    		catch (RemoteException e) {
-	    			throw new RuntimeException(e.getMessage());
-	    		}
-	    	}
-	    }
-	    
-	}
-	
-	
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
 		if (electricalInstallationBusiness == null) {
 			try {
@@ -197,6 +162,17 @@ public class RafverktokuListi extends BaseBean  {
 		}
 		return electricalInstallationBusiness;
 	}
+	
+	/**
+	 * Called by JSF page (opening existing electrical installation)
+	 * 
+	 * @param actionEvent
+	 * @throws AbortProcessingException
+	 */
+	public void populateFormsForOverview(ActionEvent actionEvent) throws AbortProcessingException {
+		initializeManagedBeansAndPDFs(actionEvent, true);	    
+	}
+	
 
 	public void populateFormsForForms(ValueChangeEvent valueChangeEvent) throws AbortProcessingException {
 	    String target = (String) valueChangeEvent.getNewValue();
@@ -204,10 +180,23 @@ public class RafverktokuListi extends BaseBean  {
 	    	// do nothing
 	    	return;
 	    }
-		UIComponent tmpComponent = valueChangeEvent.getComponent();
-	    while (null != tmpComponent && !(tmpComponent instanceof UIData)) {
-	    	tmpComponent = tmpComponent.getParent();
+	    boolean createPDFs = InitialData.YFIRLIT_URI.equals(target);
+	    initializeManagedBeansAndPDFs(valueChangeEvent, createPDFs);
+	    try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect(target);
 		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initializeManagedBeansAndPDFs(FacesEvent event, boolean createPDFs) {
+	    UIComponent tmpComponent = event.getComponent();
+
+	    while (null != tmpComponent && !(tmpComponent instanceof UIData)) {
+	      tmpComponent = tmpComponent.getParent();
+	    }
+
 	    if (tmpComponent instanceof UIData) {
 	    	Object tmpRowData = ((UIData) tmpComponent).getRowData();
 	    	if (tmpRowData instanceof Rafverktaka) {
@@ -216,18 +205,17 @@ public class RafverktokuListi extends BaseBean  {
 	    		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
 	    		try {
 	    			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	    			if (createPDFs) { 
+	    				tilkynningVertakaBean.createApplicationPDF();
+	    				tilkynningVertakaBean.createApplicationReportPDF();
+	    			}
 	    		}
 	    		catch (RemoteException e) {
 	    			throw new RuntimeException(e.getMessage());
 	    		}
 	    	}
 	    }
-	    try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect(target);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 
