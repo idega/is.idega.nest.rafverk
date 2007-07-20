@@ -43,6 +43,10 @@ value="Skrá skýrslu um neysluveitu"/>
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
 
+<wf:container>
+<h:outputText value="Hægt er að nota algildistákn (*,?) í leitarskilyrðum"/>
+</wf:container>
+
 <h:outputLabel for="verknumer" value="Verknúmer"/>
 <h:inputText id="verknumer" value="#{RafverktokuListi.searchForExternalProjectID}"/>
 
@@ -52,6 +56,7 @@ value="Skrá skýrslu um neysluveitu"/>
 <h:outputLabel for="veitustadur" value="Veitustaður"/>
 <h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
 </wf:container>
+
 <h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
 
 </wf:container>
@@ -99,13 +104,6 @@ paginatorMaxPages="9">
 </f:facet>
 <h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
 value="#{verktaka.externalProjectID}"/>
-</h:column>
-<h:column>
-<f:facet name="header">
-<h:outputText value="Rafveita"/>
-</f:facet>
-<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
-value="#{verktaka.orkufyrirtaeki.name}"/>
 </h:column>
 <h:column>
 <f:facet name="header">

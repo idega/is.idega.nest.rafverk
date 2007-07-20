@@ -65,13 +65,17 @@ version="1.2">
 <h:outputLabel for="tilkynnt" value="Tilkynnt er"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectOneRadio id="tilkynnt" value="#{TilkynningLokVerksBean.tilkynnt}">
+<h:selectOneRadio
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="tilkynnt" value="#{TilkynningLokVerksBean.tilkynnt}">
 <f:selectItems value="#{RafverktakaInitialdata.tilkynntListiSelects}"/>
 </h:selectOneRadio>
 </wf:container>
 <wf:container styleClass="formItem">
 <h:outputLabel for="annadTilkynnt" value="Annað"/>
-<h:inputText size="24" id="annadTilkynnt" value="#{TilkynningLokVerksBean.tilkynntAnnad}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+size="24" id="annadTilkynnt" value="#{TilkynningLokVerksBean.tilkynntAnnad}"/>
 </wf:container>
 </wf:container>
 
@@ -80,7 +84,9 @@ version="1.2">
 <h:outputLabel for="husnaedis" value="Notkun húsnæðis"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectOneMenu id="notkunarflokkar" value="#{TilkynningLokVerksBean.notkunarflokkur}">
+<h:selectOneMenu
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="notkunarflokkar" value="#{TilkynningLokVerksBean.notkunarflokkur}">
 <f:selectItems value="#{RafverktakaInitialdata.notkunarflokkurListiSelects}"/>
 </h:selectOneMenu>
 </wf:container>
@@ -89,7 +95,9 @@ version="1.2">
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="skyringLokVerks" value="Nánari skyring á þvi sem tilkynnt er"/>
-<h:inputTextarea id="skyringLokVerks" value="#{TilkynningLokVerksBean.skyring}" rows="3" cols="60"/>
+<h:inputTextarea
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="skyringLokVerks" value="#{TilkynningLokVerksBean.skyring}" rows="3" cols="60"/>
 </wf:container>
 
 
@@ -98,14 +106,18 @@ version="1.2">
 <h:outputLabel for="veitukerfi" value="Veitukerfi"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectOneRadio id="veitukerfi" value="#{TilkynningLokVerksBean.spennukerfi}">
+<h:selectOneRadio
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="veitukerfi" value="#{TilkynningLokVerksBean.spennukerfi}">
 <f:selectItems value="#{RafverktakaInitialdata.spennukerfiListiSelects}"/>
 </h:selectOneRadio>
 </wf:container>
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="annadVeitukerfi" value="Annað"/>
-<h:inputText size="8" id="annadVeitukerfi" value="#{TilkynningLokVerksBean.annad}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+size="8" id="annadVeitukerfi" value="#{TilkynningLokVerksBean.annad}"/>
 </wf:container>
 </wf:container>
 
@@ -114,7 +126,9 @@ version="1.2">
 <h:outputLabel for="varnarradstoefunLokVerks" value="Varnarráðstöfun"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectManyCheckbox id="varnarradstoefunLokVerks" value="#{TilkynningLokVerksBean.varnarradstoefun}">
+<h:selectManyCheckbox
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="varnarradstoefunLokVerks" value="#{TilkynningLokVerksBean.varnarradstoefun}">
 <f:selectItems value="#{RafverktakaInitialdata.varnarradstoefunListiSelects}"/>
 </h:selectManyCheckbox>
 </wf:container>
@@ -124,7 +138,9 @@ version="1.2">
 <h:outputLabel for="jardskaut" value="Jarðskaut/sp.jöfnun"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectManyCheckbox id="jardskaut" value="#{TilkynningLokVerksBean.jardskaut}">
+<h:selectManyCheckbox
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="jardskaut" value="#{TilkynningLokVerksBean.jardskaut}">
 <f:selectItems value="#{RafverktakaInitialdata.jardskautListiSelects}"/>
 </h:selectManyCheckbox>
 </wf:container>
@@ -132,7 +148,9 @@ version="1.2">
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="annadJardskaut" value="Annað"/>
-<h:inputText size="8" id="annadJardskaut" value="#{TilkynningLokVerksBean.jardskautAnnad}" />
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+size="8" id="annadJardskaut" value="#{TilkynningLokVerksBean.jardskautAnnad}" />
 </wf:container>
 </wf:container>
 
@@ -141,14 +159,18 @@ version="1.2">
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="maelisNumerLokVerks" value="Númer mælis rafveitu"/>
-<h:inputText id="maelisNumerLokVerks" value="#{TilkynningLokVerksBean.maelir.numer}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+id="maelisNumerLokVerks" value="#{TilkynningLokVerksBean.maelir.numer}"/>
 <h:message for="maelisNumerLokVerks"></h:message>
 </wf:container>
 
 
 <wf:container styleClass="formItem">
 <h:outputLabel for="stadurMaelisLokVerks" value="Staður mælis"/>
-<h:inputText size="8" id="stadurMaelisLokVerks" value="#{TilkynningLokVerksBean.maelir.stadur}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
+size="8" id="stadurMaelisLokVerks" value="#{TilkynningLokVerksBean.maelir.stadur}"/>
 </wf:container>
 </wf:container>
 
@@ -156,6 +178,7 @@ version="1.2">
 <wf:container styleClass="formItem">
 <h:outputLabel for="skyringarLokVerks" value="Skyringar"/>
 <h:inputTextarea
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="skyringarLoksVerks"
 value="#{TilkynningLokVerksBean.skyringar}"
 rows="3"
@@ -170,11 +193,12 @@ action="back"
 value="til baka"/>
 <h:commandButton
 action="next"
-value="afram"/>
+value="áfram"/>
 
 <h:outputText value=" "/>
 
 <h:commandButton
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 action="#{TilkynningLokVerksBean.store}"
 value="geyma"/>
 
@@ -184,6 +208,7 @@ value="geyma"/>
 </h:form>
 
 </builder:region>
+
 </builder:page>
 </f:view>
 </jsp:root>

@@ -65,7 +65,9 @@ version="1.2">
 <h:outputLabel for="hringrasarvidnam" value="Hringrásarviðnám aðal-/greinitöflu"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="hringrasarvidnam" value="#{TilkynningLokVerksBean.hringrasarvidam}" />
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="hringrasarvidnam" value="#{TilkynningLokVerksBean.hringrasarvidam}" />
 <h:outputLabel for="hringrasarvidnam" value="Ω"/>
 <h:message for="hringrasarvidnam"></h:message>
 </wf:container>
@@ -75,7 +77,9 @@ version="1.2">
 <h:outputLabel for="skammhlaupsstraumur" value="Skammhlaupsstraumur aðal-/greinitöflu"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="skammhlaupsstraumur" value="#{TilkynningLokVerksBean.skammhlaupsstraumur}" />
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="skammhlaupsstraumur" value="#{TilkynningLokVerksBean.skammhlaupsstraumur}" />
 <h:outputLabel for="skammhlaupsstraumur" value="A"/>
 <h:message for="skammhlaupsstraumur"></h:message>
 </wf:container>
@@ -87,7 +91,9 @@ version="1.2">
 <h:outputLabel for="einangrunNeysluveitu" value="Einangrun neysluveitu"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="einangrunNeysluveitu" value="#{TilkynningLokVerksBean.einangrunNeysluveitu}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="einangrunNeysluveitu" value="#{TilkynningLokVerksBean.einangrunNeysluveitu}"/>
 <h:outputLabel for="einangrunNeysluveitu" value="MΩ"/>
 <h:message for="einangrunNeysluveitu"></h:message>
 </wf:container>
@@ -96,7 +102,9 @@ version="1.2">
 <h:outputLabel for="hringrasarvidnamJardskaut" value="Hringrásarviðnámsmæling jarðskauts/sp.jöfnunar"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="hringrasarvidnamJardskaut" value="#{TilkynningLokVerksBean.hringrasarvidnamJardskaut}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="hringrasarvidnamJardskaut" value="#{TilkynningLokVerksBean.hringrasarvidnamJardskaut}"/>
 <h:outputLabel for="hringrasarvidnamJardskaut" value="Ω"/>
 <h:message for="hringrasarvidnamJardskaut"></h:message>
 </wf:container>
@@ -108,7 +116,9 @@ version="1.2">
 <h:outputLabel for="skammhlaupsstraumurNeysluveitu" value="Skammhlaupsstraumur neysluveitu"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="skammhlaupsstraumurNeysluveitu" value="#{TilkynningLokVerksBean.skammhlaupsstraumurNeysluveitu}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="skammhlaupsstraumurNeysluveitu" value="#{TilkynningLokVerksBean.skammhlaupsstraumurNeysluveitu}"/>
 <h:outputLabel for="skammhlaupsstraumurNeysluveitu" value="A"/>
 <h:message for="skammhlaupsstraumurNeysluveitu"></h:message>
 </wf:container>
@@ -117,7 +127,9 @@ version="1.2">
 <h:outputLabel for="hringrasarvidnamNeysluveitu" value="Hringrásarviðnámsmæling neysluveitu"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="hringrasarvidnamNeysluveitu" value="#{TilkynningLokVerksBean.hringrasarvidnamNeysluveitu}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="hringrasarvidnamNeysluveitu" value="#{TilkynningLokVerksBean.hringrasarvidnamNeysluveitu}"/>
 <h:outputLabel for="hringrasarvidnamNeysluveitu" value="Ω"/>
 <h:message for="hringrasarvidnamNeysluveitu"></h:message>
 </wf:container>
@@ -129,7 +141,9 @@ version="1.2">
 <h:outputLabel for="maeldSpennaFasiN" value="Maeld spenna Fasi-N" />
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="maeldSpennaFasiN" value="#{TilkynningLokVerksBean.maeldSpennaFasiN}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="maeldSpennaFasiN" value="#{TilkynningLokVerksBean.maeldSpennaFasiN}"/>
 <h:outputLabel for="maeldSpennaFasiN" value="V"/>
 <h:message for="maeldSpennaFasiN"></h:message>
 </wf:container>
@@ -138,7 +152,9 @@ version="1.2">
 <h:outputLabel for="maeldSpennaFasiFasi" value="Maeld spenna Fasi-Fasi"/>
 </wf:container>
 <wf:container>
-<h:inputText size="8" id="maeldSpennaFasiFasi" value="#{TilkynningLokVerksBean.maeldSpennaFasiFasi}"/>
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="8" id="maeldSpennaFasiFasi" value="#{TilkynningLokVerksBean.maeldSpennaFasiFasi}"/>
 <h:outputLabel for="maeldSpennaFasiFasi" value="V"/>
 <h:message for="maeldSpennaFasiFasi"></h:message>
 </wf:container>
@@ -150,14 +166,18 @@ version="1.2">
 <h:outputLabel for="lekastraumsrofi" value="Lekastraumsrofi"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
-<h:selectOneRadio id="lekastraumsrofi" value="#{TilkynningLokVerksBean.lekastraumsrofi}">
+<h:selectOneRadio
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+id="lekastraumsrofi" value="#{TilkynningLokVerksBean.lekastraumsrofi}">
 <f:selectItems value="#{RafverktakaInitialdata.lekastraumsrofiListiSelects}"/>
 </h:selectOneRadio>
 </wf:container>
 
 <!-- 27 -->
 <wf:container>
-<h:inputText size="4" id="spennuhaekkunUtleysingVolt"
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="4" id="spennuhaekkunUtleysingVolt"
 value="#{TilkynningLokVerksBean.spennuhaekkunUtleysingVolt}"/>
 <h:outputLabel for="spennuhaekkunUtleysingVolt" value="V" />
 <h:message for="spennuhaekkunUtleysingVolt"></h:message>
@@ -165,7 +185,9 @@ value="#{TilkynningLokVerksBean.spennuhaekkunUtleysingVolt}"/>
 
 <!-- 29 -->
 <wf:container>
-<h:inputText size="4" id="lekastraumsrofaUtleysingMillisecond"
+<h:inputText
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
+size="4" id="lekastraumsrofaUtleysingMillisecond"
 value="#{TilkynningLokVerksBean.lekastraumsrofaUtleysingMillisecond}"/>
 <h:outputLabel for="lekastraumsrofaUtleysingMillisecond" value="ms"/>
 <h:message for="lekastraumsrofaUtleysingMillisecond"></h:message>
@@ -177,6 +199,7 @@ value="#{TilkynningLokVerksBean.lekastraumsrofaUtleysingMillisecond}"/>
 <wf:container styleClass="formItem">
 <h:outputLabel for="skyringarMaelingarLokVerks" value="Skyringar"/>
 <h:inputTextarea
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
 id="skyringarMaelingarLoksVerks"
 rows="3"
 cols="60"
@@ -195,9 +218,11 @@ value="til baka"/>
 <h:outputText value=" "/>
 
 <h:commandButton
+disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 action="#{TilkynningLokVerksBean.store}"
 value="geyma"/>
 <h:commandButton
+disabled="#{! TilkynningVertakaBean.applicationReportSendable}"
 action="#{TilkynningLokVerksBean.send}"
 value="senda"/>
 </wf:container>

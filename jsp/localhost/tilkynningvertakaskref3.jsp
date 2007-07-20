@@ -65,7 +65,7 @@ version="1.2">
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="takaAddAnchor" name="takaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel id="takaAddAnchor" value="Taka mæli..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['taka'] == null ? 'color:black' : 'color:red'}" id="takaAddAnchor" value="Taka mæli..."/>
 </wf:container>
 <h:dataTable id='taka' value="#{TilkynningVertakaBean.list['taka']}" var="maelir">
 <h:column>
@@ -105,7 +105,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="fyrirAddAnchor" name="fyrirAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Fyrir er..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['fyrir'] == null ? 'color:black' : 'color:red'}" value="Fyrir er..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['fyrir']}" var="maelir">
 <h:column>
@@ -145,7 +145,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="setjaAddAnchor" name="setjaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Setja mæli..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['setja'] == null ? 'color:black' : 'color:red'}" value="Setja mæli..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['setja']}" var="maelir">
 <h:column>
@@ -203,7 +203,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="fluttAAddAnchor" name="fluttAAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Flutt á..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['fluttA'] == null ? 'color:black' : 'color:red'}" value="Flutt á..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['fluttA']}" var="maelir">
 <h:column>
@@ -243,7 +243,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="fluttAfAddAnchor" name="fluttAfAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Flutt af..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['fluttAf'] == null ? 'color:black' : 'color:red'}" value="Flutt af..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['fluttAf']}" var="maelir">
 <h:column>
@@ -282,7 +282,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="hjalpataekiAddAnchor" name="hjalpataekiAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Setja hjálpatæki..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['hjalpataeki'] == null ? 'color:black' : 'color:red'}" value="Setja hjálpatæki..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['hjalpataeki']}" var="maelir">
 <h:column>
@@ -314,7 +314,7 @@ rendered="#{maelir.valid}"/>
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem">
 <f:verbatim><a id="straumspennaAddAnchor" name="straumspennaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel value="Setja straumspennamæli..."/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['straumspenna'] == null ? 'color:black' : 'color:red'}" value="Setja straumspennamæli..."/>
 </wf:container>
 <h:dataTable value="#{TilkynningVertakaBean.list['straumspenna']}" var="maelir">
 <h:column>
@@ -369,7 +369,18 @@ disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}"/>
 </wf:container>
 
+<wf:container styleClass="formItem">
+<h:outputText style="color:red" rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending failed: Some fields are empty but must have a value"/>
+</wf:container>
+<wf:container styleClass="formItem">
+<h:commandButton
+rendered="#{TilkynningVertakaBean.applicationInvalid}"
+action="firstWizardPage"
+value="Fara á fyrsta skref"/>
+</wf:container>
+
 <wf:container styleClass="button">
+
 <h:commandButton
 action="back"
 value="til baka"/>

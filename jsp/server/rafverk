@@ -6,7 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
-version="1.2">
+ version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
@@ -42,6 +42,10 @@ value="Skrá skýrslu um neysluveitu"/>
 <h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
+
+<wf:container>
+<h:outputText value="Hægt er að nota algildistákn (*,?) í leitarskilyrðum"/>
+</wf:container>
 
 <h:outputLabel for="verknumer" value="Verknúmer"/>
 <h:inputText id="verknumer" value="#{RafverktokuListi.searchForExternalProjectID}"/>
@@ -102,13 +106,6 @@ value="#{verktaka.externalProjectID}"/>
 </h:column>
 <h:column>
 <f:facet name="header">
-<h:outputText value="Rafveita"/>
-</f:facet>
-<h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
-value="#{verktaka.orkufyrirtaeki.name}"/>
-</h:column>
-<h:column>
-<f:facet name="header">
 <h:outputText value="Orkukaupandi"/>
 </f:facet>
 <h:commandLink action="yfirlit" actionListener="#{RafverktokuListi.populateFormsForOverview}"
@@ -139,3 +136,4 @@ value="#{verktaka.stadaDisplay}"/>
 </f:view>
 
 </jsp:root>
+
