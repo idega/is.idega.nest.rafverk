@@ -21,6 +21,19 @@ version="1.2">
 <f:verbatim><h2>Mínar rafverktökur:</h2></f:verbatim>
 </wf:container>
 
+<wf:container styleClass="formSection">
+<h:commandButton
+id="welcome_1"
+action="#{TilkynningVertakaBean.startTilkynningVertaka}"
+immediate="true"
+value="Stofna þjónustubeiðni"/>
+
+<h:commandButton
+id="welcome_2"
+action="#{TilkynningVertakaBean.startTilkynningLokVerks}"
+immediate="true"
+value="Skrá skýrslu um neysluveitu"/>
+</wf:container>
 
 <wf:container styleClass="formSection">
 <wf:container styleClass="formItem">
@@ -29,8 +42,17 @@ version="1.2">
 <h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
+
+<h:outputLabel for="verknumer" value="Verknúmer"/>
+<h:inputText id="verknumer" value="#{RafverktokuListi.searchForExternalProjectID}"/>
+
+<h:outputLabel for="orkukaupandi" value="Orkukaupanði"/>
+<h:inputText id="orkukaupandi" value="#{RafverktokuListi.searchForEnergyConsumer}"/>
+
+<h:outputLabel for="veitustadur" value="Veitustaður"/>
+<h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
 </wf:container>
-<h:commandButton id="filterVerktakaStatusesButton" value="Finna"/>
+<h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
 
 </wf:container>
 <wf:container styleClass="formSection">
@@ -42,20 +64,22 @@ pageIndexVar="hello1"
 pageCountVar="hello2"
 paginator="true"
 paginatorMaxPages="9">
-<f:facet name="first" ><h:outputText value="first"/>
+<f:facet name="first" ><h:outputText value="fyrsti"/>
 </f:facet>
-<f:facet name="last"><h:outputText value="last"/>
+<f:facet name="last"><h:outputText value="seinasti"/>
 </f:facet>
-<f:facet name="previous"><h:outputText value="previous"/>
+<f:facet name="previous"><h:outputText value="fyrri"/>
 </f:facet>
-<f:facet name="next"><h:outputText value="next"/>
+<f:facet name="next"><h:outputText value="næsti"/>
 </f:facet>
-<f:facet name="fastforward"><h:outputText value="fast forward"/>
+<f:facet name="fastforward"><h:outputText value="spóla áfram"/>
 </f:facet>
-<f:facet name="fastrewind"><h:outputText value="fast rewind"/>
+<f:facet name="fastrewind"><h:outputText value="spóla til baka"/>
 </f:facet>
 
 </x:dataScroller>
+
+
 
 
 
@@ -108,25 +132,8 @@ value="#{verktaka.stadaDisplay}"/>
 
 </h:dataTable>
 </wf:container>
-<wf:container styleClass="formSection">
-<h:commandButton
-id="welcome_1"
-action="#{TilkynningVertakaBean.startTilkynningVertaka}"
-immediate="true"
-value="Stofna þjónustubeiðni"/>
 
-<h:commandButton
-id="welcome_2"
-action="#{TilkynningVertakaBean.startTilkynningLokVerks}"
-immediate="true"
-value="Skrá skýrslu um neysluveitu"/>
-</wf:container>
 </h:form>
-
-
-
-
-
 </builder:region>
 </builder:page>
 </f:view>
