@@ -6,7 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
- version="1.2">
+version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
@@ -42,6 +42,15 @@ value="Skrá skýrslu um neysluveitu"/>
 <h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
+
+<h:outputLabel for="verknumer" value="Verknúmer"/>
+<h:inputText id="verknumer" value="#{RafverktokuListi.searchForExternalProjectID}"/>
+
+<h:outputLabel for="orkukaupandi" value="Orkukaupanði"/>
+<h:inputText id="orkukaupandi" value="#{RafverktokuListi.searchForEnergyConsumer}"/>
+
+<h:outputLabel for="veitustadur" value="Veitustaður"/>
+<h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
 </wf:container>
 <h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
 
@@ -130,4 +139,3 @@ value="#{verktaka.stadaDisplay}"/>
 </f:view>
 
 </jsp:root>
-
