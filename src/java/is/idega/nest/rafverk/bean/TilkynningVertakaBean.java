@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.24 2007/07/13 16:14:09 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.25 2007/07/20 16:32:08 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/13 16:14:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/20 16:32:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class TilkynningVertakaBean {
 	
@@ -215,7 +215,7 @@ public class TilkynningVertakaBean {
 	public String sendApplication() {
 		isSuccessfullyStored = storeApplicationData();
 		if (isSuccessfullyStored) {
-			boolean validationSuccessful = true; //validateTilkynningVertaka();
+			boolean validationSuccessful = validateTilkynningVertaka();
 			if (validationSuccessful) {
 				if (sendApplicationData()) {
 					messageStoring = "Þjónustubeiðni send";
@@ -1224,6 +1224,10 @@ public class TilkynningVertakaBean {
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	public boolean isApplicationInvalid() {
+		return ! validationResults.isEmpty();
 	}
 	
 	public Map getInvalid() {

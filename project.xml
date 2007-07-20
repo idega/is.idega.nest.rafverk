@@ -96,6 +96,15 @@
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
+      <artifactId>com.idega.faces</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>bundles</groupId>
       <artifactId>is.idega.idegaweb.egov.message</artifactId>
       <version>1.0.1</version>
       <type>jar</type>
@@ -113,7 +122,8 @@
       <properties>
         <idegaweb.bundle.include>true</idegaweb.bundle.include>
       </properties>
-    </dependency>
+      </dependency>
+    <!-- because of an exception class we need javamail -->
     <dependency>
       <groupId>javamail</groupId>
       <artifactId>javamail</artifactId>

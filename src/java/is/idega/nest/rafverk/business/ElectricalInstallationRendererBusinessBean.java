@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.6 2007/06/21 15:11:24 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.7 2007/07/20 16:32:22 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -47,10 +47,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/21 15:11:24 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/20 16:32:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -254,7 +254,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 	
 	private Property getWorkingplaceData(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree("workingplace", "Veitustaður");
+		PropertyTree propertyTree = new PropertyTree(FieldID.WORKING_PLACE, "Veitustaður");
 		// user name
 		String name = null,
 		use = null,
@@ -262,12 +262,14 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		streetName = null,
 		streetNumber = null,
 		postalCodeNumber = null,
-		postalCodeName = null; 
+		postalCodeName = null,
+		landRegisterMapNumber = null; 
 		RealEstate realEstate = electricalInstallation.getRealEstate();
 		if (realEstate != null) {
 			name = realEstate.getName();
 			use = realEstate.getUse();
 			comment = realEstate.getComment();
+			landRegisterMapNumber = realEstate.getLandRegisterMapNumber();
 			Street street = realEstate.getStreet();
 			streetNumber = realEstate.getStreetNumber();
 			if (street != null) {
@@ -285,16 +287,17 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		.add("streetName", "Gata", streetName)
 		.add("streetNumber", "Gatanúmer", streetNumber)
 		.add("postalCodeNumber", "Póstnúmer", postalCodeNumber)
-		.add("postalCodeName", "Sveitarfélag", postalCodeName);
+		.add("postalCodeName", "Sveitarfélag", postalCodeName)
+		.add("landRegisterMapNumber", "Landnúmer", landRegisterMapNumber);
 		return propertyTree;
 	}
 			
 	private Property getEnergyConsumer(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("energyConsumer", "Orkukaupandi");	
-		propertyTree.add("name", "Orkukaupandi", electricalInstallation.getEnergyConsumerName())
-		.add("energyConsumerPersonalId", "Kennitala", electricalInstallation.getEnergyConsumerPersonalID())
-		.add("energyConsumerHomePhone", "Heimasími", electricalInstallation.getEnergyConsumerHomePhone())
-		.add("energyConsumerWorkPhone", "Vinnusími", electricalInstallation.getEnergyConsumerWorkPhone());
+		propertyTree.add(FieldID.NAME, "Orkukaupandi", electricalInstallation.getEnergyConsumerName())
+		.add(FieldID.ENERGY_CONSUMER_PERSONAL_ID, "Kennitala", electricalInstallation.getEnergyConsumerPersonalID())
+		.add(FieldID.ENERGY_CONSUMER_HOME_PHONE, "Heimasími", electricalInstallation.getEnergyConsumerHomePhone())
+		.add(FieldID.ENERGY_CONSUMER_WORK_PHONE, "Vinnusími", electricalInstallation.getEnergyConsumerWorkPhone());
 		return propertyTree;
 	}
 	

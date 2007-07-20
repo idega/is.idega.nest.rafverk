@@ -178,6 +178,10 @@
   		<from-outcome>nextwizard</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</to-view-id>
   	</navigation-case>
+  	<navigation-case>
+  		<from-outcome>firstWizardPage</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>
+  	</navigation-case>
   </navigation-rule>
 
  

@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.ejb.FinderException;
 import javax.faces.component.UIComponent;
@@ -29,10 +30,19 @@ import com.idega.business.IBOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
 import com.idega.user.data.User;
+import com.idega.util.StringHandler;
 
 public class RafverktokuListi extends BaseBean  {
 	
+	// searching start...
 	String selectedStatus;
+	
+	String searchForExternalProjectID;
+	
+	String searchForEnergyConsumer;
+	
+	String searchForRealEstate;
+	// ...searching end
 	
 	Map rafverktokuListi = null;
 	
@@ -91,29 +101,55 @@ public class RafverktokuListi extends BaseBean  {
 //	}
 
 	public List getRafverktokur() {
-		String status = getSelectedStatus();
-		if(status==null||status.equals("")){
-			return getAllRafverktokur();
-		}
-		else{
-			return getRafverktokurWithStatus(status);
-		}
-	}
-
-	public List getRafverktokurWithStatus(String status) {
-		return getAllRafverktokurWithStatusListi(status);
-	}
-	
-	public List getAllRafverktokurWithStatusListi(String status){
+		Pattern externalProjectIDPattern = getPattern(getSearchForExternalProjectID());
+		Pattern energyConsumerPattern = getPattern(getSearchForEnergyConsumer());
+		Pattern realEstatePattern = getPattern(getSearchForRealEstate()); 
 		List verktokur = getAllRafverktokur();
+		// shortcut for standard case
+		if (StringHandler.isEmpty(getSelectedStatus()) 
+				&& externalProjectIDPattern == null 
+				&& energyConsumerPattern == null
+				&& realEstatePattern == null) {
+			return verktokur;
+		}
 		List list = new ArrayList();
 		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
 			Rafverktaka verktaka = (Rafverktaka) iter.next();
-			if(status.startsWith(verktaka.getStada())){
+			if(checkElectricalInstallation(verktaka, externalProjectIDPattern, energyConsumerPattern, realEstatePattern)) {
 				list.add(verktaka);
 			}
 		}
 		return list;
+	}
+	
+	private boolean checkElectricalInstallation(Rafverktaka verktaka, Pattern externalProjectIDPattern, Pattern energyConsumerPattern, Pattern realEstatePattern) {
+		if (StringHandler.isNotEmpty(getSelectedStatus()) && (! getSelectedStatus().startsWith(verktaka.getStada()))) {
+			return false;
+		}
+		return 
+			checkAttribute(externalProjectIDPattern, verktaka.getExternalProjectID()) &&
+			checkAttribute(energyConsumerPattern, verktaka.getOrkukaupandi().getNafn()) &&
+			checkAttribute(realEstatePattern, verktaka.getVeitustadurDisplay());
+	}
+	
+	private boolean checkAttribute(Pattern search, String project) {
+		if (search == null) {
+			// nothing to do
+			return true;
+		}
+		// search is not empty! check if project is null
+		if (StringHandler.isEmpty(project)) {
+			return false;
+		}
+		return search.matcher(project).matches();
+	}
+	
+	private Pattern getPattern(String search) {
+		if (StringHandler.isEmpty(search)) {
+			return null;
+		}
+		String regex = StringHandler.convertWildcardExpressionToRegularExpression(search);
+		return Pattern.compile(regex);
 	}
 
 	public List getAllRafverktokur() {
@@ -216,6 +252,36 @@ public class RafverktokuListi extends BaseBean  {
 	    	}
 	    }
 
+	}
+
+	
+	public String getSearchForExternalProjectID() {
+		return searchForExternalProjectID;
+	}
+
+	
+	public void setSearchForExternalProjectID(String searchForExternalProjectID) {
+		this.searchForExternalProjectID = searchForExternalProjectID;
+	}
+
+	
+	public String getSearchForEnergyConsumer() {
+		return searchForEnergyConsumer;
+	}
+
+	
+	public void setSearchForEnergyConsumer(String searchForEnergyConsumer) {
+		this.searchForEnergyConsumer = searchForEnergyConsumer;
+	}
+
+	
+	public String getSearchForRealEstate() {
+		return searchForRealEstate;
+	}
+
+	
+	public void setSearchForRealEstate(String searchForRealEstate) {
+		this.searchForRealEstate = searchForRealEstate;
 	}
 	
 

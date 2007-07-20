@@ -1,5 +1,5 @@
 /*
- * $Id: MeterValidator.java,v 1.2 2007/05/29 11:27:09 thomas Exp $
+ * $Id: MeterValidator.java,v 1.3 2007/07/20 16:32:08 thomas Exp $
  * Created on May 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -25,10 +25,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/29 11:27:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/07/20 16:32:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MeterValidator implements PropertyValidator, PropertyVisitor {
 
@@ -78,22 +78,22 @@ public class MeterValidator implements PropertyValidator, PropertyVisitor {
 				return Boolean.FALSE;
 			}
 		}
-		else if (device && FieldID.DEVICE.equals(value)) {
+		else if (device && FieldID.DEVICE.equals(key)) {
 			if (StringHandler.isEmpty(value)) {
 				return Boolean.FALSE;
 			}
 		}
-		else if (phase && FieldID.PHASE.equals(value)) {
+		else if (phase && FieldID.PHASE.equals(key)) {
 			if (StringHandler.isEmpty(value)) {
 				return Boolean.FALSE;
 			}
 		}
-		else if (ampere && FieldID.AMPERE.equals(value)) {
+		else if (ampere && FieldID.AMPERE.equals(key)) {
 			if (StringHandler.isEmpty(value)) {
 				return Boolean.FALSE;
 			}
 		}
-		else if (rate && FieldID.RATE.equals(value)) {
+		else if (rate && FieldID.RATE.equals(key)) {
 			if (StringHandler.isEmpty(value)) {
 				return Boolean.FALSE;
 			}

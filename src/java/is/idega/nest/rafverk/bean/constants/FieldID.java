@@ -1,5 +1,5 @@
 /*
- * $Id: FieldID.java,v 1.1 2007/05/16 15:54:53 thomas Exp $
+ * $Id: FieldID.java,v 1.2 2007/07/20 16:32:08 thomas Exp $
  * Created on May 14, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,7 +11,15 @@ package is.idega.nest.rafverk.bean.constants;
 
 
 public class FieldID {
-
+	// application first page
+	public final static String WORKING_PLACE = "workingPlace";
+	public final static String NAME = "name";
+	public final static String ENERGY_CONSUMER_PERSONAL_ID = "energyConsumerPersonalId";
+	public final static String ENERGY_CONSUMER_HOME_PHONE = "energyConsumerHomePhone";
+	public final static String ENERGY_CONSUMER_WORK_PHONE = "energyConsumerWorkPhone";
+	
+	
+	// application second page
 	public final static String TYPE = "type";
 	public final static String CURRENT_LINE_MODIFICATION = "currentLineModification";
 	public final static String CURRENT_LINE_CONNECTION_MODIFICATION = "currentLineConnectionModification";
