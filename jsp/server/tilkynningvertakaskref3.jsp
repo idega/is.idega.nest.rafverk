@@ -5,7 +5,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
- version="1.2">
+version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 <f:view>
 <builder:page id="builderpage_344" template="93">
@@ -370,9 +370,9 @@ id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}"/>
 </wf:container>
 
 <wf:container styleClass="formItem">
-<h:outputText style="color:red" rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending failed: Some fields are empty but must have a value"/>
+<h:outputText style="color:red" rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti"/>
 </wf:container>
-<wf:container styleClass="formItem">
+<wf:container styleClass="button">
 <h:commandButton
 rendered="#{TilkynningVertakaBean.applicationInvalid}"
 action="firstWizardPage"
