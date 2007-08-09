@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.3 2007/07/10 11:59:21 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.4 2007/08/09 16:35:35 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,14 +29,15 @@ import com.idega.core.view.ViewManager;
 import com.idega.core.view.ViewNode;
 import com.idega.faces.IWJspViewHandler;
 import com.idega.faces.IWViewHandlerImpl;
+import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/07/10 11:59:21 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -67,6 +68,11 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		String energyConsumerName = tilkynningVertakaBean.getNafnOrkukaupanda();
 		String energyConsumerPersonalID = tilkynningVertakaBean.getKennitalaOrkukaupanda();
 
+		// converting null values to empty strings has to be done because IE does not like null values 
+		realEstateDisplay = StringHandler.replaceIfEmpty(realEstateDisplay, StringHandler.EMPTY_STRING);
+		energyConsumerName = StringHandler.replaceIfEmpty(energyConsumerName, StringHandler.EMPTY_STRING);
+		energyConsumerPersonalID = StringHandler.replaceIfEmpty(energyConsumerPersonalID, StringHandler.EMPTY_STRING);
+		
 		List list = new ArrayList(3);
 		list.add(realEstateDisplay);
 		list.add(energyConsumerName);

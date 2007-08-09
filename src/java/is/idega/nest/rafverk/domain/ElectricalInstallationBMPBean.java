@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.6 2007/06/15 16:21:16 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.7 2007/08/09 16:36:52 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -26,10 +26,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/15 16:21:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:36:52 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -585,12 +585,12 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		return (String) getColumnValue(COLUMN_VOLTAGE_PHASE_PHASE);
 	}
 	
-	public void setFuseAttached(boolean fuseAttached) {
+	public void setFuseAttached(Boolean fuseAttached) {
 		setColumn(COLUMN_FUSE_ATTACHED, fuseAttached);
 	}
 	
-	public boolean isFuseAttached() {
-		return getBooleanColumnValue(COLUMN_FUSE_ATTACHED, false);
+	public Boolean isFuseAttached() {
+		return (Boolean) getColumnValue(COLUMN_FUSE_ATTACHED);
 	}
 	
 	public void setFuseVoltage(String fuseVoltage) {

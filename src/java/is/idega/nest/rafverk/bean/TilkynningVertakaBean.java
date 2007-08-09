@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.25 2007/07/20 16:32:08 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.26 2007/08/09 16:36:32 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.bean;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
+import is.idega.nest.rafverk.business.ElectricalInstallationValidationBusiness;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -49,10 +50,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/20 16:32:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:36:32 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class TilkynningVertakaBean {
 	
@@ -63,6 +64,8 @@ public class TilkynningVertakaBean {
 	private GroupBusiness groupBusiness = null;
 	
 	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
+	
+	private ElectricalInstallationValidationBusiness electricalInstallationValidationBusiness = null;
 	
 	// special lock variables
 	
@@ -254,7 +257,7 @@ public class TilkynningVertakaBean {
 	public String sendApplicationReport() {
 		isSuccessfullyStored = storeApplicationReportData();
 		if (isSuccessfullyStored) {
-			boolean validationSuccessful = true; //validateTilkynningLokVertaka();
+			boolean validationSuccessful = validateTilkynningLokVerks();
 			if (validationSuccessful) {
 				if (sendApplicationReportData()) {
 					messageStoring = "Skýrsla send";
@@ -1036,6 +1039,13 @@ public class TilkynningVertakaBean {
 		}
 		return electricalInstallationBusiness;
 	}
+	
+	public ElectricalInstallationValidationBusiness getElectricalInstallationValidationBusiness() {
+		if (electricalInstallationValidationBusiness == null) {
+			electricalInstallationValidationBusiness = (ElectricalInstallationValidationBusiness) getSeviceBean(ElectricalInstallationValidationBusiness.class);
+		}
+		return electricalInstallationValidationBusiness;
+	}
 
 	public GroupBusiness getGroupBusiness() {
 		if (groupBusiness == null) {
@@ -1218,7 +1228,18 @@ public class TilkynningVertakaBean {
 	private boolean validateTilkynningVertaka()  {
 		try {
 			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-			validationResults =  getElectricalInstallationRendererBusiness().validateApplication(electricalInstallation);
+			validationResults =  getElectricalInstallationValidationBusiness().validateApplication(electricalInstallation);
+			return validationResults.isEmpty();
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	private boolean validateTilkynningLokVerks()  {
+		try {
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			validationResults =  getElectricalInstallationValidationBusiness().validateReport(electricalInstallation);
 			return validationResults.isEmpty();
 		}
 		catch (RemoteException e) {
@@ -1227,7 +1248,21 @@ public class TilkynningVertakaBean {
 	}
 	
 	public boolean isApplicationInvalid() {
-		return ! validationResults.isEmpty();
+		try {
+			return ! getElectricalInstallationValidationBusiness().isApplicationValid(validationResults);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public boolean isReportInvalid() {
+		try {
+			return ! getElectricalInstallationValidationBusiness().isReportValid(validationResults);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	public Map getInvalid() {

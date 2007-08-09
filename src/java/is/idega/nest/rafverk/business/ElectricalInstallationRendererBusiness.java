@@ -2,10 +2,10 @@ package is.idega.nest.rafverk.business;
 
 
 import java.io.IOException;
-import java.util.Map;
 import com.idega.business.IBOService;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import java.rmi.RemoteException;
+import com.idega.fop.data.Property;
 
 public interface ElectricalInstallationRendererBusiness extends IBOService {
 
@@ -30,7 +30,12 @@ public interface ElectricalInstallationRendererBusiness extends IBOService {
 	public String getXMLReport(ElectricalInstallation electricalInstallation) throws IOException, RemoteException;
 
 	/**
-	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#validateApplication
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getApplicationProperty
 	 */
-	public Map validateApplication(ElectricalInstallation electricalInstallation) throws RemoteException;
+	public Property getApplicationProperty(ElectricalInstallation electricalInstallation) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getReportProperty
+	 */
+	public Property getReportProperty(ElectricalInstallation electricalInstallation) throws RemoteException;
 }

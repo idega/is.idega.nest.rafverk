@@ -1,5 +1,5 @@
 /*
- * $Id: RadioButtonPlusInputFieldValidator.java,v 1.2 2007/05/29 11:27:09 thomas Exp $
+ * $Id: RadioButtonPlusInputFieldValidator.java,v 1.3 2007/08/09 16:36:11 thomas Exp $
  * Created on May 15, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -25,19 +25,27 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/05/29 11:27:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:36:11 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class RadioButtonPlusInputFieldValidator implements PropertyValidator, PropertyVisitor {
 	
 	private String radioButtonKey = null;
-	private String inputFieldKey = null;
+	private String radioButtonValue = InitialData.ANNAD;
+	private String firstInputFieldKey = null;
+	private String secondInputFieldKey = null;
 	
 	public RadioButtonPlusInputFieldValidator(String radioButtonKey, String inputFieldKey) {
 		this.radioButtonKey = radioButtonKey;
-		this.inputFieldKey = inputFieldKey;
+		this.firstInputFieldKey = inputFieldKey;
+	}
+	
+	public RadioButtonPlusInputFieldValidator(String radioButtonKey, String radioButtonValue, String firstInputFieldKey, String secondInputFieldKey) {
+		this(radioButtonKey, firstInputFieldKey);
+		this.secondInputFieldKey = secondInputFieldKey;
+		this.radioButtonValue = radioButtonValue;
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +58,8 @@ public class RadioButtonPlusInputFieldValidator implements PropertyValidator, Pr
 
 	public Object visit(PropertyTree propertyTree) {
 		String value = null;
-		String otherValue = null;
+		String firstValue = null;
+		String secondValue = null;
 		List children = propertyTree.getValue();
 		Iterator iterator = children.iterator();
 		while (iterator.hasNext()) {
@@ -59,25 +68,28 @@ public class RadioButtonPlusInputFieldValidator implements PropertyValidator, Pr
 			if (radioButtonKey.equals(key)) {
 				value = getValue(property);
 			}
-			if (inputFieldKey.equals(key)) {
-				otherValue = getValue(property);
+			else if (firstInputFieldKey.equals(key)) {
+				firstValue = getValue(property);
+			}
+			else if (secondInputFieldKey != null && secondInputFieldKey.equals(key)) {
+				secondValue = getValue(property); 
 			}
 		}
 		// check first value, must be not empty
 		if (StringHandler.isEmpty(value)) {
 			return Boolean.FALSE;
 		}
-		if (InitialData.ANNAD.equals(value)) {
-			// if first value is set to annad, second must be not empty
-			if (StringHandler.isNotEmpty(otherValue)) {
+		// if the radio button is set to the specified value the inputfields must be not empty
+		if (radioButtonValue.equals(value)) { 
+			if (StringHandler.isNotEmpty(firstValue) &&
+					(secondInputFieldKey == null || StringHandler.isNotEmpty(secondValue))) {
 				return Boolean.TRUE;
 			}
 		}
-		else {
-			// if first value is set to something else second must be empty
-			if (StringHandler.isEmpty(otherValue)) {
-				return Boolean.TRUE;
-			}
+		// if the radio button is to something else input fields must be empty
+		else if (StringHandler.isEmpty(firstValue) &&
+				(secondInputFieldKey == null || StringHandler.isEmpty(secondValue))) {
+			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;
 	}

@@ -161,6 +161,7 @@
     	<description>
   		Tilkynning vertaka step 3
   	</description>
+  	<!-- star * must be there because of labels on the page /pages/rafverktaki/rafverk/tilkynningvertakaskref3 -->
   	<from-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref3*</from-view-id>
   	<navigation-case>
   		<from-outcome>back</from-outcome>
@@ -248,9 +249,9 @@
   		<from-outcome>send</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
-  	 <navigation-case>
-  		<from-outcome>nextwizard</from-outcome>
-  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	  	<navigation-case>
+  		<from-outcome>firstWizardPage</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
   	</navigation-case>
   	 </navigation-rule>
   

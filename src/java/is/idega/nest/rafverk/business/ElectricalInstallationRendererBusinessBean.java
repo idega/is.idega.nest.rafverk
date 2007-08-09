@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.7 2007/07/20 16:32:22 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.8 2007/08/09 16:35:35 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,8 +11,6 @@ package is.idega.nest.rafverk.business;
 
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.constants.FieldID;
-import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
-import is.idega.nest.rafverk.bean.validation.ValidationRules;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -47,10 +45,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/20 16:32:22 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -68,7 +66,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
-	private ValidationRules validationRules = null; 
+
 	
 	public String getPDFApplication(ElectricalInstallation electricalInstallation) throws IOException {
 		Property prop = getApplicationProperty(electricalInstallation);
@@ -89,23 +87,15 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		Property prop = getReportProperty(electricalInstallation);
 		return getXMLOutput(prop);
 	}
-
 	
-	public Map validateApplication(ElectricalInstallation electricalInstallation) {
-		Property property = getApplicationProperty(electricalInstallation);
-		ElectricalInstallationValidator handler = new ElectricalInstallationValidator(getValidationRules());
-		property.accept(handler);
-		return handler.getResults();
-	}
-	
-	private Property getApplicationProperty(ElectricalInstallation electricalInstallation) {
+	public Property getApplicationProperty(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("thjonustubeidni", "Þjónustubeiðni");
 		prop.add(getHeadApplication(electricalInstallation))
 		.add(getBodyApplication(electricalInstallation));
 		return prop;
 	}
 	
-	private Property getReportProperty(ElectricalInstallation electricalInstallation) {
+	public Property getReportProperty(ElectricalInstallation electricalInstallation) {
 		PropertyTree prop = new PropertyTree("skyrsla", "Skýrsla um neysluveitu");		
 		prop.add(getHeadReport(electricalInstallation))
 		.add(getBodyReport(electricalInstallation))
@@ -151,7 +141,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 				("mm\u00b2"));
 		String switchPanelModification = electricalInstallation.getSwitchPanelModification();
 		prop.addWithValueDescription(FieldID.SWITCH_PANEL_MODIFICATION, "Aðaltafla/Mælatafla", switchPanelModification, DataConverter.lookup(InitialData.ADALTAFLA, switchPanelModification))
-		.add(getElectronicalProtectiveMeasures(electricalInstallation));
+		.add(getElectronicProtectiveMeasures(electricalInstallation));
 		return prop;
 	}
 	
@@ -301,8 +291,8 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return propertyTree;
 	}
 	
-	private Property getElectronicalProtectiveMeasures(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree(FieldID.ELECTRONICAL_PROTECTIVE_MEASURES, "Varnarráðstöfun");
+	private Property getElectronicProtectiveMeasures(ElectricalInstallation electricalInstallation) {
+		PropertyTree propertyTree = new PropertyTree(FieldID.ELECTRONIC_PROTECTIVE_MEASURES, "Varnarráðstöfun");
 		Iterator iterator = electricalInstallation.getElectronicalProtectiveMeasures().iterator();
 		while (iterator.hasNext()) {
 			String value = (String) iterator.next();
@@ -433,7 +423,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		addHeadData(prop, electricalInstallation);
 		prop.add(getAnnouncement(electricalInstallation));
 		String typeInReport = electricalInstallation.getTypeInReport();
-		prop.addWithValueDescription("typeInreport", "Notkun húsnæðis",typeInReport ,DataConverter.lookup(InitialData.NOTKUNARFLOKKUR, typeInReport));
+		prop.addWithValueDescription(FieldID.TYPE_IN_REPORT, "Notkun húsnæðis",typeInReport ,DataConverter.lookup(InitialData.NOTKUNARFLOKKUR, typeInReport));
 		String announcementRemarks = electricalInstallation.getAnnouncementRemarks();
 		prop.add("announcementRemarks","Nánari skýring á því sem tilkynnt er",announcementRemarks);
 		return prop;
@@ -441,10 +431,10 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		
 		
 	private Property getAnnouncement(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree("announcementGroup", "Tilkynnt er");
+		PropertyTree propertyTree = new PropertyTree(FieldID.ANNOUNCEMENT_GROUP, "Tilkynnt er");
 		String announcement = electricalInstallation.getAnnouncement();
-		propertyTree.addWithValueDescription("announcement", "Tilkynnt", announcement ,DataConverter.lookup(InitialData.TILKYNNT, announcement));
-		propertyTree.add("announcementOther", "Annað", electricalInstallation.getAnnouncementOther());
+		propertyTree.addWithValueDescription(FieldID.ANNOUNCEMENT, "Tilkynnt", announcement ,DataConverter.lookup(InitialData.TILKYNNT, announcement));
+		propertyTree.add(FieldID.ANNOUNCEMENT_OTHER, "Annað", electricalInstallation.getAnnouncementOther());
 		return propertyTree;
 	}
 	
@@ -453,7 +443,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	private Property getBodyReport(ElectricalInstallation electricalInstallation) {
 		PropertyTree propertyTree = new PropertyTree("bodyReport", "Upplýsingar um neysluveitu");
 		propertyTree.add(getVoltageSystemInReport(electricalInstallation))
-		.add(getElectronicalProtectiveMeasuresInReport(electricalInstallation))
+		.add(getElectronicProtectiveMeasuresInReport(electricalInstallation))
 		.add(getGrounding(electricalInstallation));
 		MaelirList maelirList = getMaelirList(electricalInstallation);
 		propertyTree.add(getMeter(maelirList))
@@ -462,15 +452,15 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 	
 	private Property getVoltageSystemInReport(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree("voltageSystemInReportGroup", "Veitukerfi");
+		PropertyTree propertyTree = new PropertyTree(FieldID.VOLTAGE_SYSTEM_GROUP_IN_REPORT, "Veitukerfi");
 		String voltageSystemInReport = electricalInstallation.getVoltageSystemInReport();
-		propertyTree.addWithValueDescription("voltageSystemInReport", "Veitukerfi",voltageSystemInReport ,DataConverter.lookup(InitialData.SPENNUKERFI, voltageSystemInReport));
-		propertyTree.add("voltageSystemInReportOther", "Annað", electricalInstallation.getVoltageSystemOtherInReport());
+		propertyTree.addWithValueDescription(FieldID.VOLTAGE_SYSTEM_IN_REPORT, "Veitukerfi",voltageSystemInReport ,DataConverter.lookup(InitialData.SPENNUKERFI, voltageSystemInReport));
+		propertyTree.add(FieldID.VOLTAGE_SYSTEM_OTHER_IN_REPORT, "Annað", electricalInstallation.getVoltageSystemOtherInReport());
 		return propertyTree;
 	}
 	
-	private Property getElectronicalProtectiveMeasuresInReport(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree("electronicalProtectiveMeasuresInReport", "Varnarráðstöfun");
+	private Property getElectronicProtectiveMeasuresInReport(ElectricalInstallation electricalInstallation) {
+		PropertyTree propertyTree = new PropertyTree(FieldID.ELECTRONIC_PROTECTIVE_MEASURES_IN_REPORT, "Varnarráðstöfun");
 		Iterator iterator = electricalInstallation.getElectronicalProtectiveMeasuresInReport().iterator();
 		while (iterator.hasNext()) {
 			String value = (String) iterator.next();
@@ -543,9 +533,14 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 	}
 	
 	private Property isFuseAttached(ElectricalInstallation electricalInstallation) {
-		PropertyTree propertyTree = new PropertyTree("fuse","");
-		String key = (electricalInstallation.isFuseAttached()) ? InitialData.LEKASTRAUMSROFI_I_LAGI_KEY : InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY;
-		String description = DataConverter.lookup(InitialData.LEKASTRAUMSROFI, key);
+		PropertyTree propertyTree = new PropertyTree(FieldID.FUSE,"");
+		Boolean fuseAttached = electricalInstallation.isFuseAttached();
+		String key = null;
+		String description = null;
+		if (fuseAttached != null) {
+			key = fuseAttached.booleanValue() ? InitialData.LEKASTRAUMSROFI_I_LAGI_KEY : InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY;
+			description = DataConverter.lookup(InitialData.LEKASTRAUMSROFI, key);
+		}
 		propertyTree.addWithValueDescription("fuseAttached", "Lekastraumsrofi", key, description)
 		.addWithUnit("fuseVoltage","",electricalInstallation.getFuseVoltage(),VOLT)
 		.addWithUnit("fuseTime", "", electricalInstallation.getFuseTime(),MILLI_SECONDS);
@@ -566,12 +561,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		return electricalInstallationBusiness;
 	}
 	
-	private ValidationRules getValidationRules() {
-		if (validationRules == null) {
-			validationRules = new ValidationRules();
-		}
-		return validationRules;
-	}
+
 	
 	private IBOService getServiceBean(Class serviceClass ) {
 		IBOService service = null;

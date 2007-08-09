@@ -394,12 +394,12 @@ public interface ElectricalInstallation extends IDOEntity, Case {
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setFuseAttached
 	 */
-	public void setFuseAttached(boolean fuseAttached);
+	public void setFuseAttached(Boolean fuseAttached);
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#isFuseAttached
 	 */
-	public boolean isFuseAttached();
+	public Boolean isFuseAttached();
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setFuseVoltage

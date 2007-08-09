@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.11 2007/07/13 16:14:09 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.12 2007/08/09 16:35:35 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -62,10 +62,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/13 16:14:09 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -479,7 +479,16 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		electricalInstallation.setVoltagePhaseN(tilkynningLokVerksBean.getMaeldSpennaFasiN());
 		electricalInstallation.setVoltagePhasePhase(tilkynningLokVerksBean.getMaeldSpennaFasiFasi());
 		
-		electricalInstallation.setFuseAttached(InitialData.LEKASTRAUMSROFI_I_LAGI_KEY.equals(tilkynningLokVerksBean.getLekastraumsrofi()));
+		// note: fuse attached attribute might be null (that means "unknown")
+		String fuseAttachedString = tilkynningLokVerksBean.getLekastraumsrofi();
+		Boolean fuseAttached = null;
+		if (InitialData.LEKASTRAUMSROFI_I_LAGI_KEY.equals(fuseAttachedString)) {
+			fuseAttached = Boolean.TRUE;
+		}
+		else if (InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY.equals(fuseAttachedString)) {
+			fuseAttached = Boolean.FALSE;
+		}
+		electricalInstallation.setFuseAttached(fuseAttached);
 		
 		electricalInstallation.setFuseVoltage(tilkynningLokVerksBean.getSpennuhaekkunUtleysingVolt());
 		electricalInstallation.setFuseTime(tilkynningLokVerksBean.getLekastraumsrofaUtleysingMillisecond());
@@ -707,11 +716,15 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		tilkynningLokVerksBean.setHringrasarvidnamNeysluveitu(electricalInstallation.getResistence());
 		tilkynningLokVerksBean.setMaeldSpennaFasiN(electricalInstallation.getVoltagePhaseN());
 		tilkynningLokVerksBean.setMaeldSpennaFasiFasi(electricalInstallation.getVoltagePhasePhase());
-		if (electricalInstallation.isFuseAttached()) {
-			tilkynningLokVerksBean.setLekastraumsrofi(InitialData.LEKASTRAUMSROFI_I_LAGI_KEY);
-		}
-		else {
-			tilkynningLokVerksBean.setLekastraumsrofi(InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY);
+		// fuse attached might be null (that means "unknown")
+		Boolean fuseAttached = electricalInstallation.isFuseAttached();
+		if (fuseAttached != null) {
+			if (fuseAttached.booleanValue()) {
+				tilkynningLokVerksBean.setLekastraumsrofi(InitialData.LEKASTRAUMSROFI_I_LAGI_KEY);
+			}
+			else {
+				tilkynningLokVerksBean.setLekastraumsrofi(InitialData.LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY);
+			}
 		}
 		tilkynningLokVerksBean.setSpennuhaekkunUtleysingVolt(electricalInstallation.getFuseVoltage());
 		tilkynningLokVerksBean.setLekastraumsrofaUtleysingMillisecond(electricalInstallation.getFuseTime());

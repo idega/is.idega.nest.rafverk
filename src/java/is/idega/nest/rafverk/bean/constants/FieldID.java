@@ -1,5 +1,5 @@
 /*
- * $Id: FieldID.java,v 1.2 2007/07/20 16:32:08 thomas Exp $
+ * $Id: FieldID.java,v 1.3 2007/08/09 16:37:15 thomas Exp $
  * Created on May 14, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,6 +11,8 @@ package is.idega.nest.rafverk.bean.constants;
 
 
 public class FieldID {
+	// application +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
 	// application first page
 	public final static String WORKING_PLACE = "workingPlace";
 	public final static String NAME = "name";
@@ -25,7 +27,7 @@ public class FieldID {
 	public final static String CURRENT_LINE_CONNECTION_MODIFICATION = "currentLineConnectionModification";
 	public final static String HOME_LINE = "homeLine";
 	public final static String SWITCH_PANEL_MODIFICATION = "switchPanelModification";
-	public final static String ELECTRONICAL_PROTECTIVE_MEASURES = "electronicalProtectiveMeasures";
+	public final static String ELECTRONIC_PROTECTIVE_MEASURES = "electronicProtectiveMeasures";
 	public final static String APPLICATION = "application";
 	public final static String POWER = "power";
 	public final static String PLACE_METER = "placeMeter";
@@ -40,6 +42,25 @@ public class FieldID {
 	public final static String AMPERE = "ampere";
 	public final static String RATE = "rate";
 	// meter list
+	
+	// report ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	public final static String ANNOUNCEMENT_GROUP = "announcementGroup";
+	public final static String ANNOUNCEMENT = "announcement";
+	public final static String ANNOUNCEMENT_OTHER = "announcementOther";
+	
+	public final static String TYPE_IN_REPORT = "typeInReport";
+	
+	public final static String VOLTAGE_SYSTEM_GROUP_IN_REPORT = "voltageSystemGroupInReport";
+	public final static String VOLTAGE_SYSTEM_IN_REPORT = "voltageSystemInReport";
+	public final static String VOLTAGE_SYSTEM_OTHER_IN_REPORT = "voltageSystemOtherInReport";
+	
+	public final static String ELECTRONIC_PROTECTIVE_MEASURES_IN_REPORT = "electronicProtectiveMeasuresInReport";
+	
+	public final static String FUSE = "fuse";
+	public final static String FUSE_ATTACHED = "fuseAttached";
+	public final static String FUSE_VOLTAGE = "fuseVoltage";
+	public final static String FUSE_TIME = "fuseTime";
 	
 	
 
