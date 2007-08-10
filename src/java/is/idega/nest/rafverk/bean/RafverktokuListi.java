@@ -44,6 +44,8 @@ public class RafverktokuListi extends BaseBean  {
 	String searchForRealEstate;
 	// ...searching end
 	
+	String numberOfRowsPerPage = "10";
+	
 	Map rafverktokuListi = null;
 	
 	Rafverktaka currentRafverktaka = null;
@@ -284,5 +286,16 @@ public class RafverktokuListi extends BaseBean  {
 		this.searchForRealEstate = searchForRealEstate;
 	}
 	
+	public void setNumberOfRowsPerPage(String number) {
+		numberOfRowsPerPage = number;
+	}
+	
+	public String getNumberOfRowsPerPage() {
+		return numberOfRowsPerPage;
+	}
+	
+	public int getNumberOfRowsPerPageAsInt() {
+		return Integer.valueOf(getNumberOfRowsPerPage()).intValue();
+	}
 
 }

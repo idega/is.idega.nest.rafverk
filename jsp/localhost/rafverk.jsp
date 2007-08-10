@@ -62,6 +62,11 @@ value="Skrá skýrslu um neysluveitu"/>
 </wf:container>
 <wf:container styleClass="formSection">
 
+<h:selectOneMenu value="#{RafverktokuListi.numberOfRowsPerPage}" onchange="submit()">
+<f:selectItems
+value="#{InitialData.numberOfRowsPerPageSelects}" />
+</h:selectOneMenu>
+
 
 <x:dataScroller for="myTable"
 fastStep="10"
@@ -88,7 +93,7 @@ paginatorMaxPages="9">
 
 
 
-<h:dataTable id="myTable" rows="10" value="#{RafverktokuListi.rafverktokur}" var="verktaka" columnClasses="oddRow evenRow" styleClass="caseTable ruler" >
+<h:dataTable id="myTable" rows="#{RafverktokuListi.numberOfRowsPerPageAsInt}" value="#{RafverktokuListi.rafverktokur}" var="verktaka" columnClasses="oddRow evenRow" styleClass="caseTable ruler" >
 <h:column>
 <f:facet name="header">
 <h:outputText value=""/>

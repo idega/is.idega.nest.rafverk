@@ -41,6 +41,8 @@ public class InitialData extends BaseBean {
 	
 	public static final String RAFVEITUR = "Rafveitur";
 	
+	// first step
+	
 	public static final String[] NOTKUNARFLOKKUR = {
 		"Íbúðarhúsnæði", "IBUDARHUSNAEDI", 
 		"Sumarhús", "SUMARHUS",
@@ -221,6 +223,17 @@ public class InitialData extends BaseBean {
 	
 	public static final List OPTIONS_PER_ELECTRICAL_INSTALLATION_LIST = Arrays.asList(OPTIONS_PER_ELECTRICAL_INSTALLATION);
 	
+	public static final String[] NUMBER_OF_ROWS_PER_PAGE = {
+		"5 raðir","5",
+		"10 raðir", "10",
+		"15 raðir","15",
+		"20 raðir","20",
+		"25 raðir","25",
+		"30 raðir","30"
+	};
+	
+	public static final List NUMBER_OF_ROWS_PER_PAGE_LIST = Arrays.asList(NUMBER_OF_ROWS_PER_PAGE);
+	
 
 	public Orkufyrirtaeki getRarik() {
 		Orkufyrirtaeki rarik = new Orkufyrirtaeki();
@@ -314,6 +327,10 @@ public class InitialData extends BaseBean {
 	
 	public List getOptionsPerElectricalInstallationListi() {
 		return OPTIONS_PER_ELECTRICAL_INSTALLATION_LIST;
+	}
+	
+	public List getNumberOfRowsPerPageListi() {
+		return NUMBER_OF_ROWS_PER_PAGE_LIST;
 	}
 	
 	
@@ -732,6 +749,10 @@ public class InitialData extends BaseBean {
 	
 	public List getOptionsPerElectricalInstallationListiSelects() {
 		return getSelectItemList(getOptionsPerElectricalInstallationListi());
+	}
+	
+	public List getNumberOfRowsPerPageSelects() {
+		return getSelectItemList(getNumberOfRowsPerPageListi());
 	}
 	                      
 	

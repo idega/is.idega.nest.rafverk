@@ -56,10 +56,16 @@ value="Skrá skýrslu um neysluveitu"/>
 <h:outputLabel for="veitustadur" value="Veitustaður"/>
 <h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
 </wf:container>
+
 <h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
 
 </wf:container>
 <wf:container styleClass="formSection">
+
+<h:selectOneMenu value="#{RafverktokuListi.numberOfRowsPerPage}" onchange="submit()">
+<f:selectItems
+value="#{InitialData.numberOfRowsPerPageSelects}" />
+</h:selectOneMenu>
 
 
 <x:dataScroller for="myTable"
@@ -87,7 +93,7 @@ paginatorMaxPages="9">
 
 
 
-<h:dataTable id="myTable" rows="10" value="#{RafverktokuListi.rafverktokur}" var="verktaka" columnClasses="oddRow evenRow" styleClass="caseTable ruler" >
+<h:dataTable id="myTable" rows="#{RafverktokuListi.numberOfRowsPerPageAsInt}" value="#{RafverktokuListi.rafverktokur}" var="verktaka" columnClasses="oddRow evenRow" styleClass="caseTable ruler" >
 <h:column>
 <f:facet name="header">
 <h:outputText value=""/>
@@ -130,8 +136,7 @@ value="#{verktaka.stadaDisplay}"/>
 </h:dataTable>
 </wf:container>
 
-</h:form>
-</builder:region>
+</h:form></builder:region>
 </builder:page>
 </f:view>
 
