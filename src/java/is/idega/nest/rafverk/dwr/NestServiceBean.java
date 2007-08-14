@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.4 2007/08/09 16:35:35 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.5 2007/08/14 12:42:27 alexis Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,15 +29,16 @@ import com.idega.core.view.ViewManager;
 import com.idega.core.view.ViewNode;
 import com.idega.faces.IWJspViewHandler;
 import com.idega.faces.IWViewHandlerImpl;
+import com.idega.presentation.IWContext;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/14 12:42:27 $ by $Author: alexis $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -99,7 +100,7 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		UIComponent component = viewRoot.findComponent(componentID);
 		component.getChildren();
 		BuilderLogic builderLogic = BuilderLogic.getInstance();
-		String pageKey = builderLogic.getPageKeyByURI(pageURI);
+		String pageKey = builderLogic.getPageKeyByURI(pageURI, IWContext.getIWContext(context).getDomain());
 		CachedBuilderPage page = builderLogic.getCachedBuilderPage(pageKey);
 	}
 }
