@@ -9,14 +9,20 @@ import java.rmi.RemoteException;
 public interface NestService extends IBOService {
 
 	/**
-	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getName
+	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getStreetsByPostalCodeForChangeElectricianBean
 	 */
-	public String getName() throws RemoteException;
+	public Map getStreetsByPostalCodeForChangeElectricianBean(String postalCode) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getStreetsByPostalCode
 	 */
 	public Map getStreetsByPostalCode(String postalCode) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean
+	 */
+	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street,
+			String streetNumber) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumber
@@ -25,12 +31,12 @@ public interface NestService extends IBOService {
 			throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getElectricInstallationList
+	 */
+	public List getElectricInstallationList(String realEstateNumber) throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getEnergyConsumerFields
 	 */
 	public List getEnergyConsumerFields(String realEstateNumber) throws RemoteException;
-
-	/**
-	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#updateMeter
-	 */
-	public void updateMeter(String pageURI, String componentID) throws RemoteException;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.12 2007/08/09 16:35:35 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.13 2007/08/15 17:12:51 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -62,10 +62,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -849,6 +849,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		
 	public Collection getElectricalInstallationByElectrician(User electrician) throws FinderException {
 		return getElectricalInstallationHome().findElectricalInstallationByElectrician(electrician);
+	}
+	
+	public Collection getElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException {
+		return getElectricalInstallationHome().findElectricalInstallationByRealEstateNumber(realEstateNumber);
 	}
 	
 	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) {

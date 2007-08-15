@@ -36,4 +36,11 @@ public class ElectricalInstallationHomeImpl extends IDOFactory implements Electr
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
+
+	public Collection findElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindElectricalInstallationByRealEstateNumber(realEstateNumber);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
 }

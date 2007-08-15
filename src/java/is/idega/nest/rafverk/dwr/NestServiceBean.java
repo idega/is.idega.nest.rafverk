@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.5 2007/08/14 12:42:27 alexis Exp $
+ * $Id: NestServiceBean.java,v 1.6 2007/08/15 17:16:05 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,57 +10,74 @@
 package is.idega.nest.rafverk.dwr;
 
 import is.idega.nest.rafverk.bean.BaseBean;
+import is.idega.nest.rafverk.bean.ChangeElectricianBean;
+import is.idega.nest.rafverk.bean.RealEstateBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-
-import com.idega.builder.business.BuilderLogic;
-import com.idega.builder.business.CachedBuilderPage;
 import com.idega.business.IBOServiceBean;
-import com.idega.core.view.ViewManager;
-import com.idega.core.view.ViewNode;
-import com.idega.faces.IWJspViewHandler;
-import com.idega.faces.IWViewHandlerImpl;
-import com.idega.presentation.IWContext;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/08/14 12:42:27 $ by $Author: alexis $
+ *  Last modified: $Date: 2007/08/15 17:16:05 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
-	public String getName() {
-		return "Hello Word";
+	public Map getStreetsByPostalCodeForChangeElectricianBean(String postalCode) {
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		return getStreetsByPostalCode(postalCode, changeElectricianBean);
 	}
 	
 	public Map getStreetsByPostalCode(String postalCode) {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		return getStreetsByPostalCode(postalCode, tilkynningVertakaBean);
+	}
+		
+	private Map getStreetsByPostalCode(String postalCode, RealEstateBean realEstateBean) {
 		// Postalcode must be set so that methof getStreets returns the right options list
 		// If the value is not set the selected item of the street drop down can not be validated.
 		// JSF  accepts only a value that matches a value in the option list.
 		// When submitting JSF checks if the submitted value is contained in the option list. 
-		tilkynningVertakaBean.setPostnumer(postalCode);
-		return tilkynningVertakaBean.getStreets();
+		realEstateBean.setPostnumer(postalCode);
+		return realEstateBean.getStreets();
+	}
+
+	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street, String streetNumber) {
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, changeElectricianBean);
 	}
 	
 	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber) {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-		tilkynningVertakaBean.setRealEstateListByPostalCodeStreetStreetNumber(postalCode, street, streetNumber);
-		return tilkynningVertakaBean.getRealEstates();
+		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, tilkynningVertakaBean);
 	}
+		
+	private Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, RealEstateBean realEstateBean) {
+		realEstateBean.setRealEstateListByPostalCodeStreetStreetNumber(postalCode, street, streetNumber);
+		return realEstateBean.getRealEstates();
+	}
+	
+	public List getElectricInstallationList(String realEstateNumber) {
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		changeElectricianBean.setRealEstateNumber(realEstateNumber);
+		
+		String realEstateDisplay = changeElectricianBean.getVeitustadurDisplay();
+		realEstateDisplay = StringHandler.replaceIfEmpty(realEstateDisplay, StringHandler.EMPTY_STRING);
+		
+		List list = new ArrayList(2);
+		list.add(realEstateDisplay);
+		list.add(changeElectricianBean.getElectricalInstallationList());
+		return list;
+	}
+	
 	
 	public List getEnergyConsumerFields(String realEstateNumber) {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
@@ -81,26 +98,29 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		return list;
 	}
 	
-	public void updateMeter(String pageURI, String componentID) {
-		ViewManager viewManager = ViewManager.getInstance(getIWMainApplication());
-		ViewNode viewNode = viewManager.calculateViewNodeForUrl(pageURI);
-		String resourceURI = viewNode.getResourceURI();
-		
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		Application application = context.getApplication();
-		ViewHandler viewHandler = application.getViewHandler();
+//	public void updateMeter(String pageURI, String componentID) {
+//		ViewManager viewManager = ViewManager.getInstance(getIWMainApplication());
+//		ViewNode viewNode = viewManager.calculateViewNodeForUrl(pageURI);
+//		String resourceURI = viewNode.getResourceURI();
+//		
+//
+//		FacesContext context = FacesContext.getCurrentInstance();
+//		Application application = context.getApplication();
+//		ViewHandler viewHandler = application.getViewHandler();
+//
+//		ViewHandler parent = ((IWViewHandlerImpl) viewHandler).getParentViewHandler();
+//		IWJspViewHandler jspViewHandler = new IWJspViewHandler(parent);
+//		
+//		UIViewRoot viewRoot = jspViewHandler.restoreView(context, resourceURI);
+//		String renderkit = parent.calculateRenderKitId(context);
+//		UIViewRoot root = context.getViewRoot();
+//		UIComponent component = viewRoot.findComponent(componentID);
+//		component.getChildren();
+//		BuilderLogic builderLogic = BuilderLogic.getInstance();
+//		String pageKey = builderLogic.getPageKeyByURI(pageURI);
+//		CachedBuilderPage page = builderLogic.getCachedBuilderPage(pageKey);
+//	}
 
-		ViewHandler parent = ((IWViewHandlerImpl) viewHandler).getParentViewHandler();
-		IWJspViewHandler jspViewHandler = new IWJspViewHandler(parent);
-		
-		UIViewRoot viewRoot = jspViewHandler.restoreView(context, resourceURI);
-		String renderkit = parent.calculateRenderKitId(context);
-		UIViewRoot root = context.getViewRoot();
-		UIComponent component = viewRoot.findComponent(componentID);
-		component.getChildren();
-		BuilderLogic builderLogic = BuilderLogic.getInstance();
-		String pageKey = builderLogic.getPageKeyByURI(pageURI, IWContext.getIWContext(context).getDomain());
-		CachedBuilderPage page = builderLogic.getCachedBuilderPage(pageKey);
-	}
+
 }

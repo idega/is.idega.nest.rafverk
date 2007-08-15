@@ -22,6 +22,9 @@ public class BaseBean implements Serializable{
 		return (TilkynningVertakaBean) getBean("TilkynningVertakaBean");
 	}
 	
+	public static ChangeElectricianBean getChangeElectricianBean() {
+		return (ChangeElectricianBean) getBean("ChangeElectricianBean");
+	}
 	
 	public static Object getBean(String bean) {
 		FacesContext context = FacesContext.getCurrentInstance();

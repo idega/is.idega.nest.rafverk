@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.7 2007/08/09 16:36:52 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.8 2007/08/15 17:12:51 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -26,10 +26,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:36:52 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -679,6 +679,16 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	    IDOQuery query = idoQueryGetSelect();
 	    query.appendWhere();
 	    query.appendEqualsQuoted(COLUMN_ENERGY_COMPANY_ID, energyCompany.getPrimaryKey().toString());
+	    return idoFindPKsByQuery(query);
+	}
+	
+	public Collection ejbFindElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException {
+		IDOQuery query = idoQuery("select n.* from nest_el_install n, ic_real_estate ic");
+		query.appendWhere("ic.real_estate_number");
+		query.appendEqualSign();
+		query.appendQuoted(realEstateNumber);
+		query.appendAnd();
+		query.append("ic.ic_real_estate_id = n.real_estate_id");
 	    return idoFindPKsByQuery(query);
 	}
 	

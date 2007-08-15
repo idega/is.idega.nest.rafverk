@@ -9,7 +9,7 @@ import com.idega.data.IDOEntity;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
-public interface ElectricalInstallation extends IDOEntity, Case {
+public interface ElectricalInstallation extends IDOEntity, Case{
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCaseCodeDescription

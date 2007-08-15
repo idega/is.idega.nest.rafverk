@@ -73,6 +73,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	public Collection getElectricalInstallationByElectrician(User electrician) throws FinderException, RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByRealEstateNumber
+	 */
+	public Collection getElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException,
+			RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByEnergyCompanyUser
 	 */
 	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) throws RemoteException;
