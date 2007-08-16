@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.1 2007/08/15 17:12:51 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.2 2007/08/16 17:47:47 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,6 +19,7 @@ import is.idega.nest.rafverk.domain.Rafverktaki;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,16 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/16 17:47:47 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
 	private Map electricalInstallationList = null;
+	
+	private Map electricalInstallationMap = null; 
 	
 	private String electricalInstallationIDSelection = null;
 	
@@ -55,6 +58,9 @@ public class ChangeElectricianBean extends RealEstateBean {
 	
 	public void initialize() {
 		super.initializeForm();
+		electricalInstallationList = new TreeMap(Collections.reverseOrder());
+		electricalInstallationMap = new HashMap();
+		initializeElectricalInstallationList(null);
 	}
 	
 	// might be overwritten by subclasses
@@ -64,7 +70,11 @@ public class ChangeElectricianBean extends RealEstateBean {
 	}
 	
 	private void initializeElectricalInstallationList(String realEstateNumber) {
-		electricalInstallationList = new TreeMap(Collections.reverseOrder());
+		electricalInstallationList.clear(); 
+		electricalInstallationMap.clear();
+		if (realEstateNumber == null || InitialData.NONE_REAL_ESTATE_SELECTION.equals(realEstateNumber)) {
+			return;
+		}
 		Collection verktokur = null;
 		try {
 			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByRealEstateNumber(realEstateNumber);
@@ -75,7 +85,11 @@ public class ChangeElectricianBean extends RealEstateBean {
 		catch (FinderException e) {
 			verktokur = null;
 		}
-		if (verktokur != null) {
+		if (verktokur == null || verktokur.isEmpty()) {
+			electricalInstallationList.put(InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION, "ekkert fannst");
+		}
+		else {
+			electricalInstallationList.put(InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION, "Veldu rafverktöku");
 			Iterator iterator = verktokur.iterator();
 			while (iterator.hasNext()) {
 				ElectricalInstallation electricalInstallation = (ElectricalInstallation) iterator.next();
@@ -83,6 +97,7 @@ public class ChangeElectricianBean extends RealEstateBean {
 				String id = verktaka.getId();
 				String label = getElectricalInstallationLabel(verktaka);
 				electricalInstallationList.put(id, label);	
+				electricalInstallationMap.put(id, verktaka);
 			}
 		}
 	}
@@ -135,15 +150,68 @@ public class ChangeElectricianBean extends RealEstateBean {
 		}
 		return myServiceBean;
 	}
+	
+	public Rafverktaka getCurrentElectricalInstallationSelection() {
+		String id = getElectricalInstallationIDSelection();
+		if (id == null ||InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION.equals(id)) {
+			return null;
+		}
+		return (electricalInstallationMap == null) ? null : (Rafverktaka) electricalInstallationMap.get(id);
+	}
 
 	public Map getElectricalInstallationList() {
 		return electricalInstallationList;
 	}
 	
 	public List getElectricalInstallationListiSelects() {
-		return getListiSelects(electricalInstallationList);
+		return getListiSelects(getElectricalInstallationList());
 	}
-
+	
+	// getter for second step...
+	
+	public String getNafnOrkukaupanda() {
+		Orkukaupandi orkukaupandi = getCurrentElectricalInstallationSelection().getOrkukaupandi();
+		if (orkukaupandi != null) {
+			return orkukaupandi.getNafn();
+		}
+		return StringHandler.EMPTY_STRING;
+	}
+	
+	public String getKennitalaOrkukaupanda() {
+		Orkukaupandi orkukaupandi = getCurrentElectricalInstallationSelection().getOrkukaupandi();
+		if (orkukaupandi != null) {
+			return orkukaupandi.getKennitala();
+		}
+		return StringHandler.EMPTY_STRING;
+	}
+	
+	public String getVeitustadurDisplay() {
+		Rafverktaka currentElectricalInstallation = getCurrentElectricalInstallationSelection();
+		if (currentElectricalInstallation == null) {
+			return super.getVeitustadurDisplay();
+		}
+		String display = currentElectricalInstallation.getVeitustadurDisplay();
+		return StringHandler.replaceIfEmpty(display, StringHandler.EMPTY_STRING);
+	}
+	
+	public String getStadaDisplay() {
+		return getCurrentElectricalInstallationSelection().getStadaDisplay();
+	}
+	
+	// ...getter for second step
+	
+	// action method second step 
+	public String changeElectrician() {
+		Rafverktaka currentElectricalInstallation = getCurrentElectricalInstallationSelection();
+		ElectricalInstallation electricalInstallation = currentElectricalInstallation.getElectricalInstallation();
+		return "next";
+	}
+	
+	// message for third step
+	public String getMessageStoring() {
+		return "Sent";
+	}
+	
 	
 	/**
 	 * @return Returns the electricalInstallationIDSelection.

@@ -178,6 +178,14 @@ var realEstateDisplay = document.getElementById("form1:veitustadurDisplay");
 realEstateDisplay.innerHTML = data[0];
 DWRUtil.removeAllOptions("form1:electricalInstallationDrop");
 DWRUtil.addOptions("form1:electricalInstallationDrop", data[1]);
+enableNextButton();
+}
+
+function enableNextButton() {
+var electricalInstallationDrop = document.getElementById("form1:electricalInstallationDrop");
+var selectedValue = electricalInstallationDrop.options[electricalInstallationDrop.selectedIndex].value;
+var nextButton = document.getElementById("form1:nextButton");
+nextButton.disabled=(selectedValue=='none_electric_installation_selection');
 }
 
 </script>
@@ -276,7 +284,7 @@ styleClass="formItem required">
 <!--h:commandButton id="flettaUppIFasteignaskraButton" action="#{TilkynningVertakaBean.flettaUppIFasteignaskra}" value="Fletta upp í Landskrá Fasteigna"/-->
 <!--h:selectOneMenu id="fasteignirDrop" rendered="#{TilkynningVertakaBean.availablefasteign}" value="#{TilkynningVertakaBean.fastanumer}" onchange="submit();"-->
 <h:selectOneMenu
-id="fasteignirDrop" value="#{ChangeElectricianBean.fastanumer}" onclick="updateElectricInstallationList();" >
+id="fasteignirDrop" value="#{ChangeElectricianBean.fastanumer}" onchange="updateElectricInstallationList();" >
 <f:selectItems value="#{ChangeElectricianBean.fasteignaListiSelects}"/>
 </h:selectOneMenu>
 </wf:container>
@@ -287,8 +295,10 @@ id="fasteignirDrop" value="#{ChangeElectricianBean.fastanumer}" onclick="updateE
 <wf:container styleClass="formItem">
 <h:outputLabel for="electricalInstallationDrop" value="Rafverktaka" />
 <h:selectOneMenu
-style="size=40;"
-id="electricalInstallationDrop" value="#{ChangeElectricianBean.electricalInstallationIDSelection}">
+style="width: 500px;"
+id="electricalInstallationDrop"
+value="#{ChangeElectricianBean.electricalInstallationIDSelection}"
+onchange="enableNextButton();">
 <f:selectItems value="#{ChangeElectricianBean.electricalInstallationListiSelects}"/>
 </h:selectOneMenu>
 </wf:container>
@@ -300,16 +310,12 @@ id="electricalInstallationDrop" value="#{ChangeElectricianBean.electricalInstall
 
 <wf:container styleClass="bottom">
 <h:commandButton
+disabled="#{ChangeElectricianBean.currentElectricalInstallationSelection==null}"
 styleClass="buttonSpan"
-id="tilkynningVertaka"
+id="nextButton"
 action="next"
 value="Áfram"/>
 
-<h:outputText value=" "/>
-
-<h:commandButton
-action="#{TilkynningVertakaBean.store}"
-value="Geyma"/>
 </wf:container>
 </h:form>
 

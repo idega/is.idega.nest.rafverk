@@ -36,6 +36,8 @@ public class InitialData extends BaseBean {
 	
 	public static final String NONE_REAL_ESTATE_SELECTION = "none_real_estate_selection";
 	
+	public static final String NONE_ELECTRIC_INSTALLATION_SELECTION = "none_electric_installation_selection";
+	
 	// special key (also used in validators)
 	public static final String ANNAD = "ANNAD";
 	

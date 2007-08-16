@@ -5,7 +5,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/extensions"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
- version="1.2">
+version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 <f:view>
 <builder:page id="builderpage_541" template="93">
@@ -36,8 +36,6 @@ id="veitustadur" value="#{TilkynningVertakaBean.veitustadurDisplay}"/>
 <h:outputText
 id="stada" value="#{TilkynningVertakaBean.rafverktaka.stadaDisplay}"/>
 </wf:container>
-
-<h:outputText value="#{TilkynningVertakaBean.messageStoring}"></h:outputText>
 
 <wf:container rendered="#{TilkynningVertakaBean.downloadTilkynningVertaka}"> <!-- 3 -->
 
