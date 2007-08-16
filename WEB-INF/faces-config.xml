@@ -277,8 +277,32 @@
   		<from-outcome>tilkynninglokverks</from-outcome>
   		  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
   	</navigation-case>
+  	</navigation-rule>
+  	
+  	<navigation-rule>
+    	<description>
+  		raverktakaskipti
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/rafverktakaskipti/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskiptiskref2/</to-view-id>
+  	</navigation-case>
   	 </navigation-rule>
-  
-  
-  
+  	 
+  	<navigation-rule>
+    	<description>
+  		raverktakaskiptiskref2
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/rafverktakaskiptiskref2/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>cancel</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskipti/</to-view-id>
+  	</navigation-case>
+  	  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskiptiskref3/</to-view-id>
+  	</navigation-case>
+  	 </navigation-rule>
+   
   </faces-config>
