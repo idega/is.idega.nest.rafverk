@@ -26,8 +26,6 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
-import com.idega.business.IBOLookup;
-import com.idega.idegaweb.IWApplicationContext;
 import com.idega.presentation.IWContext;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
@@ -186,18 +184,8 @@ public class RafverktokuListi extends BaseBean  {
 	}
 
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
-		if (electricalInstallationBusiness == null) {
-			try {
-				FacesContext context = FacesContext.getCurrentInstance();
-				IWContext iwContext = IWContext.getIWContext(context);
-				IWApplicationContext iwac = iwContext.getApplicationContext();
-				electricalInstallationBusiness = (ElectricalInstallationBusiness) 
-					IBOLookup.getServiceInstance(iwac, ElectricalInstallationBusiness.class);
-			}
-			catch (RemoteException rme) {
-				throw new RuntimeException(rme.getMessage());
-			}
-		}
+		electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
 		return electricalInstallationBusiness;
 	}
 	

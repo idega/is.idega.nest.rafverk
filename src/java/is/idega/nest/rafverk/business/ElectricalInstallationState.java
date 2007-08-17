@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.2 2007/06/15 16:20:59 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.3 2007/08/17 17:07:21 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -34,13 +34,14 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/06/15 16:20:59 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:21 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ElectricalInstallationState {
 	
+	// for electrical installation case
 	public static final String THJONUSTUBEIDNI_GEYMD = "THJONUSTUBEIDNI_GEYMD";
 	public static final String SKYRSLA_GEYMD = "SKYRSLA_GEYMD";
 	public static final String MOTTEKIN = "MOTTEKIN";
@@ -49,6 +50,9 @@ public class ElectricalInstallationState {
 	public static final String I_SKODUN = "ISKODUN";
 	public static final String SKODUN_LOKID = "SKODUN_LOID";
 	public static final String LOKID = "LOKID";
+	
+	// for electrical installation change case
+	public static final String BEIDNI_UM_SKIPTI = "BEIDNI_UM_SKIPTI";
 	
 	public static final String[] STADA = {
 		"Þjónustubeiðni geymd", THJONUSTUBEIDNI_GEYMD,
@@ -103,6 +107,10 @@ public class ElectricalInstallationState {
 		setStatus(electricalInstallation, SKYRSLA_GEYMD);
 	}
 	
+	public void sendRequestForChange(Case myCase) {
+		setStatus(myCase, BEIDNI_UM_SKIPTI);
+	}
+	
 	public void sendApplication(ElectricalInstallation electricalInstallation) {
 		setStatus(electricalInstallation,MOTTEKIN);
 	}
@@ -146,14 +154,14 @@ public class ElectricalInstallationState {
 		return isApplicationReportStorable(electricalInstallation);
 	}
 	
-	private void setStatus(ElectricalInstallation electricalInstallation, String status) {
+	private void setStatus(Case electricalInstallationCase, String status) {
 		try {
 			// get the right case business by the case code (case code is the corresponding entity of the case code key)
-			CaseBusiness caseBusiness  = CaseCodeManager.getInstance().getCaseBusiness(electricalInstallation.getCaseCode(), iwac);
+			CaseBusiness caseBusiness  = CaseCodeManager.getInstance().getCaseBusiness(electricalInstallationCase.getCaseCode(), iwac);
 			// now get the entity case status by the specified status string (e.g. GEYMD returns corresponding entity with primary key GEYM (first four letters))
 			CaseStatus caseStatus = caseBusiness.getCaseStatus(status);
 			// store the primary key of the case status (e.g. store GEYM but not GEYMD)
-			electricalInstallation.setStatus(caseStatus.getStatus());
+			electricalInstallationCase.setStatus(caseStatus.getStatus());
 		}
 		catch (RemoteException e) {
 			// TODO Auto-generated catch block

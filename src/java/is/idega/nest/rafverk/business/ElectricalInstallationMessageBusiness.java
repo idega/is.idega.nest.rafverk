@@ -16,6 +16,12 @@ public interface ElectricalInstallationMessageBusiness extends IBOService {
 			throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationMessageBusinessBean#createUserMessage
+	 */
+	public String createUserMessage(ElectricalInstallation electricalInstallation, User sender, String subject,
+			String text) throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationMessageBusinessBean#sendDataToEnergyCompany
 	 */
 	public String sendDataToEnergyCompany(ElectricalInstallation electricalInstallation, String subject, String text,

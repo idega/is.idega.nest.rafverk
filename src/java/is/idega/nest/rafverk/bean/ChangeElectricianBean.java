@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.2 2007/08/16 17:47:47 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.3 2007/08/17 17:07:22 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,8 @@
 package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
+import is.idega.nest.rafverk.business.ElectricalInstallationMessageBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
@@ -25,22 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.ejb.CreateException;
 import javax.ejb.FinderException;
-import javax.faces.context.FacesContext;
 
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOService;
-import com.idega.idegaweb.IWApplicationContext;
-import com.idega.presentation.IWContext;
+import com.idega.block.process.data.Case;
+import com.idega.block.process.data.CaseCode;
+import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/08/16 17:47:47 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -52,12 +53,19 @@ public class ChangeElectricianBean extends RealEstateBean {
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
+	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
+	
+	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness = null;
+	
+	private String messageStoring = null;
+	
 	public ChangeElectricianBean() {
     	initialize();
     }
 	
 	public void initialize() {
 		super.initializeForm();
+		messageStoring = StringHandler.EMPTY_STRING; 
 		electricalInstallationList = new TreeMap(Collections.reverseOrder());
 		electricalInstallationMap = new HashMap();
 		initializeElectricalInstallationList(null);
@@ -130,27 +138,6 @@ public class ChangeElectricianBean extends RealEstateBean {
 		buffer.append(StringHandler.getStringOrDash(value));
 	}
 	
-	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
-		if (electricalInstallationBusiness == null) {
-			electricalInstallationBusiness = (ElectricalInstallationBusiness) getSeviceBean(ElectricalInstallationBusiness.class);
-		}
-		return electricalInstallationBusiness;
-	}
-	
-	private IBOService getSeviceBean(Class serviceBeanClass) {
-		IBOService myServiceBean = null;
-		try {
-			FacesContext context = FacesContext.getCurrentInstance();
-			IWContext iwContext = IWContext.getIWContext(context);
-			IWApplicationContext iwac = iwContext.getApplicationContext();
-			myServiceBean = IBOLookup.getServiceInstance(iwac, serviceBeanClass);
-		}
-		catch (RemoteException rme) {
-			throw new RuntimeException(rme.getMessage());
-		}
-		return myServiceBean;
-	}
-	
 	public Rafverktaka getCurrentElectricalInstallationSelection() {
 		String id = getElectricalInstallationIDSelection();
 		if (id == null ||InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION.equals(id)) {
@@ -202,17 +189,58 @@ public class ChangeElectricianBean extends RealEstateBean {
 	
 	// action method second step 
 	public String changeElectrician() {
+		// get the current selection of electric installation
 		Rafverktaka currentElectricalInstallation = getCurrentElectricalInstallationSelection();
 		ElectricalInstallation electricalInstallation = currentElectricalInstallation.getElectricalInstallation();
+		User sender = BaseBean.getCurrentUser();
+		String subject = "Beiðni um breytingu";
+		String text = "Beiðni um breytingu";
+		try {
+			ElectricalInstallationCaseBusiness caseBusiness = getElectricalInstallationCaseBusiness();
+			CaseCode caseCode = caseBusiness.getCaseCodeForElectricalInstallationChange();
+			Case newCase = caseBusiness.createSubCase(electricalInstallation, caseCode);
+			getElectricalInstallationBusiness().getElectricalInstallationState().sendRequestForChange(newCase);
+			newCase.store();
+			// note: if a create exception is thrown a user message is not created
+			String result = getElectricalInstallationMessageBusiness().createUserMessage(electricalInstallation, sender, subject, text);
+			if (result != null) {
+				messageStoring = "Successfully sent request but problems occurred sending email";
+			}
+			else {
+				messageStoring = "Successfully sent";
+			}
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (CreateException e) {
+			messageStoring = "An error occurred: Request was not sent.";
+		}
 		return "next";
 	}
 	
 	// message for third step
 	public String getMessageStoring() {
-		return "Sent";
+		return messageStoring;
 	}
 	
+	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
+		electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationBusiness,ElectricalInstallationBusiness.class);
+		return electricalInstallationBusiness;
+	}
 	
+	public ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness() {
+		electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationMessageBusiness,ElectricalInstallationMessageBusiness.class);
+		return electricalInstallationMessageBusiness;
+	}
+	
+	public ElectricalInstallationCaseBusiness getElectricalInstallationCaseBusiness() {
+		electricalInstallationCaseBusiness = (ElectricalInstallationCaseBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationCaseBusiness, ElectricalInstallationCaseBusiness.class);
+		return electricalInstallationCaseBusiness;
+	}
 	/**
 	 * @return Returns the electricalInstallationIDSelection.
 	 */

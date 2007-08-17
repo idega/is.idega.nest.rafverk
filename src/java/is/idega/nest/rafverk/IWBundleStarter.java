@@ -1,5 +1,5 @@
 /*
- * $Id: IWBundleStarter.java,v 1.1 2007/06/08 17:05:12 thomas Exp $
+ * $Id: IWBundleStarter.java,v 1.2 2007/08/17 17:07:22 thomas Exp $
  * Created on Sep 24, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -18,10 +18,10 @@ import com.idega.idegaweb.IWBundleStartable;
 
 
 /**
- * Last modified: $Date: 2007/06/08 17:05:12 $ by $Author: thomas $
+ * Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:laddi@idega.com">laddi</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IWBundleStarter implements IWBundleStartable {
 
@@ -29,7 +29,10 @@ public class IWBundleStarter implements IWBundleStartable {
 	 * @see com.idega.idegaweb.IWBundleStartable#start(com.idega.idegaweb.IWBundle)
 	 */
 	public void start(IWBundle starterBundle) {
-		CaseCodeManager.getInstance().addCaseBusinessForCode(CaseConstants.CASE_CODE_KEY, ElectricalInstallationCaseBusiness.class);
+		CaseCodeManager caseCodeManager = CaseCodeManager.getInstance();
+		caseCodeManager.addCaseBusinessForCode(CaseConstants.CASE_CODE_KEY_ELINST, ElectricalInstallationCaseBusiness.class);
+		caseCodeManager.addCaseBusinessForCode(CaseConstants.CASE_CODE_KEY_ELCHN, ElectricalInstallationCaseBusiness.class);
+		
 	}
 
 	/* (non-Javadoc)

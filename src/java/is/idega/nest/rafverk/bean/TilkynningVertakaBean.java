@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.27 2007/08/15 17:12:51 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.28 2007/08/17 17:07:22 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -31,14 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import com.idega.business.IBOLookup;
 import com.idega.business.IBORuntimeException;
-import com.idega.business.IBOService;
-import com.idega.idegaweb.IWApplicationContext;
-import com.idega.presentation.IWContext;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.util.StringHandler;
@@ -47,10 +42,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -814,46 +809,30 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 
 	public ElectricalInstallationRendererBusiness getElectricalInstallationRendererBusiness() {
-		if (electricalInstallationRendererBusiness == null) {
-			electricalInstallationRendererBusiness =  (ElectricalInstallationRendererBusiness) getSeviceBean(ElectricalInstallationRendererBusiness.class);
-		}
+		electricalInstallationRendererBusiness = (ElectricalInstallationRendererBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationRendererBusiness, ElectricalInstallationRendererBusiness.class);
 		return electricalInstallationRendererBusiness;
 	}
 	
 	public ElectricalInstallationBusiness getElectricalInstallationBusiness() {
-		if (electricalInstallationBusiness == null) {
-			electricalInstallationBusiness = (ElectricalInstallationBusiness) getSeviceBean(ElectricalInstallationBusiness.class);
-		}
+		electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
 		return electricalInstallationBusiness;
 	}
 	
 	public ElectricalInstallationValidationBusiness getElectricalInstallationValidationBusiness() {
-		if (electricalInstallationValidationBusiness == null) {
-			electricalInstallationValidationBusiness = (ElectricalInstallationValidationBusiness) getSeviceBean(ElectricalInstallationValidationBusiness.class);
-		}
+		electricalInstallationValidationBusiness = (ElectricalInstallationValidationBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationValidationBusiness,ElectricalInstallationValidationBusiness.class);
 		return electricalInstallationValidationBusiness;
 	}
 
 	public GroupBusiness getGroupBusiness() {
-		if (groupBusiness == null) {
-			groupBusiness = (GroupBusiness) getSeviceBean(GroupBusiness.class);
-		}
+		groupBusiness = 
+			(GroupBusiness) BaseBean.initializeServiceBean(groupBusiness,GroupBusiness.class);
 		return groupBusiness;
 	}
 	
-	private IBOService getSeviceBean(Class serviceBeanClass) {
-		IBOService myServiceBean = null;
-		try {
-			FacesContext context = FacesContext.getCurrentInstance();
-			IWContext iwContext = IWContext.getIWContext(context);
-			IWApplicationContext iwac = iwContext.getApplicationContext();
-			myServiceBean = IBOLookup.getServiceInstance(iwac, serviceBeanClass);
-		}
-		catch (RemoteException rme) {
-			throw new RuntimeException(rme.getMessage());
-		}
-		return myServiceBean;
-	}
+
 
 	
 	public Rafverktaka getRafverktaka() {

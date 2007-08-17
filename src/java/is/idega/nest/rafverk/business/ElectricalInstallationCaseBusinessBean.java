@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.1 2007/06/08 17:06:16 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.2 2007/08/17 17:07:22 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,14 +12,15 @@ package is.idega.nest.rafverk.business;
 import is.idega.nest.rafverk.bean.constants.CaseConstants;
 
 import com.idega.block.process.business.CaseBusinessBean;
+import com.idega.block.process.data.CaseCode;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:06:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
 	
@@ -28,5 +29,9 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 	 */
 	protected String getBundleIdentifier() {
 		return CaseConstants.BUNDLE_IDENTIFIER;
+	}
+	
+	public CaseCode getCaseCodeForElectricalInstallationChange() {
+		return getCaseCodeAndInstallIfNotExists(CaseConstants.CASE_CODE_KEY_ELCHN);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.8 2007/08/15 17:12:51 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.9 2007/08/17 17:07:22 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -26,10 +26,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -208,7 +208,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	 * @see com.idega.block.process.data.AbstractCaseBMPBean#getCaseCodeKey()
 	 */
 	public String getCaseCodeKey() {
-		return CaseConstants.CASE_CODE_KEY;
+		return CaseConstants.CASE_CODE_KEY_ELINST;
 	}
 
 	/* (non-Javadoc)

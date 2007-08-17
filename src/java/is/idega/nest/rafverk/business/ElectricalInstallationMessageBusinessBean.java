@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.1 2007/06/21 15:11:24 thomas Exp $
+ * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.2 2007/08/17 17:07:21 thomas Exp $
  * Created on Jun 18, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -39,10 +39,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/21 15:11:24 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/17 17:07:21 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean implements ElectricalInstallationMessageBusiness {
 	
@@ -59,7 +59,6 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
 	public String createStatusChangedUserMessage(ElectricalInstallation electricalInstallation, User sender, String text) {
-		User electrician = electricalInstallation.getElectrician();
 		String statusDescription;
 		try {
 			statusDescription = getElectricalInstallationBusiness().getElectricalInstallationState().getStatusDescription(electricalInstallation);
@@ -68,9 +67,13 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 			e1.printStackTrace();
 			throw new IBORuntimeException();
 		}
-		
 		// composing email
-		String subject = "Changed status: " + statusDescription;
+		String subject = StringHandler.concat("Bryett staða: ", statusDescription);
+		return createUserMessage(electricalInstallation, sender, subject, text);
+	}
+		
+	public String createUserMessage(ElectricalInstallation electricalInstallation, User sender, String subject, String text) {
+		User electrician = electricalInstallation.getElectrician();
 		MessageValue messageValue = new MessageValue();
 		messageValue.setSender(sender);
 		messageValue.setReceiver(electrician);
