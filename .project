@@ -11,6 +11,8 @@
     <project>is.fmr.landskra</project>
     <project>is.idega.iceland</project>
     <project>com.idega.fop</project>
+    <project>com.idega.faces</project>
+    <project>is.idega.idegaweb.egov.message</project>
   </projects>
   <buildSpec>
     <buildCommand>
