@@ -19,4 +19,7 @@ public interface ElectricalInstallationHome extends IDOHome {
 	public Collection findElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException;
 
 	public Collection findElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException;
+
+	public Collection findOtherOpenElectricalInstallationByRealEstateNumber(String realEstateNumber, User currentUser)
+			throws FinderException;
 }

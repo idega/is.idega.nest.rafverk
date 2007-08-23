@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.3 2007/08/17 17:07:22 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.4 2007/08/23 15:29:01 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,7 +11,6 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
-import is.idega.nest.rafverk.business.ElectricalInstallationMessageBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
@@ -27,21 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
-import com.idega.block.process.data.Case;
-import com.idega.block.process.data.CaseCode;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/23 15:29:01 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -52,8 +48,6 @@ public class ChangeElectricianBean extends RealEstateBean {
 	private String electricalInstallationIDSelection = null;
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
-	
-	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
 	
 	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness = null;
 	
@@ -83,9 +77,10 @@ public class ChangeElectricianBean extends RealEstateBean {
 		if (realEstateNumber == null || InitialData.NONE_REAL_ESTATE_SELECTION.equals(realEstateNumber)) {
 			return;
 		}
+		User currentUser = BaseBean.getCurrentUser();
 		Collection verktokur = null;
 		try {
-			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByRealEstateNumber(realEstateNumber);
+			verktokur = getElectricalInstallationBusiness().getOtherElectricalInstallationByRealEstateNumber(realEstateNumber, currentUser);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
@@ -192,29 +187,12 @@ public class ChangeElectricianBean extends RealEstateBean {
 		// get the current selection of electric installation
 		Rafverktaka currentElectricalInstallation = getCurrentElectricalInstallationSelection();
 		ElectricalInstallation electricalInstallation = currentElectricalInstallation.getElectricalInstallation();
-		User sender = BaseBean.getCurrentUser();
-		String subject = "Beiðni um breytingu";
-		String text = "Beiðni um breytingu";
+		ElectricalInstallationCaseBusiness caseBusiness = getElectricalInstallationCaseBusiness();
 		try {
-			ElectricalInstallationCaseBusiness caseBusiness = getElectricalInstallationCaseBusiness();
-			CaseCode caseCode = caseBusiness.getCaseCodeForElectricalInstallationChange();
-			Case newCase = caseBusiness.createSubCase(electricalInstallation, caseCode);
-			getElectricalInstallationBusiness().getElectricalInstallationState().sendRequestForChange(newCase);
-			newCase.store();
-			// note: if a create exception is thrown a user message is not created
-			String result = getElectricalInstallationMessageBusiness().createUserMessage(electricalInstallation, sender, subject, text);
-			if (result != null) {
-				messageStoring = "Successfully sent request but problems occurred sending email";
-			}
-			else {
-				messageStoring = "Successfully sent";
-			}
+			messageStoring = caseBusiness.sendRequestForChangingElectrician(electricalInstallation);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
-		}
-		catch (CreateException e) {
-			messageStoring = "An error occurred: Request was not sent.";
 		}
 		return "next";
 	}
@@ -230,17 +208,12 @@ public class ChangeElectricianBean extends RealEstateBean {
 		return electricalInstallationBusiness;
 	}
 	
-	public ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness() {
-		electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness) 
-			BaseBean.initializeServiceBean(electricalInstallationMessageBusiness,ElectricalInstallationMessageBusiness.class);
-		return electricalInstallationMessageBusiness;
-	}
-	
 	public ElectricalInstallationCaseBusiness getElectricalInstallationCaseBusiness() {
 		electricalInstallationCaseBusiness = (ElectricalInstallationCaseBusiness) 
 			BaseBean.initializeServiceBean(electricalInstallationCaseBusiness, ElectricalInstallationCaseBusiness.class);
 		return electricalInstallationCaseBusiness;
 	}
+	
 	/**
 	 * @return Returns the electricalInstallationIDSelection.
 	 */

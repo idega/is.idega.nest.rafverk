@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.3 2007/08/17 17:07:21 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.4 2007/08/23 15:29:00 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.business;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -34,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/08/17 17:07:21 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationState {
 	
@@ -51,8 +52,21 @@ public class ElectricalInstallationState {
 	public static final String SKODUN_LOKID = "SKODUN_LOID";
 	public static final String LOKID = "LOKID";
 	
+	// for changing the electrician
+	public static final String SKIPT_UM_RAFVERKTAKA = "Skipt um rafverktaka";
+	
 	// for electrical installation change case
 	public static final String BEIDNI_UM_SKIPTI = "BEIDNI_UM_SKIPTI";
+	
+	// status that are called "open"
+	public static final String[] OPEN_STATUS = {
+		THJONUSTUBEIDNI_GEYMD, 
+		SKYRSLA_GEYMD,
+		MOTTEKIN,
+		MOTTEKIN_SKYRSLA_GEYMD
+	};
+	
+	public static final List OPEN_STATUS_LIST;   
 	
 	public static final String[] STADA = {
 		"Þjónustubeiðni geymd", THJONUSTUBEIDNI_GEYMD,
@@ -65,11 +79,23 @@ public class ElectricalInstallationState {
 		"Lokið", LOKID
 	};
 	
-	
 	public static final List STADA_LIST = Arrays.asList(STADA);
 
 	public static List getPossibleStatuses(){
 		return STADA_LIST;
+	}
+	
+	public static List getOpenStatuses() {
+		return OPEN_STATUS_LIST;
+		
+	}
+	
+	static 
+	{
+		OPEN_STATUS_LIST = new ArrayList(OPEN_STATUS.length);
+		for (int i = 0; i < OPEN_STATUS.length; i++) {
+			OPEN_STATUS_LIST.add(OPEN_STATUS[i].substring(0,4));
+		}
 	}
 	
 	private IWApplicationContext iwac = null;
@@ -85,6 +111,10 @@ public class ElectricalInstallationState {
 		currentLocale = IWContext.getIWContext(facesContext).getCurrentLocale();
 		this.iwac = iwac;
 		openCaseStatus = getCaseHome().getCaseStatusOpen();
+	}
+	
+	public void changeElectrician(ElectricalInstallation electricalInstallation) {
+		setStatus(electricalInstallation,SKIPT_UM_RAFVERKTAKA);
 	}
 	
 	public void storeApplication(ElectricalInstallation electricalInstallation) {

@@ -107,6 +107,17 @@
   	<managed-bean-class>is.idega.nest.rafverk.bean.ChangeElectricianBean</managed-bean-class>
   	<managed-bean-scope>session</managed-bean-scope>
   </managed-bean>
+  
+  <!-- overview bean -->
+  	<managed-bean>
+		<managed-bean-name>ChangeElectricianConfirmationBean</managed-bean-name>
+		<managed-bean-class>is.idega.nest.rafverk.bean.ChangeElectricianConfirmationBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>sel_case_nr</property-name>
+			<value>#{param.sel_case_nr}</value>
+		</managed-property>
+	</managed-bean>
 
   
   <navigation-rule>
@@ -302,6 +313,21 @@
   	  	<navigation-case>
   		<from-outcome>next</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskiptiskref3/</to-view-id>
+  	</navigation-case>
+  	 </navigation-rule>
+  	 
+  	<navigation-rule>
+    	<description>
+  		stadfestingrafvirkjaskiptum
+  	</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/stadfestingrafvirkjaskiptum/</from-view-id>
+  	<navigation-case>
+  		<from-outcome>cancel</from-outcome>
+  		<to-view-id>/pages/rafverktaki/erindinmin/</to-view-id>
+  	</navigation-case>
+  	  	<navigation-case>
+  		<from-outcome>next</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/stadfestingrafvirkjaskiptumskref2/</to-view-id>
   	</navigation-case>
   	 </navigation-rule>
    

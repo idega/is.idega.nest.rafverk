@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.2 2007/08/17 17:07:22 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.3 2007/08/23 15:29:00 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,20 +9,33 @@
  */
 package is.idega.nest.rafverk.business;
 
+import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.constants.CaseConstants;
+import is.idega.nest.rafverk.domain.ElectricalInstallation;
+
+import java.rmi.RemoteException;
+
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
 
 import com.idega.block.process.business.CaseBusinessBean;
+import com.idega.block.process.data.Case;
 import com.idega.block.process.data.CaseCode;
+import com.idega.user.data.User;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
+	
+	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+	
+	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
 	
 	/**
 	 * Can be overrided in subclasses
@@ -34,4 +47,52 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 	public CaseCode getCaseCodeForElectricalInstallationChange() {
 		return getCaseCodeAndInstallIfNotExists(CaseConstants.CASE_CODE_KEY_ELCHN);
 	}
+	
+	public ElectricalInstallation getParentCaseAsElectricalInstallation(Case childCase) throws FinderException {
+		Object primaryKey = childCase.getParentCase().getPrimaryKey();
+		try {
+			return getElectricalInstallationBusiness().getElectricalInstallationByPrimaryKey(primaryKey);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public String sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation) {
+		User sender = BaseBean.getCurrentUser();
+		String subject = "Beiðni um breytingu";
+		String text = "Beiðni um breytingu";
+		String result = null;
+		try {
+			CaseCode caseCode = getCaseCodeForElectricalInstallationChange();
+			Case newCase = createSubCase(electricalInstallation, caseCode);
+			getElectricalInstallationBusiness().getElectricalInstallationState().sendRequestForChange(newCase);
+			newCase.setCreator(sender);
+			newCase.setParentCase(electricalInstallation);
+			newCase.store();
+			// note: if a create exception is thrown a user message is not created
+			result = getElectricalInstallationMessageBusiness().createUserMessage(electricalInstallation, sender, subject, text);
+			result = (result == null) ? "Successfully sent" : "Successfully sent request but problems occurred sending email";
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		catch (CreateException e) {
+			result = "An error occurred: Request was not sent.";
+		}
+		return result;
+	}
+		
+	private ElectricalInstallationBusiness getElectricalInstallationBusiness() {
+		electricalInstallationBusiness = (ElectricalInstallationBusiness) 
+			BaseBean.initializeServiceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
+		return electricalInstallationBusiness;
+	}
+	
+	private ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness() {
+		electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness)  
+			BaseBean.initializeServiceBean(electricalInstallationMessageBusiness, ElectricalInstallationMessageBusinessBean.class);
+		return electricalInstallationMessageBusiness;
+	}
+	
 }

@@ -17,6 +17,16 @@ import is.idega.nest.rafverk.data.MaelirList;
 public interface ElectricalInstallationBusiness extends IBOService {
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#addChangeForUser
+	 */
+	public void addChangeForUser(User user) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#changesForUser
+	 */
+	public boolean changesForUser(User user) throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplication
 	 */
 	public boolean sendApplication(Rafverktaka rafverktaka) throws RemoteException;
@@ -77,6 +87,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	 */
 	public Collection getElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException,
 			RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherElectricalInstallationByRealEstateNumber
+	 */
+	public Collection getOtherElectricalInstallationByRealEstateNumber(String realEstateNumber, User user)
+			throws FinderException, RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByEnergyCompanyUser

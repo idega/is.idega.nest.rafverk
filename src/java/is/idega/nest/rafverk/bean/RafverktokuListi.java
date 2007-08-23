@@ -48,6 +48,8 @@ public class RafverktokuListi extends BaseBean  {
 	
 	Rafverktaka currentRafverktaka = null;
 	
+	User electrician = null;
+	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 
 	public RafverktokuListi() {
@@ -62,6 +64,11 @@ public class RafverktokuListi extends BaseBean  {
 	}
 	
 	private void initialize(User electrician) {
+		this.electrician = electrician;
+		initializeList();
+	}
+		
+	private void initializeList() {
 		rafverktokuListi = new TreeMap(Collections.reverseOrder());
 		Collection verktokur = null;
 		try {
@@ -99,6 +106,10 @@ public class RafverktokuListi extends BaseBean  {
 //		}
 //		return selects;
 //	}
+	
+	public Rafverktaka getRafverktaka(String id) {
+		return (Rafverktaka) rafverktokuListi.get(id);
+	}
 
 	public List getRafverktokur() {
 		Pattern externalProjectIDPattern = getPattern(getSearchForExternalProjectID());
@@ -153,6 +164,14 @@ public class RafverktokuListi extends BaseBean  {
 	}
 
 	public List getAllRafverktokur() {
+		try {
+			if (getElectricalInstallationBusiness().changesForUser(electrician)) {
+				initializeList();
+			}
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		return new ArrayList(rafverktokuListi.values());
 		//return getInitialData().getAllRafverktokurListi();
 	}

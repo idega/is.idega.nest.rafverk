@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.13 2007/08/15 17:12:51 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.14 2007/08/23 15:29:00 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -33,9 +33,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -62,10 +64,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -84,6 +86,18 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	private StreetHome streetHome = null;
 	
 	private PostalCodeHome postalCodeHome = null;
+	
+	private Set changesForUser = Collections.synchronizedSet(new HashSet());
+	
+	public void addChangeForUser(User user) {
+		Object pk = user.getPrimaryKey();
+		changesForUser.add(pk);
+	}
+	
+	public boolean changesForUser(User user) {
+		Object pk = user.getPrimaryKey();
+		return changesForUser.remove(pk);
+	}
 	
 	private ElectricalInstallationState electricalInstallationState = null;
 	
@@ -136,7 +150,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		return result;
 	}
-	
+		
 	private boolean createElectricalInstallationIfNecessary(Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		// create new electrical installation
@@ -146,7 +160,6 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				// set owner of case
 				electricalInstallation.setOwner(rafverktaka.getRafverktaki().getElectrician());
 				rafverktaka.setElectricalInstallation(electricalInstallation);
-
 			}
 			catch (CreateException e) {	
 				e.printStackTrace();
@@ -853,6 +866,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	
 	public Collection getElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException {
 		return getElectricalInstallationHome().findElectricalInstallationByRealEstateNumber(realEstateNumber);
+	}
+	
+	public Collection getOtherElectricalInstallationByRealEstateNumber(String realEstateNumber, User user) throws FinderException {
+		return getElectricalInstallationHome().findOtherOpenElectricalInstallationByRealEstateNumber(realEstateNumber, user);
 	}
 	
 	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) {
