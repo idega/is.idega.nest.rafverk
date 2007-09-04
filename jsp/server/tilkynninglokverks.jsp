@@ -254,29 +254,29 @@ Veldu rafverktoku
 Upplysingar um rafverktaka
 </f:verbatim>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="rafverktakaFyrirtaeki" value="Rafverktakafyrirtaeki"/>
 <h:inputText id="rafverktakaFyrirtaeki" value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.nafnFyrirtaekis}" disabled="true"/>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="loggilturRafverktaki" value="Loggiltur rafverktaki"/>
 <h:inputText id="loggilturRafverktaki" value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.nafn}" disabled="true"/>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="heimilisfangRafverktaka" value="Heimilisfang"/>
 <h:inputText id="heimilisfangRafverktaka"
 value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.heimilisfang.display}"
 disabled="true"/>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="kennitalaRafverktaka" value="Kennitala rafverktaka"/>
 <h:inputText id="kennitalaRafverktaka" value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.kennitala}" disabled="true"/>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="heimasimiRafverktaka" value="Heimasimi"/>
 <h:inputText id="heimasimiRafverktaka" value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.heimasimi}" disabled="true"/>
 </wf:container>
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel for="vinnusimiRafverktaka" value="Vinnusimi"/>
 <h:inputText id="vinnusimiRafverktaka" value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.vinnusimi}" disabled="true" />
 </wf:container>
@@ -331,28 +331,28 @@ id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateE
 </wf:container>
 
 
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel style="#{TilkynningVertakaBean.invalid['name'] == null ? 'color:black' : 'color:red'}" for="orkukaupandi" value="Nafn orkukaupanda" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="orkukaupandi" value="#{TilkynningVertakaBean.nafnOrkukaupanda}"/>
 </wf:container>
 
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerPersonalId'] == null ? 'color:black' : 'color:red'}" for="kennitalaOrkukaupanda" value="Kennitala" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="kennitalaOrkukaupanda" value="#{TilkynningVertakaBean.kennitalaOrkukaupanda}"/>
 </wf:container>
 
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerHomePhone'] == null ? 'color:black' : 'color:red'}" for="heimasimiOrkukaupanda" value="Heimasími"/>
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="heimasimiOrkukaupanda" value="#{TilkynningVertakaBean.heimasimiOrkukaupanda}"/>
 </wf:container>
 
-<wf:container styleClass="formItem required">
+<wf:container styleClass="formItem required floated">
 <h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerWorkPhone'] == null ? 'color:black' : 'color:red'}" for="vinnusimiOrkukaupanda" value="Vinnusími" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"

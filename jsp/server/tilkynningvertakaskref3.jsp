@@ -12,6 +12,18 @@ version="1.2">
 <builder:region id="left" label="left">
 <h:form id="form1" styleClass="rafverk">
 
+
+<wf:container rendered="#{TilkynningVertakaBean.applicationInvalid}" styleClass="errorLayer">
+<wf:container rendered="#{TilkynningVertakaBean.applicationInvalid}" styleClass="errorImage"/>
+<h:outputText rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti"/>
+<h:outputText value=" "/>
+<h:commandButton
+styleClass="jsfButton"
+rendered="#{TilkynningVertakaBean.applicationInvalid}"
+action="firstWizardPage"
+value="Fara á fyrsta skref"/>
+</wf:container>
+
 <f:verbatim><h1 class="applicationHeading">Thjonustubeidni</h1></f:verbatim>
 
 <wf:container styleClass="header">
@@ -367,16 +379,6 @@ rendered="#{maelir.valid}"/>
 <h:inputTextarea
 disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}"/>
-</wf:container>
-
-<wf:container styleClass="formItem">
-<h:outputText style="color:red" rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti"/>
-</wf:container>
-<wf:container styleClass="button">
-<h:commandButton
-rendered="#{TilkynningVertakaBean.applicationInvalid}"
-action="firstWizardPage"
-value="Fara á fyrsta skref"/>
 </wf:container>
 
 <wf:container styleClass="button">

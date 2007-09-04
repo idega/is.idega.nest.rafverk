@@ -286,7 +286,15 @@ disabled="true"/>
 <f:verbatim>
 Upplysingar um veitustad
 </f:verbatim>
+
 </wf:container>
+<wf:container styleClass="formItem"
+rendered="#{TilkynningVertakaBean.invalid['workingPlace'] != null}">
+<h:outputText
+style="#{TilkynningVertakaBean.invalid['workingPlace'] == null ? 'color:black' : 'color:red'}"
+value="Veldu veitustað"/>
+</wf:container>
+
 <wf:container styleClass="formItem required">
 <h:outputLabel for="postnumerDrop" value="Póstnúmer"/>
 <h:selectOneMenu
@@ -324,28 +332,28 @@ id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateE
 
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="orkukaupandi" value="Nafn orkukaupanda" />
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['name'] == null ? 'color:black' : 'color:red'}" for="orkukaupandi" value="Nafn orkukaupanda" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="orkukaupandi" value="#{TilkynningVertakaBean.nafnOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="kennitalaOrkukaupanda" value="Kennitala" />
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerPersonalId'] == null ? 'color:black' : 'color:red'}" for="kennitalaOrkukaupanda" value="Kennitala" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="kennitalaOrkukaupanda" value="#{TilkynningVertakaBean.kennitalaOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="heimasimiOrkukaupanda" value="Heimasími"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerHomePhone'] == null ? 'color:black' : 'color:red'}" for="heimasimiOrkukaupanda" value="Heimasími"/>
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="heimasimiOrkukaupanda" value="#{TilkynningVertakaBean.heimasimiOrkukaupanda}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="vinnusimiOrkukaupanda" value="Vinnusími" />
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['energyConsumerWorkPhone'] == null ? 'color:black' : 'color:red'}" for="vinnusimiOrkukaupanda" value="Vinnusími" />
 <h:inputText
 disabled="#{! TilkynningVertakaBean.applicationReportStorable}"
 id="vinnusimiOrkukaupanda" value="#{TilkynningVertakaBean.vinnusimiOrkukaupanda}"/>

@@ -6,7 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
- version="1.2">
+version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
@@ -22,13 +22,13 @@ xmlns:wf="http://xmlns.idega.com/com.idega.webface"
 </wf:container>
 
 <wf:container styleClass="formSection">
-<h:commandButton
+<h:commandButton styleClass="jsfButton"
 id="welcome_1"
 action="#{TilkynningVertakaBean.startTilkynningVertaka}"
 immediate="true"
 value="Stofna þjónustubeiðni"/>
 
-<h:commandButton
+<h:commandButton styleClass="jsfButton"
 id="welcome_2"
 action="#{TilkynningVertakaBean.startTilkynningLokVerks}"
 immediate="true"
@@ -57,7 +57,8 @@ value="Skrá skýrslu um neysluveitu"/>
 <h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
 </wf:container>
 
-<h:commandButton id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
+<h:commandButton styleClass="jsfButton"
+id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
 
 </wf:container>
 <wf:container styleClass="formSection">
@@ -141,4 +142,3 @@ value="#{verktaka.stadaDisplay}"/>
 </f:view>
 
 </jsp:root>
-

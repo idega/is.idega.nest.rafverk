@@ -163,7 +163,7 @@ size="8" id="maeldSpennaFasiFasi" value="#{TilkynningLokVerksBean.maeldSpennaFas
 <wf:container styleClass="fieldsetContainer">
 <!-- 25 -->
 <wf:container styleClass="formItem required">
-<h:outputLabel for="lekastraumsrofi" value="Lekastraumsrofi"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['fuse'] == null ? 'color:black' : 'color:red'}" for="lekastraumsrofi" value="Lekastraumsrofi"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
 <h:selectOneRadio
@@ -209,6 +209,17 @@ value="#{TilkynningLokVerksBean.skyringarMaelingar}"/>
 
 <!-- formsection ends -->
 </wf:container>
+
+<wf:container styleClass="formItem">
+<h:outputText style="color:red" rendered="#{TilkynningVertakaBean.reportInvalid}" value="Sending failed: Some fields are empty but must have a value"/>
+</wf:container>
+<wf:container styleClass="formItem">
+<h:commandButton
+rendered="#{TilkynningVertakaBean.applicationInvalid}"
+action="firstWizardPage"
+value="Fara á fyrsta skref"/>
+</wf:container>
+
 
 <wf:container styleClass="button">
 <h:commandButton

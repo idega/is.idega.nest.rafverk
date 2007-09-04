@@ -62,7 +62,7 @@ version="1.2">
 
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem required">
-<h:outputLabel for="tilkynnt" value="Tilkynnt er"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['announcementGroup'] == null ? 'color:black' : 'color:red'}" for="tilkynnt" value="Tilkynnt er"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
 <h:selectOneRadio
@@ -81,7 +81,7 @@ size="24" id="annadTilkynnt" value="#{TilkynningLokVerksBean.tilkynntAnnad}"/>
 
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="husnaedis" value="Notkun húsnæðis"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['typeInReport'] == null ? 'color:black' : 'color:red'}" for="husnaedis" value="Notkun húsnæðis"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
 <h:selectOneMenu
@@ -103,7 +103,7 @@ id="skyringLokVerks" value="#{TilkynningLokVerksBean.skyring}" rows="3" cols="60
 
 <wf:container styleClass="fieldsetContainer">
 <wf:container styleClass="formItem required">
-<h:outputLabel for="veitukerfi" value="Veitukerfi"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['voltageSystemGroupInReport'] == null ? 'color:black' : 'color:red'}" for="veitukerfi" value="Veitukerfi"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
 <h:selectOneRadio
@@ -123,7 +123,7 @@ size="8" id="annadVeitukerfi" value="#{TilkynningLokVerksBean.annad}"/>
 
 
 <wf:container styleClass="formItem required">
-<h:outputLabel for="varnarradstoefunLokVerks" value="Varnarráðstöfun"/>
+<h:outputLabel style="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasuresInReport'] == null ? 'color:black' : 'color:red'}" for="varnarradstoefunLokVerks" value="Varnarráðstöfun"/>
 </wf:container>
 <wf:container styleClass="checkboxItem">
 <h:selectManyCheckbox
