@@ -6,6 +6,7 @@ import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import com.idega.user.data.User;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import java.rmi.RemoteException;
+import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
 import java.io.IOException;
 import java.util.Collection;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
@@ -25,6 +26,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#changesForUser
 	 */
 	public boolean changesForUser(User user) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getChildElectricalInstallationOrNull
+	 */
+	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation)
+			throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplication
@@ -100,7 +107,17 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationCaseBusiness
+	 */
+	public ElectricalInstallationCaseBusiness getElectricalInstallationCaseBusiness() throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationState
 	 */
 	public ElectricalInstallationState getElectricalInstallationState() throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationCache
+	 */
+	public ElectricalInstallationCache getElectricalInstallationCache() throws RemoteException;
 }

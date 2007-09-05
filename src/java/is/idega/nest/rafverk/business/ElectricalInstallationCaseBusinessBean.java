@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.3 2007/08/23 15:29:00 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.4 2007/09/05 16:33:16 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,6 +14,11 @@ import is.idega.nest.rafverk.bean.constants.CaseConstants;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -26,10 +31,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
 	
@@ -56,6 +61,27 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	public List getChildrenOfCaseAsElectricalInstallation(Case parentCase)  {
+		Collection coll = parentCase.getChildren();
+		List result = new ArrayList(coll.size());
+		Iterator iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			Case item = (Case) iterator.next();
+			Object primaryKey = item.getPrimaryKey();
+			try {
+				ElectricalInstallation electricalInstallation = getElectricalInstallationBusiness().getElectricalInstallationByPrimaryKey(primaryKey);
+				result.add(electricalInstallation);
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+			catch (FinderException e) {
+				getLogger().log(Level.SEVERE, e.getMessage());
+			}
+		}
+		return result;
 	}
 	
 	public String sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation) {

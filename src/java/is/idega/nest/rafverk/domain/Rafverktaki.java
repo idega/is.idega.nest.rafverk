@@ -220,9 +220,6 @@ public class Rafverktaki extends BaseBean{
 		return myRafverktokur;
 	}
 	
-	public void update(){
-		
-	}
 	
 	private UserBusiness getUserBusiness(IWApplicationContext iwac) {	
 		try {

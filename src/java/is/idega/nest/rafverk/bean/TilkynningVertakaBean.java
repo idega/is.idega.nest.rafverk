@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.28 2007/08/17 17:07:22 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.29 2007/09/05 16:33:16 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,6 +19,7 @@ import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
+import is.idega.nest.rafverk.domain.Rafverktaki;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -42,14 +43,16 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/17 17:07:22 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
-	private Rafverktaka rafverktaka = null;
+	private Rafverktaka rafverktaka;
+	
+	private Rafverktaki newOwnerOfCase;
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
@@ -66,8 +69,6 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	private boolean kennitalaOrkukaupandaIsLocked = false;
 	
 	// first step 
-	
-	// id of group
 	
 	private List cachedListOfEnergyCompanies = null;
 	
@@ -845,6 +846,9 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 
 	
+	public Rafverktaki getNewOwnerOfCase() {
+		return getRafverktaka().getNewOwner();
+	}
 
 	
 	/**

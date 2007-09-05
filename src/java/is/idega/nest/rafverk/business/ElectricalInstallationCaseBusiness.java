@@ -4,6 +4,7 @@ package is.idega.nest.rafverk.business;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import javax.ejb.FinderException;
 
@@ -23,6 +24,11 @@ public interface ElectricalInstallationCaseBusiness extends CaseBusiness {
 	 */
 	public ElectricalInstallation getParentCaseAsElectricalInstallation(Case childCase) throws FinderException,
 			RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationCaseBusinessBean#getChildrenOfCaseAsElectricalInstallation
+	 */
+	public List getChildrenOfCaseAsElectricalInstallation(Case parentCase) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationCaseBusinessBean#sendRequestForChangingElectrician

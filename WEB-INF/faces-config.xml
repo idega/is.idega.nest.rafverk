@@ -286,7 +286,11 @@
   	</navigation-case>
    	<navigation-case>
   		<from-outcome>tilkynninglokverks</from-outcome>
-  		  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>rafverktakaskipti</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskipti/</to-view-id>
   	</navigation-case>
   	</navigation-rule>
   	

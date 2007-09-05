@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.4 2007/08/23 15:29:00 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.5 2007/09/05 16:33:16 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationState {
 	
@@ -53,7 +53,7 @@ public class ElectricalInstallationState {
 	public static final String LOKID = "LOKID";
 	
 	// for changing the electrician
-	public static final String SKIPT_UM_RAFVERKTAKA = "Skipt um rafverktaka";
+	public static final String SKIPT_UM_RAFVERKTAKA = "SKIPT_UM_RAFVERKTAKA";
 	
 	// for electrical installation change case
 	public static final String BEIDNI_UM_SKIPTI = "BEIDNI_UM_SKIPTI";
@@ -76,7 +76,8 @@ public class ElectricalInstallationState {
 		"Tilkynnt lok", TILKYNNT_LOK,
 		"í skoðun", I_SKODUN,
 		"Skoðun lokið", SKODUN_LOKID,
-		"Lokið", LOKID
+		"Lokið", LOKID,
+		"Skipt um rafverktaka", SKIPT_UM_RAFVERKTAKA
 	};
 	
 	public static final List STADA_LIST = Arrays.asList(STADA);
@@ -147,6 +148,14 @@ public class ElectricalInstallationState {
 	
 	public void sendApplicationReport(ElectricalInstallation electricalInstallation) {
 		setStatus(electricalInstallation,TILKYNNT_LOK);
+	}
+	
+	public boolean isApplicationHasNewOwner(ElectricalInstallation electricalInstallation) {
+		if (electricalInstallation == null) {
+			return false;
+		}
+		String status = electricalInstallation.getStatus();
+		return SKIPT_UM_RAFVERKTAKA.startsWith(status);
 	}
 	
 	public boolean isApplicationReportStored(ElectricalInstallation electricalInstallation) {

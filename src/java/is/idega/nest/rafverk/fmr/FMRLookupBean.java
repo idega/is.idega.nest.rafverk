@@ -27,13 +27,19 @@ public class FMRLookupBean {
 		
 		FasteignaskraClient client = getFasteignaskraClient();
 		try {
-			Fasteignaskra_Element[] fasteignir = client.getFasteignirByHeitiAndPostnumer(addr, postnumer);
-			if(fasteignir!=null){
-				for (int i = 0; i < fasteignir.length; i++) {
-					Fasteignaskra_Element eFasteign = fasteignir[i];
-					Fasteign fasteign = new Fasteign(eFasteign,postnumer);
+			List fasteignaskra = client.getFasteignirByHeitiAndPostnumer(addr, postnumer);
+			if(fasteignaskra!=null){
+				Iterator iterator = fasteignaskra.iterator();
+				while (iterator.hasNext()) {
+					Fasteignaskra_Element eFasteign = (Fasteignaskra_Element) iterator.next();
+					Fasteign fasteign = new Fasteign(eFasteign, postnumer);
 					list.add(fasteign);
 				}
+//				for (int i = 0; i < fasteignir.length; i++) {
+//					Fasteignaskra_Element eFasteign = fasteignir[i];
+//					Fasteign fasteign = new Fasteign(eFasteign,postnumer);
+//					list.add(fasteign);
+//				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

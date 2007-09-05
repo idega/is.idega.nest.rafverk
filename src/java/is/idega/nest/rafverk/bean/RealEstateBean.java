@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.1 2007/08/15 17:12:51 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.2 2007/09/05 16:33:16 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.faces.model.SelectItem;
 
@@ -26,10 +28,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:12:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RealEstateBean {
 	
@@ -118,20 +120,53 @@ public class RealEstateBean {
 	}
 
 	public Map getRealEstates() {
-		// keep the order
 		List realEstateList = getFasteignaListi();
+		
 		int size =  (realEstateList == null) ? 1 : realEstateList.size();
+		
 		Map realEstates = new LinkedHashMap(size);
 		realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Vinsamlegast veldu rétta fasteign:");
 		if (realEstateList == null) {
 			return realEstates;
 		}
+		
+		// sorting by street numbers else keep order
+		SortedMap streetMap = new TreeMap();
 		Iterator iterator = realEstateList.iterator();
 		while (iterator.hasNext()) {
 			Fasteign fasteign = (Fasteign) iterator.next();
-			String value = fasteign.getFastaNumer();
-			String label = fasteign.getDescription();
-			realEstates.put(value, label);
+			String streetnumber = fasteign.getGotuNumer();
+			Integer streetNr;
+			try {
+				streetNr = new Integer(Integer.parseInt(streetnumber));
+			}
+			catch (NumberFormatException ex) {
+				streetNr = new Integer(0);
+			}
+			List list;
+			if (! streetMap.containsKey(streetNr)) {
+				list = new ArrayList();
+				streetMap.put(streetNr, list);
+				
+			}
+			else {
+				list = (List) streetMap.get(streetNr);
+			}
+			list.add(fasteign);
+		}
+		
+
+		
+		Iterator firstIterator = streetMap.values().iterator();
+		while (firstIterator.hasNext()) {
+			List list = (List) firstIterator.next();
+			Iterator secondIterator = list.iterator();
+			while (secondIterator.hasNext()) {
+				Fasteign fasteign = (Fasteign) secondIterator.next();
+				String value = fasteign.getFastaNumer();
+				String label = fasteign.getDescription();
+				realEstates.put(value, label);
+			}
 		}
 		return realEstates;
 	}

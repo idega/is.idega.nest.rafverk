@@ -27,9 +27,14 @@ public class Rafverktaka {
 		return new Rafverktaka(electricalInstallation, electricalInstallationBusiness);
 	}
 	
-	ElectricalInstallation electricalInstallation = null;
-	Rafverktaki rafverktaki = null;
-	Fasteign fasteign = null;
+	ElectricalInstallation electricalInstallation;
+	
+	ElectricalInstallation childElectricalInstallation;
+	
+	Rafverktaki newOwner;
+	
+	Rafverktaki rafverktaki;
+	Fasteign fasteign;
 	
 	String id;
 	String externalProjectID;
@@ -39,31 +44,54 @@ public class Rafverktaka {
 	
 	Orkukaupandi orkukaupandi;
 	
-	String stada = null;
+	String stada;
 	
-	String stadaDisplay = null;
+	String stadaDisplay;
 	
-    private String notkunarflokkur = null;
+    private String notkunarflokkur;
     
-    private String spennukerfi = null;
+    private String spennukerfi;
     
-    private String annad = null;
+    private String annad;
     
-    private List varnarradstoefun = null;
+    private List varnarradstoefun;
     
 	private Maelir stadurMaelir = new Maelir(InitialData.STADUR, 0);
     
 
 	public Rafverktaka() {
+		initialize();
 	}
 
 	public Rafverktaka(ElectricalInstallation electricalInstallation, ElectricalInstallationBusiness electricalInstallationBusiness){
 		initialize(electricalInstallation, electricalInstallationBusiness);
 	}
 	
+	private void initialize() {
+		rafverktaki = Rafverktaki.getInstanceWithCurrentUserAsRafverktaki();
+	}
+ 	
 	public void initialize(ElectricalInstallation electricalInstallation, ElectricalInstallationBusiness electricalInstallationBusiness) {
 
+		// set rafverktaki
 		setElectricalInstallation(electricalInstallation);
+		User user = electricalInstallation.getElectrician();
+		String electricianCompany = electricalInstallation.getElectricianCompany();
+		rafverktaki = Rafverktaki.getInstanceWithUserAsRafverktaki(user,electricianCompany);
+		
+		// is there a child installation? (was the electrical installation taken over by another electrician)
+		try {
+			childElectricalInstallation = electricalInstallationBusiness.getChildElectricalInstallationOrNull(electricalInstallation);
+			if (childElectricalInstallation != null) {
+				String electricianCompanyNewOwner = childElectricalInstallation.getElectricianCompany();
+				User electrician = childElectricalInstallation.getElectrician();
+				newOwner = Rafverktaki.getInstanceWithUserAsRafverktaki(electrician,electricianCompanyNewOwner);
+			}
+		}
+		catch (RemoteException e1) {
+			throw new RuntimeException(e1);
+		}
+		
 		externalProjectID = electricalInstallation.getExternalProjectID();
 		id = electricalInstallation.getPrimaryKey().toString();
 		stada = electricalInstallation.getStatus();
@@ -111,17 +139,6 @@ public class Rafverktaka {
 	 * @return
 	 */
 	public Rafverktaki getRafverktaki() {
-		if (rafverktaki == null) {
-			if (electricalInstallation != null) {
-				User user = electricalInstallation.getElectrician();
-				String electricianCompany = electricalInstallation.getElectricianCompany();
-					if (user != null) {
-						rafverktaki = Rafverktaki.getInstanceWithUserAsRafverktaki(user,electricianCompany);
-						return rafverktaki;
-					}
-				}
-				rafverktaki = Rafverktaki.getInstanceWithCurrentUserAsRafverktaki();
-		}
 		return rafverktaki;
 	}
 
@@ -231,6 +248,10 @@ public class Rafverktaka {
 	
 	public void setElectricalInstallation(ElectricalInstallation electricalInstallation) {
 		this.electricalInstallation = electricalInstallation;
+	}
+	
+	public Rafverktaki getNewOwner() {
+		return newOwner;
 	}
 	
 	public String getVeitustadurDisplay() {

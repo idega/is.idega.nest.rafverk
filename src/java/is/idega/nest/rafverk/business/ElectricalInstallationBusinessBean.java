@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.14 2007/08/23 15:29:00 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.15 2007/09/05 16:33:16 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -13,6 +13,7 @@ import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
+import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -33,11 +34,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -55,7 +54,6 @@ import com.idega.core.location.data.Street;
 import com.idega.core.location.data.StreetHome;
 import com.idega.data.IDOHome;
 import com.idega.data.IDOLookup;
-import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
@@ -64,43 +62,65 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/23 15:29:00 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
-	private UserBusiness userBusiness = null;
+	private ElectricalInstallationHome electricalInstallationHome;
 	
-	private ElectricalInstallationHome electricalInstallationHome = null;
+	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness;
 	
-	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
+	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness;
 	
-	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
+	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness;
 	
-	private MeterHome meterHome = null;
+	private MeterHome meterHome;
 	
-	private RealEstateHome realEstateHome = null;
+	private RealEstateHome realEstateHome;
 	
-	private StreetHome streetHome = null;
+	private StreetHome streetHome;
 	
-	private PostalCodeHome postalCodeHome = null;
+	private PostalCodeHome postalCodeHome;
 	
-	private Set changesForUser = Collections.synchronizedSet(new HashSet());
+	private ElectricalInstallationCache electricalInstallationCache; 
 	
+	private ElectricalInstallationState electricalInstallationState;
+	
+	/**
+	 * If an electrical installation has changed (by someone else) write the user that should be informed about the change into this set.
+	 * This set is checked by every user when getting data from Managed Beans.
+	 * (this method tries to solve the problem how shared data that is cached in managed bean is updated)
+	 * 
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusiness#addChangeForUser(com.idega.user.data.User)
+	 */
 	public void addChangeForUser(User user) {
-		Object pk = user.getPrimaryKey();
-		changesForUser.add(pk);
+		getElectricalInstallationCache().addChangeForUser(user);
 	}
 	
+	/**
+	 * Check if there are changes for the specified user. If there are changes the Managed Beans for the user must be initialized again to retrieve
+	 * the latest data from the database.
+	 */
 	public boolean changesForUser(User user) {
-		Object pk = user.getPrimaryKey();
-		return changesForUser.remove(pk);
+		return getElectricalInstallationCache().changesForUser(user);
 	}
-	
-	private ElectricalInstallationState electricalInstallationState = null;
-	
+
+	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation) {
+		try {
+			if (getElectricalInstallationState().isApplicationHasNewOwner(electricalInstallation)) { 
+				// if the owner has changed there should be a child
+				List list = getElectricalInstallationCaseBusiness().getChildrenOfCaseAsElectricalInstallation(electricalInstallation);
+				return (ElectricalInstallation) ((list.isEmpty()) ? null : list.get(0));
+			}
+			return null;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 	public boolean sendApplication(
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
@@ -919,13 +939,6 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return postalCodeHome;
 	}
 	
-	private UserBusiness getUserBusiness() {
-		if (userBusiness == null) {
-			userBusiness = (UserBusiness) getServiceBean(UserBusiness.class);
-		}
-		return userBusiness;
-	}
-	
 	private ElectricalInstallationRendererBusiness getElectricalInstallationRendererBusiness() {
 		if (electricalInstallationRendererBusiness == null) {
 			electricalInstallationRendererBusiness = (ElectricalInstallationRendererBusiness) getServiceBean(ElectricalInstallationRendererBusiness.class);
@@ -940,11 +953,25 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return electricalInstallationMessageBusiness;
 	}
 	
+	public ElectricalInstallationCaseBusiness getElectricalInstallationCaseBusiness() {
+		if (electricalInstallationCaseBusiness == null) { 
+			electricalInstallationCaseBusiness = (ElectricalInstallationCaseBusiness) getServiceBean(ElectricalInstallationCaseBusiness.class);
+		}
+		return electricalInstallationCaseBusiness;
+	}
+	
 	public ElectricalInstallationState getElectricalInstallationState() {
 		if (electricalInstallationState == null) {
 			electricalInstallationState = new ElectricalInstallationState(getIWApplicationContext());
 		}
 		return electricalInstallationState;
+	}
+	
+	public ElectricalInstallationCache getElectricalInstallationCache() {
+		if (electricalInstallationCache == null) {
+			electricalInstallationCache = ElectricalInstallationCache.getInstance();
+		}
+		return electricalInstallationCache;
 	}
 	
 	private IBOService getServiceBean(Class serviceClass ) {
