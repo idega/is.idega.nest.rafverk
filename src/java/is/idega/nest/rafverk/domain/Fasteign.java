@@ -1,13 +1,18 @@
 package is.idega.nest.rafverk.domain;
 
-import com.idega.core.location.data.RealEstate;
-import com.idega.core.location.data.Street;
-import com.idega.util.StringHandler;
 import fasteignaskra.landskra_wse.FasteignaskraFasteign;
 import fasteignaskra.landskra_wse.FasteignaskraFasteignEigandi;
+import fasteignaskra.landskra_wse.FasteignaskraFasteignMatseining;
 import fasteignaskra.landskra_wse.Fasteignaskra_Element;
 import is.postur.Gata;
 import is.postur.Gotuskra;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.idega.core.location.data.RealEstate;
+import com.idega.core.location.data.Street;
+import com.idega.util.StringHandler;
 
 /**
  * RealEstate
@@ -17,9 +22,39 @@ import is.postur.Gotuskra;
  */
 public class Fasteign extends BaseBean{
 	
+	public static List createFasteignFrom(Fasteignaskra_Element dFasteign,String postnumer) {
+		FasteignaskraFasteign fasteignaskraFasteign = dFasteign.getFasteign();
+		
+		// figure out street
+		Gata gata = null;
+		if(postnumer!=null){
+			gata = Gotuskra.getCached().getGataByNafnAndPostnumer(fasteignaskraFasteign.getGotuheiti(), postnumer);
+		}
+		// figure out owner
+		FasteignaEigandi fasteignaEigandi = null;
+		FasteignaskraFasteignEigandi[] eigendur = fasteignaskraFasteign.getEigandi();
+		if(eigendur!=null && eigendur.length>=1){
+			FasteignaskraFasteignEigandi firstowner = eigendur[0];
+			fasteignaEigandi = new FasteignaEigandi(firstowner.getKennitala(),firstowner.getNafn());
+		}
+		// figure out street number
+		String gotuNumer = fasteignaskraFasteign.getHusnumer();
+		FasteignaskraFasteignMatseining[] fasteignaskraFasteignMatseinings = fasteignaskraFasteign.getMatseining();
+		
+		// return list
+		List list = new ArrayList(fasteignaskraFasteignMatseinings.length);
+		for (int i = 0; i < fasteignaskraFasteignMatseinings.length; i++) {
+			FasteignaskraFasteignMatseining fasteignaskraFasteignMatseining = fasteignaskraFasteignMatseinings[i];
+			Fasteign fasteign = new Fasteign(fasteignaskraFasteignMatseining, fasteignaEigandi, gata, gotuNumer);
+			list.add(fasteign);
+		}
+		return list;
+	}
+	
 	String fasteignId;
 	String nafn;
 	String fastaNumer;
+	String matseiningNumer;
 	String merking;// 100101 Bygging Hæð Nr. innan hæðar
 	String notkun; //Íbúð, Skrifstofa
 	String skyring;
@@ -33,6 +68,7 @@ public class Fasteign extends BaseBean{
 	
 	public Fasteign(RealEstate realEstate) {
 		setFastaNumer(realEstate.getRealEstateNumber());
+		setMatseiningNumer(realEstate.getRealEstateUnit());
 		setMerking(realEstate.getRealEstateCode());
 		setNafn(realEstate.getName());
 		setNotkun(realEstate.getUse());
@@ -46,7 +82,7 @@ public class Fasteign extends BaseBean{
 		}
 	}
 	
-	public Fasteign(Fasteignaskra_Element dFasteign,String postnumer) {
+	public Fasteign(Fasteignaskra_Element dFasteign, String postnumer) {
 		
 		FasteignaskraFasteign eFasteign = dFasteign.getFasteign();
 
@@ -68,6 +104,23 @@ public class Fasteign extends BaseBean{
 		}
 				
 	}
+	
+	public Fasteign(FasteignaskraFasteignMatseining fasteignaskraFasteignMatseining, FasteignaEigandi fasteignaEigandi, Gata gata, String gotuNumer) {
+		initialize(fasteignaskraFasteignMatseining, fasteignaEigandi, gata, gotuNumer);
+	}
+	
+	private void initialize(FasteignaskraFasteignMatseining fasteignaskraFasteignMatseining, FasteignaEigandi fasteignaEigandi, Gata gata, String gotuNumer) {
+		setLandnumer(fasteignaskraFasteignMatseining.getLandnr().toString());
+		setFastaNumer(fasteignaskraFasteignMatseining.getFastanr().toString());
+		setMatseiningNumer(fasteignaskraFasteignMatseining.getMatseiningarnr().toString());
+		setMerking(fasteignaskraFasteignMatseining.getMerking());
+		setNotkun(fasteignaskraFasteignMatseining.getNotkun());
+		setSkyring(fasteignaskraFasteignMatseining.getSkyring());
+		setEigandi(fasteignaEigandi);
+		setGata(gata);
+		setGotuNumer(gotuNumer);
+	}
+	
 	public String getFastaNumer() {
 		return fastaNumer;
 	}
@@ -131,29 +184,28 @@ public class Fasteign extends BaseBean{
 			return StringHandler.EMPTY_STRING;
 		}
 		String sBygging = merking.substring(0,2);
-		Integer iBygging = new Integer(sBygging);
 		String sHaed = merking.substring(2,4);
-		Integer iHaed = new Integer(sHaed);
 		String sNr = merking.substring(4,6);
-		Integer iNr = new Integer(sNr);
-		
 
-		
+		StringBuffer buffer = new StringBuffer(notkun);
 		if(notkun.endsWith("hæð")){
-
-			notkun=notkun+" "+iHaed+", "+skyring+" "+iNr;
+			buffer.append(" ");
+			buffer.append(sHaed)
+				.append(", ")
+				.append(skyring)
+				.append(" ")
+				.append(sNr);
+			notkun= buffer.toString();
 		}
 		else{
-			
-			String haedHuman = null;
-			if(iHaed.intValue()==0){
-				haedHuman = "jarðhæð";
+			buffer.append(", ");
+			if("0".equals(sHaed)){
+				buffer.append("jarðhæð");
 			}
 			else{
-				haedHuman = iHaed+". hæð";
+				buffer.append(sHaed).append(". hæð");
 			}
-			
-			notkun=notkun+", "+haedHuman+", nr. "+iNr;
+			buffer.append(", nr. ").append(sNr);
 		}
 		/*String haedHuman = null;
 		if(iHaed.intValue()==0){
@@ -162,16 +214,11 @@ public class Fasteign extends BaseBean{
 		else{
 			haedHuman = iHaed+". hæð";
 		}*/
-		
-		String str="";
-		if(iBygging.intValue()==1){
-			str = notkun;
-		}
-		else{
-			str = notkun+", bygging "+iBygging;
+		if(! "1".equals(sBygging)){
+			buffer.append(", bygging ").append(sBygging);
 		}
 		
-		return str;
+		return buffer.toString();
 		
 	}
 	
@@ -190,8 +237,12 @@ public class Fasteign extends BaseBean{
 			buffer.append(")");
 		}
 		// fastanumer
-		buffer.append(" [Fastanúmer ");
+		buffer.append(" [Fastanr ");
 		add(buffer, getFastaNumer());
+		buffer.append("]");
+		// matseining
+		buffer.append(" Matseiningnr ");
+		buffer.append(getMatseiningNumer());
 		buffer.append(" ");
 		// merking
 		add(buffer, getMerking());
@@ -230,6 +281,22 @@ public class Fasteign extends BaseBean{
 	
 	public void setLandnumer(String landnumer) {
 		this.landnumer = landnumer;
+	}
+
+	
+	/**
+	 * @return Returns the matseining.
+	 */
+	public String getMatseiningNumer() {
+		return matseiningNumer;
+	}
+
+	
+	/**
+	 * @param matseining The matseining to set.
+	 */
+	public void setMatseiningNumer(String matseiningNumer) {
+		this.matseiningNumer = matseiningNumer;
 	}
 	
 

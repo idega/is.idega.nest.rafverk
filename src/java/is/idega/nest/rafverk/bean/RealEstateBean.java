@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.2 2007/09/05 16:33:16 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.3 2007/09/11 16:15:12 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,12 +28,16 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/11 16:15:12 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class RealEstateBean {
+	
+	public static String AT_TOKEN = "@";
+	
+	public static String NULL_STRING = "NULL";
 	
     private String postnumer = null;
     
@@ -163,7 +167,7 @@ public class RealEstateBean {
 			Iterator secondIterator = list.iterator();
 			while (secondIterator.hasNext()) {
 				Fasteign fasteign = (Fasteign) secondIterator.next();
-				String value = fasteign.getFastaNumer();
+				String value = getIdentifierForFasteign(fasteign);
 				String label = fasteign.getDescription();
 				realEstates.put(value, label);
 			}
@@ -225,8 +229,7 @@ public class RealEstateBean {
 		Iterator iterator = fasteignaListiTemp.iterator();
 		while(iterator.hasNext()) {
 			Fasteign fasteign = (Fasteign) iterator.next();
-			String fastaNumer = fasteign.getFastaNumer();
-			if (fastaNumer != null && fastaNumer.equals(realEstateNumber)) {
+			if (hasIdentifier(fasteign, realEstateNumber)) {
 				return fasteign;
 			}
 		}
@@ -291,4 +294,23 @@ public class RealEstateBean {
 		}
 		return selects;
 	}
-}
+	
+	private String getIdentifierForFasteign(Fasteign fasteign) {
+		String fastaNumer = fasteign.getFastaNumer();
+		String matseiningNumer = fasteign.getMatseiningNumer();
+		String merking = fasteign.getMerking();
+		StringBuffer buffer = new StringBuffer(StringHandler.replaceIfEmpty(fastaNumer,RealEstateBean.NULL_STRING));
+		buffer.append(RealEstateBean.AT_TOKEN);
+		buffer.append(StringHandler.replaceIfEmpty(matseiningNumer, RealEstateBean.NULL_STRING));
+		buffer.append(RealEstateBean.AT_TOKEN);
+		buffer.append(StringHandler.replaceIfEmpty(merking, RealEstateBean.NULL_STRING));
+		return buffer.toString();
+	}
+	
+	private boolean hasIdentifier(Fasteign fasteign, String identifier) {
+		String identiferFasteign = getIdentifierForFasteign(fasteign);
+		return identiferFasteign.equals(identifier);
+	}
+	
+
+ }

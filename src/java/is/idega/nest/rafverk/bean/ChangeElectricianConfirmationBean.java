@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.1 2007/08/23 15:29:01 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.2 2007/09/11 16:15:02 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/23 15:29:01 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/11 16:15:02 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ChangeElectricianConfirmationBean {
 	
@@ -106,6 +106,10 @@ public class ChangeElectricianConfirmationBean {
 		catch (FinderException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getRequestSender() {
+		return requestSender.getName();
 	}
 	
 	public String getNafnOrkukaupanda() {

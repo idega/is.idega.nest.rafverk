@@ -26,23 +26,39 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import org.apache.myfaces.custom.datascroller.HtmlDataScroller;
+
 import com.idega.presentation.IWContext;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 
 public class RafverktokuListi extends BaseBean  {
 	
+	boolean hasChanged = true;
+	
 	// searching start...
 	String selectedStatus;
 	
+	String oldSelectedStatus = "";
+	
 	String searchForExternalProjectID;
+	
+	String oldSearchForExternalProjectID = "";
 	
 	String searchForEnergyConsumer;
 	
+	String oldSearchForEnergyConsumer = "";
+	
 	String searchForRealEstate;
+	
+	String oldSearchForRealEstate = "";
+	
+	List filteredList;
 	// ...searching end
 	
 	String numberOfRowsPerPage = "10";
+	
+	HtmlDataScroller dataScroller;
 	
 	Map rafverktokuListi = null;
 	
@@ -89,6 +105,7 @@ public class RafverktokuListi extends BaseBean  {
 				rafverktokuListi.put(id, verktaka);	
 			}
 		}
+		filteredList = getAllRafverktokur();
 	}
 	
 	public void addRafvertaka(Rafverktaka rafverktaka) {
@@ -111,26 +128,49 @@ public class RafverktokuListi extends BaseBean  {
 		return (Rafverktaka) rafverktokuListi.get(id);
 	}
 
+	public void resetList(ValueChangeEvent event) {
+		dataScroller.getUIData().setFirst(0);
+	}
+	
 	public List getRafverktokur() {
+		return filteredList;
+	}
+	
+	public String doFilter() {
+		if (
+				oldSelectedStatus.equals(getSelectedStatus()) &&
+				oldSearchForExternalProjectID.equals(getSearchForExternalProjectID()) &&
+				oldSearchForEnergyConsumer.equals(getSearchForEnergyConsumer()) &&
+				oldSearchForRealEstate.equals(getSearchForRealEstate())) {
+			return null;
+		}
 		Pattern externalProjectIDPattern = getPattern(getSearchForExternalProjectID());
 		Pattern energyConsumerPattern = getPattern(getSearchForEnergyConsumer());
-		Pattern realEstatePattern = getPattern(getSearchForRealEstate()); 
+		Pattern realEstatePattern = getPattern(getSearchForRealEstate());
 		List verktokur = getAllRafverktokur();
 		// shortcut for standard case
 		if (StringHandler.isEmpty(getSelectedStatus()) 
 				&& externalProjectIDPattern == null 
 				&& energyConsumerPattern == null
 				&& realEstatePattern == null) {
-			return verktokur;
+			filteredList = verktokur;
 		}
-		List list = new ArrayList();
-		for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
-			Rafverktaka verktaka = (Rafverktaka) iter.next();
-			if(checkElectricalInstallation(verktaka, externalProjectIDPattern, energyConsumerPattern, realEstatePattern)) {
-				list.add(verktaka);
+		else {
+			List list = new ArrayList();
+			for (Iterator iter = verktokur.iterator(); iter.hasNext();) {
+				Rafverktaka verktaka = (Rafverktaka) iter.next();
+				if(checkElectricalInstallation(verktaka, externalProjectIDPattern, energyConsumerPattern, realEstatePattern)) {
+					list.add(verktaka);
+				}
 			}
+			filteredList = list;
 		}
-		return list;
+		dataScroller.getUIData().setFirst(0);
+		oldSelectedStatus = getSelectedStatus() == null ? "" : getSelectedStatus();
+		oldSearchForExternalProjectID = getSearchForExternalProjectID() == null ? "" : getSearchForExternalProjectID();
+		oldSearchForEnergyConsumer = getSearchForEnergyConsumer() == null ? "" : getSearchForEnergyConsumer();
+		oldSearchForRealEstate = getSearchForRealEstate() == null ? "" : getSearchForRealEstate();
+		return null;
 	}
 	
 	private boolean checkElectricalInstallation(Rafverktaka verktaka, Pattern externalProjectIDPattern, Pattern energyConsumerPattern, Pattern realEstatePattern) {
@@ -303,6 +343,16 @@ public class RafverktokuListi extends BaseBean  {
 	
 	public int getNumberOfRowsPerPageAsInt() {
 		return Integer.valueOf(getNumberOfRowsPerPage()).intValue();
+	}
+
+	
+	public HtmlDataScroller getDataScroller() {
+		return dataScroller;
+	}
+
+	
+	public void setDataScroller(HtmlDataScroller dataScroller) {
+		this.dataScroller = dataScroller;
 	}
 
 }
