@@ -110,6 +110,8 @@ public class RafverktokuListi extends BaseBean  {
 	
 	public void addRafvertaka(Rafverktaka rafverktaka) {
 		rafverktokuListi.put(rafverktaka.getId(), rafverktaka);
+		filteredList = getAllRafverktokur();
+		resetList(null);
 	}
 
 //	public List getRafverktokuListiSelects(){

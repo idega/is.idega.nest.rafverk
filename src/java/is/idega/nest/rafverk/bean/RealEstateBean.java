@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.3 2007/09/11 16:15:12 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.4 2007/09/14 10:40:43 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
@@ -28,16 +29,12 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/11 16:15:12 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/14 10:40:43 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class RealEstateBean {
-	
-	public static String AT_TOKEN = "@";
-	
-	public static String NULL_STRING = "NULL";
 	
     private String postnumer = null;
     
@@ -167,7 +164,7 @@ public class RealEstateBean {
 			Iterator secondIterator = list.iterator();
 			while (secondIterator.hasNext()) {
 				Fasteign fasteign = (Fasteign) secondIterator.next();
-				String value = getIdentifierForFasteign(fasteign);
+				String value = RealEstateIdentifier.getIdentifierAsString(fasteign);
 				String label = fasteign.getDescription();
 				realEstates.put(value, label);
 			}
@@ -224,16 +221,32 @@ public class RealEstateBean {
 	
 	// lookup fasteign
 	
-	public Fasteign lookupFasteign(String realEstateNumber) {
+	public Fasteign lookupFasteign(RealEstateIdentifier realEstateIdentifer) {
 		List fasteignaListiTemp = getFasteignaListi();
 		Iterator iterator = fasteignaListiTemp.iterator();
 		while(iterator.hasNext()) {
 			Fasteign fasteign = (Fasteign) iterator.next();
-			if (hasIdentifier(fasteign, realEstateNumber)) {
+			if (realEstateIdentifer.isFasteign(fasteign)) {
 				return fasteign;
 			}
 		}
 		return null;
+	}
+	
+	public Fasteign lookupFasteign(String realEstateIdentiferAsString) {
+		List fasteignaListiTemp = getFasteignaListi();
+		Iterator iterator = fasteignaListiTemp.iterator();
+		while(iterator.hasNext()) {
+			Fasteign fasteign = (Fasteign) iterator.next();
+			if (RealEstateIdentifier.hasIdentifier(fasteign, realEstateIdentiferAsString)) {
+				return fasteign;
+			}
+		}
+		return null;
+	}
+	
+	public RealEstateIdentifier getRealEstateIdentifier() {
+		return RealEstateIdentifier.getInstance(getFastanumer());
 	}
 	
 	public List getFasteignaListi(){
@@ -295,22 +308,7 @@ public class RealEstateBean {
 		return selects;
 	}
 	
-	private String getIdentifierForFasteign(Fasteign fasteign) {
-		String fastaNumer = fasteign.getFastaNumer();
-		String matseiningNumer = fasteign.getMatseiningNumer();
-		String merking = fasteign.getMerking();
-		StringBuffer buffer = new StringBuffer(StringHandler.replaceIfEmpty(fastaNumer,RealEstateBean.NULL_STRING));
-		buffer.append(RealEstateBean.AT_TOKEN);
-		buffer.append(StringHandler.replaceIfEmpty(matseiningNumer, RealEstateBean.NULL_STRING));
-		buffer.append(RealEstateBean.AT_TOKEN);
-		buffer.append(StringHandler.replaceIfEmpty(merking, RealEstateBean.NULL_STRING));
-		return buffer.toString();
-	}
-	
-	private boolean hasIdentifier(Fasteign fasteign, String identifier) {
-		String identiferFasteign = getIdentifierForFasteign(fasteign);
-		return identiferFasteign.equals(identifier);
-	}
+
 	
 
  }

@@ -1,14 +1,7 @@
 package is.idega.nest.rafverk.domain;
 
-import fasteignaskra.landskra_wse.FasteignaskraFasteign;
-import fasteignaskra.landskra_wse.FasteignaskraFasteignEigandi;
 import fasteignaskra.landskra_wse.FasteignaskraFasteignMatseining;
-import fasteignaskra.landskra_wse.Fasteignaskra_Element;
 import is.postur.Gata;
-import is.postur.Gotuskra;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.idega.core.location.data.RealEstate;
 import com.idega.core.location.data.Street;
@@ -22,34 +15,8 @@ import com.idega.util.StringHandler;
  */
 public class Fasteign extends BaseBean{
 	
-	public static List createFasteignFrom(Fasteignaskra_Element dFasteign,String postnumer) {
-		FasteignaskraFasteign fasteignaskraFasteign = dFasteign.getFasteign();
-		
-		// figure out street
-		Gata gata = null;
-		if(postnumer!=null){
-			gata = Gotuskra.getCached().getGataByNafnAndPostnumer(fasteignaskraFasteign.getGotuheiti(), postnumer);
-		}
-		// figure out owner
-		FasteignaEigandi fasteignaEigandi = null;
-		FasteignaskraFasteignEigandi[] eigendur = fasteignaskraFasteign.getEigandi();
-		if(eigendur!=null && eigendur.length>=1){
-			FasteignaskraFasteignEigandi firstowner = eigendur[0];
-			fasteignaEigandi = new FasteignaEigandi(firstowner.getKennitala(),firstowner.getNafn());
-		}
-		// figure out street number
-		String gotuNumer = fasteignaskraFasteign.getHusnumer();
-		FasteignaskraFasteignMatseining[] fasteignaskraFasteignMatseinings = fasteignaskraFasteign.getMatseining();
-		
-		// return list
-		List list = new ArrayList(fasteignaskraFasteignMatseinings.length);
-		for (int i = 0; i < fasteignaskraFasteignMatseinings.length; i++) {
-			FasteignaskraFasteignMatseining fasteignaskraFasteignMatseining = fasteignaskraFasteignMatseinings[i];
-			Fasteign fasteign = new Fasteign(fasteignaskraFasteignMatseining, fasteignaEigandi, gata, gotuNumer);
-			list.add(fasteign);
-		}
-		return list;
-	}
+
+	
 	
 	String fasteignId;
 	String nafn;
@@ -82,28 +49,36 @@ public class Fasteign extends BaseBean{
 		}
 	}
 	
-	public Fasteign(Fasteignaskra_Element dFasteign, String postnumer) {
-		
-		FasteignaskraFasteign eFasteign = dFasteign.getFasteign();
-
-		setFastaNumer(eFasteign.getFastanr().toString());
-		setMerking(eFasteign.getMerking());
-		setNotkun(eFasteign.getNotkun());
-		if(postnumer!=null){
-			setGata(Gotuskra.getCached().getGataByNafnAndPostnumer(eFasteign.getGotuheiti(), postnumer));
-		}
-		setGotuNumer(eFasteign.getHusnumer());
-		setSkyring(eFasteign.getSkyring());
-		
-		setLandnumer(eFasteign.getLandnr().toString());
-		
-		FasteignaskraFasteignEigandi[] eigendur = eFasteign.getEigandi();
-		if(eigendur!=null&&eigendur.length>=1){
-			FasteignaskraFasteignEigandi firstowner = eigendur[0];
-			setEigandi(new FasteignaEigandi(firstowner.getKennitala(),firstowner.getNafn()));
-		}
-				
+//	public Fasteign(Fasteignaskra_Element dFasteign, String postnumer) {
+//		
+//		FasteignaskraFasteign eFasteign = dFasteign.getFasteign();
+//
+//		setFastaNumer(eFasteign.getFastanr().toString());
+//		setMerking(eFasteign.getMerking());
+//		setNotkun(eFasteign.getNotkun());
+//		if(postnumer!=null){
+//			setGata(Gotuskra.getCached().getGataByNafnAndPostnumer(eFasteign.getGotuheiti(), postnumer));
+//		}
+//		setGotuNumer(eFasteign.getHusnumer());
+//		setSkyring(eFasteign.getSkyring());
+//		
+//		setLandnumer(eFasteign.getLandnr().toString());
+//		
+//		FasteignaskraFasteignEigandi[] eigendur = eFasteign.getEigandi();
+//		if(eigendur!=null&&eigendur.length>=1){
+//			FasteignaskraFasteignEigandi firstowner = eigendur[0];
+//			setEigandi(new FasteignaEigandi(firstowner.getKennitala(),firstowner.getNafn()));
+//		}
+//				
+//	}
+	public Fasteign(String landnumer, FasteignaEigandi fasteignaEigandi, Gata gata, String gotuNumer) {
+		setLandnumer(landnumer);
+		setEigandi(fasteignaEigandi);
+		setGata(gata);
+		setGotuNumer(gotuNumer);
 	}
+	
+	
 	
 	public Fasteign(FasteignaskraFasteignMatseining fasteignaskraFasteignMatseining, FasteignaEigandi fasteignaEigandi, Gata gata, String gotuNumer) {
 		initialize(fasteignaskraFasteignMatseining, fasteignaEigandi, gata, gotuNumer);
@@ -242,7 +217,7 @@ public class Fasteign extends BaseBean{
 		buffer.append("]");
 		// matseining
 		buffer.append(" Matseiningnr ");
-		buffer.append(getMatseiningNumer());
+		add(buffer, getMatseiningNumer());
 		buffer.append(" ");
 		// merking
 		add(buffer, getMerking());
@@ -298,6 +273,7 @@ public class Fasteign extends BaseBean{
 	public void setMatseiningNumer(String matseiningNumer) {
 		this.matseiningNumer = matseiningNumer;
 	}
+
 	
 
 }

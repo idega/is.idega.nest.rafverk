@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.15 2007/09/05 16:33:16 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.16 2007/09/14 10:41:10 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -16,6 +16,7 @@ import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
 import is.idega.nest.rafverk.domain.Fasteign;
@@ -62,10 +63,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/14 10:41:10 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -248,13 +249,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	}
 	
 	private void storeRealEstate(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException, EJBException, RemoveException {
-		String realEstateNumber = tilkynningVertakaBean.getFastanumer();
-		boolean newRealEstateIsNotDummy = StringHandler.isNotEmpty(realEstateNumber);
+		RealEstateIdentifier realEstateIdentifer = tilkynningVertakaBean.getRealEstateIdentifier();
+		boolean newRealEstateIsNotDummy = ! realEstateIdentifer.isDummy();
 		RealEstate realEstate = electricalInstallation.getRealEstate();
 		if (realEstate == null) {
 			if (newRealEstateIsNotDummy) {
 				// "normal" case if the application is new and complete
-				setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+				setRealEstate(realEstateIdentifer, electricalInstallation, tilkynningVertakaBean);
 				return;
 			}
 			// application is new but not complete
@@ -263,12 +264,12 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		// there is a real estate....
 		// check the existing real estate
-		String oldRealEstateNumber = realEstate.getRealEstateNumber();
-		boolean oldRealEstateIsNotDummy = StringHandler.isNotEmpty(oldRealEstateNumber);
+		RealEstateIdentifier oldRealEstateNumber = RealEstateIdentifier.getInstance(realEstate);
+		boolean oldRealEstateIsNotDummy = ! oldRealEstateNumber.isDummy();
 		if (oldRealEstateIsNotDummy) {
 			if (newRealEstateIsNotDummy) {
 				// "normal" case: application replaces real estate with complete real estate
-				setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+				setRealEstate(realEstateIdentifer, electricalInstallation, tilkynningVertakaBean);
 				return;
 			}
 			// application replaces the existing real estate with incomplete real estate
@@ -279,7 +280,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		if (newRealEstateIsNotDummy) {
 			// delete the dummy one
 			deleteDummyRealEstate(electricalInstallation);
-			setRealEstate(realEstateNumber, electricalInstallation, tilkynningVertakaBean);
+			setRealEstate(realEstateIdentifer, electricalInstallation, tilkynningVertakaBean);
 			return;
 		}
 		// new real estate is dummy and the old one was one
@@ -290,7 +291,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			return;
 		}
 		// street was found, reuse the existing dummy real estate
-		setStreetToRealEstate(realEstate, tilkynningVertakaBean);
+		setStreetToRealEstate(realEstate, street, tilkynningVertakaBean);
 		realEstate.store();		
 	}
 	
@@ -318,39 +319,61 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		electricalInstallation.setRealEstate(dummyRealEstate);
 	}
 	
-	private void setStreetToRealEstate(RealEstate realEstate, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
-		Street street = findOrCreateStreet(tilkynningVertakaBean);
+	private void setStreetToRealEstate(RealEstate realEstate, Fasteign fasteign) throws CreateException {
+		Street street = findOrCreateStreet(fasteign);
+		if (street != null) {
+			realEstate.setStreetNumber(fasteign.getGotuNumer());
+			realEstate.setStreet(street);
+		}
+	}
+	
+	private void setStreetToRealEstate(RealEstate realEstate, Street street, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
 		if (street != null) {
 			realEstate.setStreetNumber(tilkynningVertakaBean.getGotunumer());
 			realEstate.setStreet(street);
 		}
 	}
 		
-	private void setRealEstate(String realEstateNumber, ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
-		RealEstate realEstate = findRealEstate(realEstateNumber);
+	private void setRealEstate(RealEstateIdentifier realEstateIdentifer, ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
+		RealEstate realEstate = findRealEstate(realEstateIdentifer);
 		// not found? create one!
 		if (realEstate == null) {
-			realEstate = createRealEstate(realEstateNumber, tilkynningVertakaBean);
+			Fasteign fasteign = getFasteign(realEstateIdentifer, tilkynningVertakaBean);
+			if (fasteign != null) {
+				realEstate = createRealEstate(fasteign);
+			}
 			if (realEstate == null) {
 				// could not be created (realEstateNumber wrong!), give up and set dummy one
 				setDummyRealEstateOrNull(electricalInstallation, tilkynningVertakaBean);
 				return;
 			}
-			setStreetToRealEstate(realEstate, tilkynningVertakaBean);
+			setStreetToRealEstate(realEstate, fasteign);
 			realEstate.store();
 		}
 		// found? just set in electrical installation
 		electricalInstallation.setRealEstate(realEstate);
 	}
 			
-		
 	private Street findOrCreateStreet(TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
-		String postalCode = tilkynningVertakaBean.getPostnumer();
 		String streetName = tilkynningVertakaBean.getGata();
+		String postalCode = tilkynningVertakaBean.getPostnumer();
 		if (StringHandler.isEmpty(postalCode) || StringHandler.isEmpty(streetName)) {
 			return null;
 		}
 		Gata gata = lookupGata(streetName, postalCode);
+		return findOrCreateStreet(gata);
+	}
+	
+	
+	private Street findOrCreateStreet(Fasteign fasteign) throws CreateException {
+		Gata gata = fasteign.getGata();
+		return findOrCreateStreet(gata);
+	}
+//		String postalCode = fasteign.getGata();
+
+		
+	private Street findOrCreateStreet(Gata gata) throws CreateException {
+
 		if (gata == null) {
 			return null;
 		}
@@ -361,7 +384,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		PostalCode postalCodeObject = null;
 		try {
-			postalCodeObject = getPostalCodeHome().findByPostalCode(postalCode);
+			postalCodeObject = getPostalCodeHome().findByPostalCode(gata.getPostnumerString());
 		}
 		catch (FinderException e) {
 			postalCodeObject = null;
@@ -388,14 +411,18 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return street;
 	}
 		
-	private RealEstate findRealEstate(String realEstateNumber) {
-		if (StringHandler.isEmpty(realEstateNumber)) {
+	private RealEstate findRealEstate(RealEstateIdentifier realEstateIdentifier) {
+		if (realEstateIdentifier.isDummy()) {
 			return null;
 		}
 		// try to find an existing (that is in our database existing) real estate
 		RealEstate realEstate = null;
 		try {
-			realEstate = getRealEstateHome().findRealEstateByNumber(realEstateNumber);
+			realEstate = getRealEstateHome().findRealEstateByRealEstateIdentifier(
+					realEstateIdentifier.getLandNumber(),
+					realEstateIdentifier.getRealEstateNumber(),
+					realEstateIdentifier.getRealEstateUnit(),
+					realEstateIdentifier.getRealEstateCode());
 		}
 		catch (FinderException e) {
 			realEstate = null;
@@ -403,19 +430,24 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return realEstate;
 	}
 	
-	private RealEstate createRealEstate(String realEstateNumber, TilkynningVertakaBean tilkynningVertakaBean) throws CreateException {
-		if (StringHandler.isEmpty(realEstateNumber)) {
+	private Fasteign getFasteign(RealEstateIdentifier realEstateIdentifier, TilkynningVertakaBean tilkynningVertakaBean)  {
+		if (realEstateIdentifier.isDummy()) {
 			// should not happen, this method is called when realEstateNumber is not empty
 			return null;
 		}
-		Fasteign fasteign = lookupFasteign(realEstateNumber, tilkynningVertakaBean);
+		Fasteign fasteign = lookupFasteign(realEstateIdentifier, tilkynningVertakaBean);
 		if (fasteign == null) {
 			// should not happen, something wrong with GUI?
 			return null;
 		}
+		return fasteign;
+	}
+		
+	private RealEstate createRealEstate(Fasteign fasteign) throws CreateException{
 		RealEstate realEstate = getRealEstateHome().create();
-		realEstate.setRealEstateNumber(realEstateNumber);
 		realEstate.setLandRegisterMapNumber(fasteign.getLandnumer());
+		realEstate.setRealEstateNumber(fasteign.getFastaNumer());
+		realEstate.setRealEstateUnit(fasteign.getMatseiningNumer());
 		realEstate.setRealEstateCode(fasteign.getMerking());
 		realEstate.setUse(fasteign.getNotkun());
 		realEstate.setComment(fasteign.getSkyring());
@@ -442,8 +474,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return null;
 	}
 	
-	private Fasteign lookupFasteign(String realEstateNumber, TilkynningVertakaBean tilkynningVertakaBean) {
-		return tilkynningVertakaBean.lookupFasteign(realEstateNumber);
+	private Fasteign lookupFasteign(RealEstateIdentifier realEstateIdentifier, TilkynningVertakaBean tilkynningVertakaBean) {
+		return tilkynningVertakaBean.lookupFasteign(realEstateIdentifier);
 	}
 		
 		
@@ -673,10 +705,10 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		if (realEstate != null) {
 			// set street number
 			tilkynningVertakaBean.setGotunumer(realEstate.getStreetNumber());
-			String number = realEstate.getRealEstateNumber();
-			if (number != null) {
+			RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(realEstate);
+			if (! realEstateIdentifier.isDummy()) {
 				Fasteign fasteign = new Fasteign(realEstate);
-				tilkynningVertakaBean.initFastanumer(number);
+				tilkynningVertakaBean.initFastanumer(realEstateIdentifier.getIdentifierAsString());
 				tilkynningVertakaBean.setVeitustadurDisplay(fasteign.getDescription());
 			}
 			Street street = realEstate.getStreet();
