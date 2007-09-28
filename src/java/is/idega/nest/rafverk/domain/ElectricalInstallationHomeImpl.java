@@ -1,7 +1,9 @@
 package is.idega.nest.rafverk.domain;
 
 
+import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -44,11 +46,29 @@ public class ElectricalInstallationHomeImpl extends IDOFactory implements Electr
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findOtherOpenElectricalInstallationByRealEstateNumber(String realEstateNumber, User currentUser)
+	public Collection findOtherOpenElectricalInstallationByRealEstateIdentifier(
+			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherOpenElectricalInstallationByRealEstateIdentifier(
+				realEstateIdentifier, currentUser);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
+			RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherClosedElectricalInstallationByRealEstateIdentifer(
+				realEstateIdentifer, currentUser);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
 			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherOpenElectricalInstallationByRealEstateNumber(
-				realEstateNumber, currentUser);
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherClosedElectricalInstallationByRealEstate(
+				realEstate, currentUser);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

@@ -1,7 +1,9 @@
 package is.idega.nest.rafverk.domain;
 
 
+import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import com.idega.data.IDOHome;
@@ -20,6 +22,12 @@ public interface ElectricalInstallationHome extends IDOHome {
 
 	public Collection findElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException;
 
-	public Collection findOtherOpenElectricalInstallationByRealEstateNumber(String realEstateNumber, User currentUser)
+	public Collection findOtherOpenElectricalInstallationByRealEstateIdentifier(
+			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException;
+
+	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
+			RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException;
+
+	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
 			throws FinderException;
 }

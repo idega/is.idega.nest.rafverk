@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.5 2007/09/05 16:33:16 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.6 2007/09/28 15:00:20 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ElectricalInstallationState {
 	
@@ -66,7 +66,19 @@ public class ElectricalInstallationState {
 		MOTTEKIN_SKYRSLA_GEYMD
 	};
 	
-	public static final List OPEN_STATUS_LIST;   
+	// !! initialized in static block below !!
+	public static final List OPEN_STATUS_LIST;  
+	
+	// status that are called free (working places with that status can be taken)
+	public static final String[] FREE_STATUS = {
+		THJONUSTUBEIDNI_GEYMD, 
+		SKYRSLA_GEYMD,
+		LOKID,
+		SKIPT_UM_RAFVERKTAKA
+	};
+	
+	// !! initialized in static block below !!
+	public static final List FREE_STATUS_LIST;
 	
 	public static final String[] STADA = {
 		"Þjónustubeiðni geymd", THJONUSTUBEIDNI_GEYMD,
@@ -87,8 +99,11 @@ public class ElectricalInstallationState {
 	}
 	
 	public static List getOpenStatuses() {
-		return OPEN_STATUS_LIST;
-		
+		return OPEN_STATUS_LIST;	
+	}
+	
+	public static List getFreeStatuses() {
+		return FREE_STATUS_LIST;
 	}
 	
 	static 
@@ -96,6 +111,10 @@ public class ElectricalInstallationState {
 		OPEN_STATUS_LIST = new ArrayList(OPEN_STATUS.length);
 		for (int i = 0; i < OPEN_STATUS.length; i++) {
 			OPEN_STATUS_LIST.add(OPEN_STATUS[i].substring(0,4));
+		}
+		FREE_STATUS_LIST = new ArrayList(FREE_STATUS.length);
+		for (int i = 0; i < FREE_STATUS.length; i++) {
+			FREE_STATUS_LIST.add(FREE_STATUS[i].substring(0,4));
 		}
 	}
 	

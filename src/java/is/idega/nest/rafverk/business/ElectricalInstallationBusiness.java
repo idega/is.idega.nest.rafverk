@@ -7,6 +7,8 @@ import com.idega.user.data.User;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import java.rmi.RemoteException;
 import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
+import com.idega.core.location.data.RealEstate;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import java.io.IOException;
 import java.util.Collection;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
@@ -31,6 +33,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getChildElectricalInstallationOrNull
 	 */
 	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation)
+			throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#isSomeoneAlreadyWorkingAtThisPlace
+	 */
+	public String isSomeoneAlreadyWorkingAtThisPlace(ElectricalInstallation electricalInstallation)
 			throws RemoteException;
 
 	/**
@@ -96,10 +104,16 @@ public interface ElectricalInstallationBusiness extends IBOService {
 			RemoteException;
 
 	/**
-	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherElectricalInstallationByRealEstateNumber
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherClosedElectricalInstallationByRealEstate
 	 */
-	public Collection getOtherElectricalInstallationByRealEstateNumber(String realEstateNumber, User user)
+	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User user)
 			throws FinderException, RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherOpenElectricalInstallationByRealEstateIdentifier
+	 */
+	public Collection getOtherOpenElectricalInstallationByRealEstateIdentifier(
+			RealEstateIdentifier realEstateIdentifier, User user) throws FinderException, RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getElectricalInstallationByEnergyCompanyUser

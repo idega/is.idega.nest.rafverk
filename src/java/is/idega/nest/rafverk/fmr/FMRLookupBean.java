@@ -24,17 +24,20 @@ public class FMRLookupBean {
 		streetNumberRangePattern = Pattern.compile("\\d+-\\d+");
 	}
 	
-	public List getFasteignir(String addr,String postnumer){
+	public List getFasteignir(String streetName, String streetNumber, String postnumer){
+		Integer searchStreetNumber = FasteignaskraClient.parseStreetNumber(streetNumber);
 		List list = new ArrayList();
 		FasteignaskraClient client = getFasteignaskraClient();
 		try {
-			List fasteignaskra = client.getFasteignirByHeitiAndPostnumer(addr, postnumer);
+			List fasteignaskra = client.getFasteignirByHeitiAndPostnumer(streetName, searchStreetNumber, postnumer);
 			if(fasteignaskra!=null){
 				Iterator iterator = fasteignaskra.iterator();
 				while (iterator.hasNext()) {
 					FasteignaskraFasteign eFasteign = (FasteignaskraFasteign) iterator.next();
-					List fasteignList = createFasteignFrom(eFasteign, postnumer);
-					list.addAll(fasteignList);
+					if (checkStreetNumber(eFasteign, searchStreetNumber)) {
+						List fasteignList = createFasteignFrom(eFasteign, postnumer);
+						list.addAll(fasteignList);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -48,17 +51,32 @@ public class FMRLookupBean {
 		return new FasteignaskraClient();
 	}
 	
-	public List createFasteignFrom(FasteignaskraFasteign fasteignaskraFasteign,String postnumer) {
-		// figure out street, replace
-		// MyStreet 1-5 with 1R
-		// to
-		// MyStreet with 1-5
-		String streetName = fasteignaskraFasteign.getGotuheiti();
+	private boolean checkStreetNumber(FasteignaskraFasteign fasteignaskraFasteign, Integer searchStreetNumber) {
+		// no search street number given, accept all response
+		if (searchStreetNumber.intValue() == -1) {
+			return true;
+		}
 		String gotuNumer = fasteignaskraFasteign.getHusnumer();
+		// filter out wrong streetnumber (if 2 was looked up 2, 21, 22 is also returned)
+		Integer responseStreetNumber = FasteignaskraClient.parseResponseStreetNumber(gotuNumer);
+		return responseStreetNumber.equals(searchStreetNumber);
+	}
+	
+	
+	public List createFasteignFrom(FasteignaskraFasteign fasteignaskraFasteign, String postnumer) {
+		// figure out street, replace
+		// streetName = MyStreet 1-5 and streetNumber = 1R
+		// to
+		// streetName = MyStreet and streetNumber = 1-5
+		String streetName = fasteignaskraFasteign.getGotuheiti();
+		String gotuNumer;
 		Matcher matcher = streetNumberRangePattern.matcher(streetName);
 		if (matcher.find()) {
 			gotuNumer = matcher.group();
 			streetName = matcher.replaceAll("");
+		}
+		else {
+			gotuNumer = fasteignaskraFasteign.getHusnumer();
 		}
 		streetName.trim();
 

@@ -111,7 +111,7 @@ public class RafverktokuListi extends BaseBean  {
 	public void addRafvertaka(Rafverktaka rafverktaka) {
 		rafverktokuListi.put(rafverktaka.getId(), rafverktaka);
 		filteredList = getAllRafverktokur();
-		resetList(null);
+		resetList();
 	}
 
 //	public List getRafverktokuListiSelects(){
@@ -131,7 +131,16 @@ public class RafverktokuListi extends BaseBean  {
 	}
 
 	public void resetList(ValueChangeEvent event) {
-		dataScroller.getUIData().setFirst(0);
+		resetList();
+	}
+	
+	private void resetList() {
+		if (dataScroller != null) {
+			UIData uiData = dataScroller.getUIData();
+			if (uiData != null) {
+				uiData.setFirst(0);
+			}
+		}
 	}
 	
 	public List getRafverktokur() {
@@ -167,7 +176,7 @@ public class RafverktokuListi extends BaseBean  {
 			}
 			filteredList = list;
 		}
-		dataScroller.getUIData().setFirst(0);
+		resetList();
 		oldSelectedStatus = getSelectedStatus() == null ? "" : getSelectedStatus();
 		oldSearchForExternalProjectID = getSearchForExternalProjectID() == null ? "" : getSearchForExternalProjectID();
 		oldSearchForEnergyConsumer = getSearchForEnergyConsumer() == null ? "" : getSearchForEnergyConsumer();

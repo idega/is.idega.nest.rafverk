@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.4 2007/08/23 15:29:01 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.5 2007/09/28 15:00:20 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -11,6 +11,7 @@ package is.idega.nest.rafverk.bean;
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
@@ -34,10 +35,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/23 15:29:01 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -67,20 +68,20 @@ public class ChangeElectricianBean extends RealEstateBean {
 	
 	// might be overwritten by subclasses
 	void changedRealEstate(Fasteign fasteign) {
-		String realEstateNumber = fasteign.getFastaNumer();
-		initializeElectricalInstallationList(realEstateNumber);
+		RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
+		initializeElectricalInstallationList(realEstateIdentifier);
 	}
 	
-	private void initializeElectricalInstallationList(String realEstateNumber) {
+	private void initializeElectricalInstallationList(RealEstateIdentifier realEstateIdentifier) {
 		electricalInstallationList.clear(); 
 		electricalInstallationMap.clear();
-		if (realEstateNumber == null || InitialData.NONE_REAL_ESTATE_SELECTION.equals(realEstateNumber)) {
+		if (realEstateIdentifier == null) {
 			return;
 		}
 		User currentUser = BaseBean.getCurrentUser();
 		Collection verktokur = null;
 		try {
-			verktokur = getElectricalInstallationBusiness().getOtherElectricalInstallationByRealEstateNumber(realEstateNumber, currentUser);
+			verktokur = getElectricalInstallationBusiness().getOtherOpenElectricalInstallationByRealEstateIdentifier(realEstateIdentifier, currentUser);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());

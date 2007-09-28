@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.29 2007/09/05 16:33:16 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.30 2007/09/28 15:00:20 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -43,16 +43,14 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
 	private Rafverktaka rafverktaka;
-	
-	private Rafverktaki newOwnerOfCase;
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
@@ -129,6 +127,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
     // validation and user messages
     private Map validationResults = null;
     
+    private String workingPlaceErrorMessage = null;
+    
 	public TilkynningVertakaBean() {
     	initialize();
     }
@@ -185,6 +185,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 
 	private void initializeValidation() {
 		validationResults = null;
+		workingPlaceErrorMessage = null;
 	}
 	
 	public void createApplicationPDF() {
@@ -194,8 +195,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public String sendApplication() {
 		isSuccessfullyStored = storeApplicationData();
 		if (isSuccessfullyStored) {
-			boolean validationSuccessful = validateTilkynningVertaka();
-			if (validationSuccessful) {
+			// note: validation should not be done if wroking place is wrong
+			if (isSomeoneAlreadyWorkingAtThisPlace() && validateTilkynningVertaka()) {
 				if (sendApplicationData()) {
 					messageStoring = "Þjónustubeiðni send";
 					createApplicationPDFSendEmails(true);
@@ -233,8 +234,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public String sendApplicationReport() {
 		isSuccessfullyStored = storeApplicationReportData();
 		if (isSuccessfullyStored) {
-			boolean validationSuccessful = validateTilkynningLokVerks();
-			if (validationSuccessful) {
+			// note: validation should not be done if wroking place is wrong
+			if (isSomeoneAlreadyWorkingAtThisPlace() && validateTilkynningLokVerks()) {
 				if (sendApplicationReportData()) {
 					messageStoring = "Skýrsla send";
 					createApplicationReportPDF();
@@ -476,13 +477,6 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public void setBeidniUm(List beidniUm) {
 		this.beidniUm = beidniUm;
 	}
-
-
-
-
-	
-
-
 
 
 	
@@ -988,6 +982,18 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		}
 	}
 	
+	private boolean isSomeoneAlreadyWorkingAtThisPlace() {
+		try {
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			workingPlaceErrorMessage =  getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(electricalInstallation);
+			return workingPlaceErrorMessage == null;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	
 	private boolean validateTilkynningVertaka()  {
 		try {
 			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
@@ -1008,6 +1014,10 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	public boolean isWorkingPlaceInvalid() {
+		return workingPlaceErrorMessage != null;
 	}
 	
 	public boolean isApplicationInvalid() {
@@ -1044,5 +1054,15 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			e.printStackTrace();
 			throw new IBORuntimeException();
 		}
+	}
+
+	
+	public String getWorkingPlaceErrorMessage() {
+		return workingPlaceErrorMessage;
+	}
+
+	
+	public void setWorkingPlaceErrorMessage(String workingPlaceErrorMessage) {
+		this.workingPlaceErrorMessage = workingPlaceErrorMessage;
 	}
 }

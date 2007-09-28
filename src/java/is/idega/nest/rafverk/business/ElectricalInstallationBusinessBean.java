@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.16 2007/09/14 10:41:10 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.17 2007/09/28 15:00:20 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -63,10 +63,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/14 10:41:10 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -122,6 +122,38 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			throw new RuntimeException(e.getMessage());
 		}
 	}
+	
+	public String isSomeoneAlreadyWorkingAtThisPlace(ElectricalInstallation electricalInstallation) {
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		if (realEstate == null || realEstate.isDummy()) {
+			return "Veitustaður óþekktur";
+		}
+		Collection coll;
+		try {
+			coll = getOtherClosedElectricalInstallationByRealEstate(realEstate, electricalInstallation.getElectrician());
+		}
+		catch (FinderException e) {
+			coll = null;
+		}
+		if (coll == null || coll.isEmpty()) {
+			// great, everything is fine no one is working there
+			return null;
+		}
+		// Note: There should be at most one user in the list
+		// we are still checking the whole list to see inconsistency
+		StringBuffer buffer = new StringBuffer("Eftirfarandi rafverktaki er nú þegar að vinna á þessum veiturstað ");
+		Iterator iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			ElectricalInstallation electricalInstallationOther = (ElectricalInstallation) iterator.next();
+			User userOther = electricalInstallationOther.getElectrician();
+			if (userOther != null) {
+				buffer.append(userOther.getName());
+			}
+		}
+		return buffer.toString();
+	}
+
+	
 	public boolean sendApplication(
 			Rafverktaka rafverktaka) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
@@ -920,8 +952,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationHome().findElectricalInstallationByRealEstateNumber(realEstateNumber);
 	}
 	
-	public Collection getOtherElectricalInstallationByRealEstateNumber(String realEstateNumber, User user) throws FinderException {
-		return getElectricalInstallationHome().findOtherOpenElectricalInstallationByRealEstateNumber(realEstateNumber, user);
+	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User user) throws FinderException {
+		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstate(realEstate, user);
+	}
+	
+	
+	public Collection getOtherOpenElectricalInstallationByRealEstateIdentifier(RealEstateIdentifier realEstateIdentifier, User user) throws FinderException {
+		return getElectricalInstallationHome().findOtherOpenElectricalInstallationByRealEstateIdentifier(realEstateIdentifier, user);
 	}
 	
 	public Collection getElectricalInstallationByEnergyCompanyUser(User energyCompanyUser) {

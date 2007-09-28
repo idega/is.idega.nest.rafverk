@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.4 2007/09/14 10:40:43 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.5 2007/09/28 15:00:20 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import is.fmr.landskra.FasteignaskraClient;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
@@ -29,10 +30,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/14 10:40:43 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class RealEstateBean {
 	
@@ -59,11 +60,9 @@ public class RealEstateBean {
     
     
 	private void fetchFasteignaListi() {
-		
-		String addr = getGata()+" "+getGotunumer();
 
 		FMRLookupBean lookup = getFMRLookup();
-		fasteignaListi = lookup.getFasteignir(addr,getPostnumer());
+		fasteignaListi = lookup.getFasteignir(getGata(), getGotunumer(), getPostnumer());
 		setAvailablefasteign(true);
 	}
 	
@@ -72,15 +71,11 @@ public class RealEstateBean {
 		if (StringHandler.isEmpty(postalCode)) {
 			fasteignaListi = null;
 		}
-		StringBuffer buffer = new StringBuffer();
-		if (StringHandler.isNotEmpty(street) && ! InitialData.NONE_STREET.equals(street)) {
-			buffer.append(street).append(" ");
-		}
-		if (StringHandler.isNotEmpty(streetNumber)) {
-			buffer.append(streetNumber);
+		if (InitialData.NONE_STREET.equals(street)) {
+			street = null;
 		}
 		FMRLookupBean lookup = getFMRLookup();
-		fasteignaListi = lookup.getFasteignir(buffer.toString(),postalCode);
+		fasteignaListi = lookup.getFasteignir(street, streetNumber,postalCode);
 		setAvailablefasteign(true);
 	}
 
@@ -131,19 +126,14 @@ public class RealEstateBean {
 			return realEstates;
 		}
 		
+
 		// sorting by street numbers else keep order
 		SortedMap streetMap = new TreeMap();
 		Iterator iterator = realEstateList.iterator();
 		while (iterator.hasNext()) {
 			Fasteign fasteign = (Fasteign) iterator.next();
 			String streetnumber = fasteign.getGotuNumer();
-			Integer streetNr;
-			try {
-				streetNr = new Integer(Integer.parseInt(streetnumber));
-			}
-			catch (NumberFormatException ex) {
-				streetNr = new Integer(0);
-			}
+			Integer streetNr = FasteignaskraClient.parseNumberForSorting(streetnumber);
 			List list;
 			if (! streetMap.containsKey(streetNr)) {
 				list = new ArrayList();
@@ -171,6 +161,9 @@ public class RealEstateBean {
 		}
 		return realEstates;
 	}
+	
+
+	
 	
 	public List getFasteignaListiSelects() {
 		Map realEstates = getRealEstates();
@@ -218,6 +211,27 @@ public class RealEstateBean {
 		}
 		return streets;
 	}
+	
+	public Map getStreetsByDWR() {
+		// keep the order
+		Map streets = new LinkedHashMap();
+		if(postnumer==null||postnumer.equals("")){
+			streets.put("", "Veldu póstnúmer fyrst");
+		}
+		else{
+			streets.put(InitialData.NONE_STREET,"- Engin gata til staðar");
+			List streetList = BaseBean.getInitialDataByDWR().getGotuListiByPostnumer(postnumer);
+			Iterator iterator = streetList.iterator(); 
+			while (iterator.hasNext()) {
+				Gata tempGata = (Gata) iterator.next();
+				String name = tempGata.getNafn();
+				// value, label
+				streets.put(name, name);
+			}
+		}
+		return streets;
+	}
+	
 	
 	// lookup fasteign
 	

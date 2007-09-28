@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateIdentifier.java,v 1.1 2007/09/14 10:41:11 thomas Exp $
+ * $Id: RealEstateIdentifier.java,v 1.2 2007/09/28 15:00:20 thomas Exp $
  * Created on Sep 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,16 +19,24 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/14 10:41:11 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RealEstateIdentifier {
 	
 	private final static String AT_TOKEN = "@";
 	
 	private final static String NULL_STRING = "NULL";
+	
+	public final static String LAND_REGISTER_MAP_COLUMN = "LAND_REGISTER";
+	
+	public final static String REAL_ESTATE_NUMBER_COLUMN = "REAL_ESTATE_NUMBER";
+	
+	public final static String REAL_ESTATE_UNIT_COLUMN = "REAL_ESTATE_UNIT";
+	
+	public final static String REAL_ESTATE_CODE_COLUMN = "REAL_ESTATE_CODE";
 	
 	public static RealEstateIdentifier getInstance(String realEstateIdentifierAsString) {
 		RealEstateIdentifier realEstateIdentifier = new RealEstateIdentifier();
@@ -67,6 +75,16 @@ public class RealEstateIdentifier {
 		realEstateIdentifier.setRealEstateCode(realEstate.getRealEstateCode());
 		return realEstateIdentifier;
 	}
+	
+	public static RealEstateIdentifier getInstance(Fasteign fasteign) {
+		RealEstateIdentifier realEstateIdentifier = new RealEstateIdentifier();
+		realEstateIdentifier.setLandNumber(fasteign.getLandnumer());
+		realEstateIdentifier.setRealEstateNumber(fasteign.getFastaNumer());
+		realEstateIdentifier.setRealEstateUnit(fasteign.getMatseiningNumer());
+		realEstateIdentifier.setRealEstateCode(fasteign.getMerking());
+		return realEstateIdentifier;
+	}
+		
 
 	public static String getIdentifierAsString(RealEstate realEstate) {
 		String landNumer = realEstate.getLandRegisterMapNumber();

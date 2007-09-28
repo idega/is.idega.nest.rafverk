@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.6 2007/08/15 17:16:05 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.7 2007/09/28 15:00:20 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,20 +24,20 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/15 17:16:05 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
 	public Map getStreetsByPostalCodeForChangeElectricianBean(String postalCode) {
-		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBeanByDWR();
 		return getStreetsByPostalCode(postalCode, changeElectricianBean);
 	}
 	
 	public Map getStreetsByPostalCode(String postalCode) {
-		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBeanByDWR();
 		return getStreetsByPostalCode(postalCode, tilkynningVertakaBean);
 	}
 		
@@ -47,16 +47,16 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		// JSF  accepts only a value that matches a value in the option list.
 		// When submitting JSF checks if the submitted value is contained in the option list. 
 		realEstateBean.setPostnumer(postalCode);
-		return realEstateBean.getStreets();
+		return realEstateBean.getStreetsByDWR();
 	}
 
 	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street, String streetNumber) {
-		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBeanByDWR();
 		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, changeElectricianBean);
 	}
 	
 	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber) {
-		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBeanByDWR();
 		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, tilkynningVertakaBean);
 	}
 		
@@ -66,7 +66,7 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 	}
 	
 	public List getElectricInstallationList(String realEstateNumber) {
-		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBeanByDWR();
 		changeElectricianBean.setRealEstateNumber(realEstateNumber);
 		
 		String realEstateDisplay = changeElectricianBean.getVeitustadurDisplay();
@@ -80,7 +80,7 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 	
 	
 	public List getEnergyConsumerFields(String realEstateNumber) {
-		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBeanByDWR();
 		tilkynningVertakaBean.setRealEstateNumber(realEstateNumber);
 		String realEstateDisplay = tilkynningVertakaBean.getVeitustadurDisplay();
 		String energyConsumerName = tilkynningVertakaBean.getNafnOrkukaupanda();
