@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.5 2007/09/28 15:00:20 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.6 2007/10/02 13:40:08 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -72,7 +72,7 @@ public class ChangeElectricianBean extends RealEstateBean {
 		initializeElectricalInstallationList(realEstateIdentifier);
 	}
 	
-	private void initializeElectricalInstallationList(RealEstateIdentifier realEstateIdentifier) {
+	protected void initializeElectricalInstallationList(RealEstateIdentifier realEstateIdentifier) {
 		electricalInstallationList.clear(); 
 		electricalInstallationMap.clear();
 		if (realEstateIdentifier == null) {

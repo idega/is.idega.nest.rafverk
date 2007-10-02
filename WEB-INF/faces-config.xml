@@ -148,6 +148,10 @@
   		<from-outcome>send</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/sent/</to-view-id>
   	</navigation-case>
+  	   	<navigation-case>
+  		<from-outcome>rafverktakaskipti</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/rafverktakaskipti/</to-view-id>
+  	</navigation-case>
   </navigation-rule>
   
   <navigation-rule>

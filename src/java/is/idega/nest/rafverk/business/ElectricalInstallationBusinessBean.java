@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.17 2007/09/28 15:00:20 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.18 2007/10/02 13:40:08 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -63,10 +63,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -123,14 +123,29 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 	}
 	
-	public String isSomeoneAlreadyWorkingAtThisPlace(ElectricalInstallation electricalInstallation) {
-		RealEstate realEstate = electricalInstallation.getRealEstate();
-		if (realEstate == null || realEstate.isDummy()) {
-			return "Veitustaður óþekktur";
+	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, ElectricalInstallation electricalInstallation) {
+		return isSomeoneAlreadyWorkingAtThisPlace(realEstate, null, electricalInstallation);
+	}
+	
+	
+	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
+		return isSomeoneAlreadyWorkingAtThisPlace(null, realEstateIdentifier, electricalInstallation);
+	}
+	
+	
+	private List isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
+		if ((realEstate == null || realEstate.isDummy()) &&
+			(realEstateIdentifier == null || realEstateIdentifier.isDummy())) {
+
 		}
 		Collection coll;
 		try {
-			coll = getOtherClosedElectricalInstallationByRealEstate(realEstate, electricalInstallation.getElectrician());
+			if (realEstate != null ) {
+				coll = getOtherClosedElectricalInstallationByRealEstate(realEstate, electricalInstallation);
+			}
+			else {
+				coll = getOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, electricalInstallation);
+			}
 		}
 		catch (FinderException e) {
 			coll = null;
@@ -141,16 +156,14 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		// Note: There should be at most one user in the list
 		// we are still checking the whole list to see inconsistency
-		StringBuffer buffer = new StringBuffer("Eftirfarandi rafverktaki er nú þegar að vinna á þessum veiturstað ");
+		List users = new ArrayList(coll.size());
 		Iterator iterator = coll.iterator();
 		while (iterator.hasNext()) {
 			ElectricalInstallation electricalInstallationOther = (ElectricalInstallation) iterator.next();
 			User userOther = electricalInstallationOther.getElectrician();
-			if (userOther != null) {
-				buffer.append(userOther.getName());
-			}
+			users.add(userOther);
 		}
-		return buffer.toString();
+		return users;
 	}
 
 	
@@ -952,10 +965,13 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationHome().findElectricalInstallationByRealEstateNumber(realEstateNumber);
 	}
 	
-	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User user) throws FinderException {
-		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstate(realEstate, user);
+	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, ElectricalInstallation currentElectricalInstallation) throws FinderException {
+		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstate(realEstate, currentElectricalInstallation);
 	}
 	
+	public Collection getOtherClosedElectricalInstallationByRealEstateIdentifer(RealEstateIdentifier realEstateIdentifier, ElectricalInstallation currentElectricalInstallation) throws FinderException {
+		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, currentElectricalInstallation);
+	}
 	
 	public Collection getOtherOpenElectricalInstallationByRealEstateIdentifier(RealEstateIdentifier realEstateIdentifier, User user) throws FinderException {
 		return getElectricalInstallationHome().findOtherOpenElectricalInstallationByRealEstateIdentifier(realEstateIdentifier, user);

@@ -26,8 +26,9 @@ public interface ElectricalInstallationHome extends IDOHome {
 			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException;
 
 	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
-			RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException;
-
-	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
+			RealEstateIdentifier realEstateIdentifer, ElectricalInstallation currentElectricalInstallation)
 			throws FinderException;
+
+	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate,
+			ElectricalInstallation currentElectricalInstallation) throws FinderException;
 }

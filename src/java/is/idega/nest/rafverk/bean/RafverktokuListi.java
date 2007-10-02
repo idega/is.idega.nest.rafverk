@@ -259,6 +259,7 @@ public class RafverktokuListi extends BaseBean  {
 		return electricalInstallationBusiness;
 	}
 	
+	
 	/**
 	 * Called by JSF page (opening existing electrical installation)
 	 * 
@@ -313,7 +314,6 @@ public class RafverktokuListi extends BaseBean  {
 	    }
 
 	}
-
 	
 	public String getSearchForExternalProjectID() {
 		return searchForExternalProjectID;

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.6 2007/09/28 15:00:20 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.7 2007/10/02 13:40:08 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ElectricalInstallationState {
 	
@@ -69,7 +69,7 @@ public class ElectricalInstallationState {
 	// !! initialized in static block below !!
 	public static final List OPEN_STATUS_LIST;  
 	
-	// status that are called free (working places with that status can be taken)
+	// status that are called free (working places with status that can be used)
 	public static final String[] FREE_STATUS = {
 		THJONUSTUBEIDNI_GEYMD, 
 		SKYRSLA_GEYMD,

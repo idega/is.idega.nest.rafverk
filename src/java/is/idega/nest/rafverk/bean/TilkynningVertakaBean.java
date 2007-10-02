@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.30 2007/09/28 15:00:20 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.31 2007/10/02 13:40:08 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -15,6 +15,7 @@ import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.business.ElectricalInstallationValidationBusiness;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.FasteignaEigandi;
@@ -32,21 +33,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
 import com.idega.business.IBORuntimeException;
+import com.idega.core.location.data.RealEstate;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
+import com.idega.user.data.User;
 import com.idega.util.StringHandler;
 import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -129,6 +133,10 @@ public class TilkynningVertakaBean extends RealEstateBean {
     
     private String workingPlaceErrorMessage = null;
     
+    private String currentWorkingPlaceErrorMessage = null;
+    
+    private boolean showChangeElectricianOption = false;
+    
 	public TilkynningVertakaBean() {
     	initialize();
     }
@@ -186,6 +194,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	private void initializeValidation() {
 		validationResults = null;
 		workingPlaceErrorMessage = null;
+		currentWorkingPlaceErrorMessage = null;
+		showChangeElectricianOption = false;
 	}
 	
 	public void createApplicationPDF() {
@@ -531,10 +541,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			setNafnOrkukaupandaAndLock(eigandi.getNafn());
 			setKennitalaOrkukaupandaAndLock(eigandi.getKennitala());
 		}
+		currentWorkingPlaceErrorMessage = checkWorkingPlace(fasteign);
 	}
-
-
-
 	
 	public String getKennitalaOrkukaupanda() {
 		kennitalaOrkukaupandaIsLocked = false;
@@ -983,15 +991,59 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 	
 	private boolean isSomeoneAlreadyWorkingAtThisPlace() {
+		workingPlaceErrorMessage =  checkWorkingPlace();
+		return workingPlaceErrorMessage == null;
+	}
+	
+	private String checkWorkingPlace(Fasteign fasteign) {
 		try {
 			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-			workingPlaceErrorMessage =  getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(electricalInstallation);
-			return workingPlaceErrorMessage == null;
+			RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
+			List users = getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(realEstateIdentifier, electricalInstallation);
+			setShowChangeElectricianOption(users);
+			return getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(users);
 		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
+		catch(RemoteException ex) {
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
+	
+	private String checkWorkingPlace() {
+		try {
+			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+			RealEstate realEstate = electricalInstallation.getRealEstate();
+			List users = getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(realEstate, electricalInstallation);
+			setShowChangeElectricianOption(users);
+			return getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(users);
+		}
+		catch(RemoteException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
+	}
+	
+	private String getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(List users) {
+		if (users == null) {
+			return "Veitustaður óþekktur";
+		}
+		// Note: There should be at most one user in the list
+		// we are still checking the whole list to see inconsistency
+		StringBuffer buffer = new StringBuffer("Eftirfarandi rafverktaki er nú þegar að vinna á þessum veiturstað ");
+		Iterator iterator = users.iterator();
+		while (iterator.hasNext()) {
+			User user = (User) iterator.next();
+			if (user != null) {
+				buffer.append(user.getName());
+			}
+		}
+		return buffer.toString();
+	}
+	
+	private void setShowChangeElectricianOption(List users) {
+		// do not show option to change electrician if the electrician himself is blocking the working place
+		User user = BaseBean.getCurrentUser();
+		showChangeElectricianOption =  users.contains(user);
+	}
+	
 	
 	
 	private boolean validateTilkynningVertaka()  {
@@ -1055,7 +1107,25 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			throw new IBORuntimeException();
 		}
 	}
-
+	
+	public void changeElectrician(ActionEvent event) {
+		// initialize change electrician before entering page by values of this page
+		initializeChangeElectricianBean();
+	}
+	
+	private void initializeChangeElectricianBean() {
+		Fasteign fasteign = lookupFasteign(getFastanumer());
+		RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
+		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
+		changeElectricianBean.initializeElectricalInstallationList(realEstateIdentifier);
+		changeElectricianBean.setPostnumer(getPostnumer());
+		changeElectricianBean.setGata(getGata());
+		changeElectricianBean.setGotunumer(getGotunumer());
+		changeElectricianBean.flettaUppIFasteignaskra();
+		// good bye to tilkynningvertaka bean
+		initialize();
+	}
+	
 	
 	public String getWorkingPlaceErrorMessage() {
 		return workingPlaceErrorMessage;
@@ -1064,5 +1134,14 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	
 	public void setWorkingPlaceErrorMessage(String workingPlaceErrorMessage) {
 		this.workingPlaceErrorMessage = workingPlaceErrorMessage;
+	}
+
+	
+	public String getCurrentWorkingPlaceErrorMessage() {
+		return currentWorkingPlaceErrorMessage;
+	}
+	
+	public boolean isShowChangeElectricianOption() {
+		return showChangeElectricianOption;
 	}
 }

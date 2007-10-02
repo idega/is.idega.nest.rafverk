@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.7 2007/09/28 15:00:20 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.8 2007/10/02 13:40:08 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -85,16 +85,21 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		String realEstateDisplay = tilkynningVertakaBean.getVeitustadurDisplay();
 		String energyConsumerName = tilkynningVertakaBean.getNafnOrkukaupanda();
 		String energyConsumerPersonalID = tilkynningVertakaBean.getKennitalaOrkukaupanda();
+		String currentWorkingPlaceErrorMessage = tilkynningVertakaBean.getCurrentWorkingPlaceErrorMessage();
+		boolean showChangeElectricianOption = tilkynningVertakaBean.isShowChangeElectricianOption();
 
 		// converting null values to empty strings has to be done because IE does not like null values 
 		realEstateDisplay = StringHandler.replaceIfEmpty(realEstateDisplay, StringHandler.EMPTY_STRING);
 		energyConsumerName = StringHandler.replaceIfEmpty(energyConsumerName, StringHandler.EMPTY_STRING);
 		energyConsumerPersonalID = StringHandler.replaceIfEmpty(energyConsumerPersonalID, StringHandler.EMPTY_STRING);
+		currentWorkingPlaceErrorMessage = StringHandler.replaceIfEmpty(currentWorkingPlaceErrorMessage, StringHandler.EMPTY_STRING);
 		
 		List list = new ArrayList(3);
 		list.add(realEstateDisplay);
 		list.add(energyConsumerName);
 		list.add(energyConsumerPersonalID);
+		list.add(currentWorkingPlaceErrorMessage);
+		list.add(Boolean.valueOf(showChangeElectricianOption));
 		return list;
 	}
 	
