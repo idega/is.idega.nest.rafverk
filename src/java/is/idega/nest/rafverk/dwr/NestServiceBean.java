@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.8 2007/10/02 13:40:08 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.9 2007/10/10 13:19:42 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -86,7 +86,7 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		String energyConsumerName = tilkynningVertakaBean.getNafnOrkukaupanda();
 		String energyConsumerPersonalID = tilkynningVertakaBean.getKennitalaOrkukaupanda();
 		String currentWorkingPlaceErrorMessage = tilkynningVertakaBean.getCurrentWorkingPlaceErrorMessage();
-		boolean showChangeElectricianOption = tilkynningVertakaBean.isShowChangeElectricianOption();
+		String showChangeElectricianOption = tilkynningVertakaBean.getShowChangeElectricianOptionForDWR();
 
 		// converting null values to empty strings has to be done because IE does not like null values 
 		realEstateDisplay = StringHandler.replaceIfEmpty(realEstateDisplay, StringHandler.EMPTY_STRING);
@@ -94,12 +94,12 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		energyConsumerPersonalID = StringHandler.replaceIfEmpty(energyConsumerPersonalID, StringHandler.EMPTY_STRING);
 		currentWorkingPlaceErrorMessage = StringHandler.replaceIfEmpty(currentWorkingPlaceErrorMessage, StringHandler.EMPTY_STRING);
 		
-		List list = new ArrayList(3);
+		List list = new ArrayList(5);
 		list.add(realEstateDisplay);
 		list.add(energyConsumerName);
 		list.add(energyConsumerPersonalID);
 		list.add(currentWorkingPlaceErrorMessage);
-		list.add(Boolean.valueOf(showChangeElectricianOption));
+		list.add(showChangeElectricianOption);
 		return list;
 	}
 	

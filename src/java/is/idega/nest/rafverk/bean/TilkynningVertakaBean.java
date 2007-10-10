@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.31 2007/10/02 13:40:08 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.32 2007/10/10 13:19:42 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,15 +29,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
 import com.idega.business.IBORuntimeException;
-import com.idega.core.location.data.RealEstate;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
@@ -47,10 +48,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -131,11 +132,15 @@ public class TilkynningVertakaBean extends RealEstateBean {
     // validation and user messages
     private Map validationResults = null;
     
-    private String workingPlaceErrorMessage = null;
-    
     private String currentWorkingPlaceErrorMessage = null;
     
     private boolean showChangeElectricianOption = false;
+    
+    private boolean showCheckingOutWorkingPlaceOption = false;
+    
+    private boolean workingPlaceChangeable = false;
+    
+    
     
 	public TilkynningVertakaBean() {
     	initialize();
@@ -192,10 +197,11 @@ public class TilkynningVertakaBean extends RealEstateBean {
 
 
 	private void initializeValidation() {
-		validationResults = null;
-		workingPlaceErrorMessage = null;
+		validationResults = null;;
 		currentWorkingPlaceErrorMessage = null;
 		showChangeElectricianOption = false;
+		showCheckingOutWorkingPlaceOption = false;
+		workingPlaceChangeable = true;
 	}
 	
 	public void createApplicationPDF() {
@@ -206,7 +212,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		isSuccessfullyStored = storeApplicationData();
 		if (isSuccessfullyStored) {
 			// note: validation should not be done if wroking place is wrong
-			if (isSomeoneAlreadyWorkingAtThisPlace() && validateTilkynningVertaka()) {
+			if (noOneIsAlreadyWorkingAtThisPlace() && validateTilkynningVertaka()) {
 				if (sendApplicationData()) {
 					messageStoring = "Þjónustubeiðni send";
 					createApplicationPDFSendEmails(true);
@@ -245,7 +251,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		isSuccessfullyStored = storeApplicationReportData();
 		if (isSuccessfullyStored) {
 			// note: validation should not be done if wroking place is wrong
-			if (isSomeoneAlreadyWorkingAtThisPlace() && validateTilkynningLokVerks()) {
+			if (noOneIsAlreadyWorkingAtThisPlace() && validateTilkynningLokVerks()) {
 				if (sendApplicationReportData()) {
 					messageStoring = "Skýrsla send";
 					createApplicationReportPDF();
@@ -315,6 +321,38 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			messageStoring = "Skýrsla ekki geymd";
 		}
 		return "store";
+	}
+	
+	/*
+	 * action method called by JSF
+	 */
+	public String checkOutWorkingPlace() {
+		if (! noOneIsAlreadyWorkingAtThisPlace()) {
+			return null;
+		}
+		isSuccessfullyStored = checkOutWorkingPlaceData();
+		if (isSuccessfullyStored) { 
+			messageStoring = "Verk tekið";
+		}
+		else {
+			messageStoring = "Verk ekki tekið";
+		}
+		return "store";
+	}		
+		
+		
+	private boolean checkOutWorkingPlaceData() {
+		try {
+			boolean result = getElectricalInstallationBusiness().checkOutWorkingPlace(getRafverktaka(), this, BaseBean.getTilkynningLokVerksBean());
+			if (result) {
+				// updating the list
+				BaseBean.getRafverktokuListi().addRafvertaka(getRafverktaka());
+			}
+			return result;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	private boolean storeApplicationReportData() {
@@ -536,13 +574,17 @@ public class TilkynningVertakaBean extends RealEstateBean {
 
 	// might be overwritten by subclasses
 	void changedRealEstate(Fasteign fasteign) {
-		FasteignaEigandi eigandi = fasteign.getEigandi();
-		if(eigandi!=null){
-			setNafnOrkukaupandaAndLock(eigandi.getNafn());
-			setKennitalaOrkukaupandaAndLock(eigandi.getKennitala());
+		if (fasteign != null) {
+			FasteignaEigandi eigandi = fasteign.getEigandi();
+			if(eigandi!=null){
+				setNafnOrkukaupandaAndLock(eigandi.getNafn());
+				setKennitalaOrkukaupandaAndLock(eigandi.getKennitala());
+			}
 		}
-		currentWorkingPlaceErrorMessage = checkWorkingPlace(fasteign);
+		initializeWorkingPlaceErrorMessage(fasteign);
 	}
+	
+
 	
 	public String getKennitalaOrkukaupanda() {
 		kennitalaOrkukaupandaIsLocked = false;
@@ -851,7 +893,31 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public Rafverktaki getNewOwnerOfCase() {
 		return getRafverktaka().getNewOwner();
 	}
-
+	
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */	
+	public boolean isCurrentWorkingPlaceErrorMessageNotEmpty() {
+		return StringHandler.isNotEmpty(currentWorkingPlaceErrorMessage);
+	}
+	
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */	
+	public boolean isWorkingPlaceChangeable() {
+		return workingPlaceChangeable;
+	}
+	
+	/**
+	 * Called by JSF page (application form)
+	 * @return
+	 */
+	public boolean isCheckingOutWorkingPlaceAllowed() {
+		return showCheckingOutWorkingPlaceOption;
+	}
+	
 	
 	/**
 	 * Called by JSF page (application form)
@@ -990,40 +1056,83 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		}
 	}
 	
-	private boolean isSomeoneAlreadyWorkingAtThisPlace() {
-		workingPlaceErrorMessage =  checkWorkingPlace();
-		return workingPlaceErrorMessage == null;
+	public void initializeWorkingPlaceErrorMessage(Fasteign fasteign) {
+		RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
+		checkWorkingPlace(realEstateIdentifier);
+	}	
+	
+	private boolean noOneIsAlreadyWorkingAtThisPlace() {
+		String fastaNumer = getFastanumer();
+		RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fastaNumer);
+		checkWorkingPlace(realEstateIdentifier);
+		return StringHandler.isEmpty(currentWorkingPlaceErrorMessage);
 	}
 	
-	private String checkWorkingPlace(Fasteign fasteign) {
+	private void checkWorkingPlace(RealEstateIdentifier realEstateIdentifier) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		Map result = null;
 		try {
-			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-			RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
-			List users = getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(realEstateIdentifier, electricalInstallation);
-			setShowChangeElectricianOption(users);
-			return getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(users);
+			result = getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(realEstateIdentifier, electricalInstallation);
 		}
-		catch(RemoteException ex) {
-			throw new RuntimeException(ex.getMessage());
+		catch (RemoteException e) {
+			throw new RuntimeException();
 		}
+		setOptionsAndMessage(result, electricalInstallation);
+	}
+			
+	private void setOptionsAndMessage(Map result, ElectricalInstallation electricalInstallation) {
+		List usersOfAvailableCases = (result == null) ? null : (List)result.get(ElectricalInstallationState.AVAILABLE_STATUS_KEY);
+		List usersOfClosedCases = (result == null) ? null : (List) result.get(ElectricalInstallationState.CLOSED_STATUS_KEY);
+		currentWorkingPlaceErrorMessage = getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(usersOfAvailableCases, usersOfClosedCases);
+		setShowChangeElectricianOption(usersOfAvailableCases, usersOfClosedCases);
+		setWorkingPlaceOptions(electricalInstallation);
 	}
 	
-	private String checkWorkingPlace() {
-		try {
-			ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-			RealEstate realEstate = electricalInstallation.getRealEstate();
-			List users = getElectricalInstallationBusiness().isSomeoneAlreadyWorkingAtThisPlace(realEstate, electricalInstallation);
-			setShowChangeElectricianOption(users);
-			return getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(users);
+	private void setShowChangeElectricianOption(List usersOfAvailableCases, List usersOfClosedCases) {
+		// may we ask for taking over working place?
+		if (usersOfClosedCases != null && (!usersOfClosedCases.isEmpty())) {
+			showChangeElectricianOption = false;
+			return;
 		}
-		catch(RemoteException ex) {
-			throw new RuntimeException(ex.getMessage());
+		// do not show option to change electrician if the electrician himself is blocking the working place
+		if (usersOfAvailableCases == null || usersOfAvailableCases.isEmpty()) {
+			showChangeElectricianOption = false;
+			return;
 		}
+		User user = BaseBean.getCurrentUser();
+		showChangeElectricianOption =  ! usersOfAvailableCases.contains(user);
 	}
 	
-	private String getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(List users) {
+	private void setWorkingPlaceOptions(ElectricalInstallation electricalInstallation) {
+		// does the state allow to change the working place?
+		workingPlaceChangeable = isCheckingOutWorkingPlaceAllowedByState(electricalInstallation);
+		// is there a selection that can be check out?
+		// #1 has the right status
+		// #2 something is selected at all
+		// #3 selection is valid
+		showCheckingOutWorkingPlaceOption = 
+			workingPlaceChangeable &&
+			StringHandler.isNotEmpty(getFastanumer()) &&
+			(! isWorkingPlaceInvalid());
+	}
+	
+	private boolean isCheckingOutWorkingPlaceAllowedByState(ElectricalInstallation electricalInstallation) {
+		return getElectricalInstallationState().isCheckingOutWorkingPlaceAllowed(electricalInstallation);
+	}
+	
+	private boolean isWorkingPlaceInvalid() {
+		return StringHandler.isNotEmpty(currentWorkingPlaceErrorMessage);
+	}
+	
+	private String getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(List usersOfAvailableCases, List usersOfClosedCases) {
+		Set users = new HashSet(usersOfAvailableCases.size() + usersOfClosedCases.size());
+		users.addAll(usersOfAvailableCases);
+		users.addAll(usersOfClosedCases);
 		if (users == null) {
 			return "Veitustaður óþekktur";
+		}
+		if (users.isEmpty()) {
+			return StringHandler.EMPTY_STRING;
 		}
 		// Note: There should be at most one user in the list
 		// we are still checking the whole list to see inconsistency
@@ -1033,15 +1142,14 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			User user = (User) iterator.next();
 			if (user != null) {
 				buffer.append(user.getName());
+				// if there are more than one user it is always the same 
+				// (same user might block the working place more than one time), 
+				// so just return
+				return buffer.toString();
 			}
 		}
+		// just in case something is wrong, users should never be empty
 		return buffer.toString();
-	}
-	
-	private void setShowChangeElectricianOption(List users) {
-		// do not show option to change electrician if the electrician himself is blocking the working place
-		User user = BaseBean.getCurrentUser();
-		showChangeElectricianOption =  users.contains(user);
 	}
 	
 	
@@ -1066,10 +1174,6 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
-	}
-	
-	public boolean isWorkingPlaceInvalid() {
-		return workingPlaceErrorMessage != null;
 	}
 	
 	public boolean isApplicationInvalid() {
@@ -1114,7 +1218,14 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 	
 	private void initializeChangeElectricianBean() {
-		Fasteign fasteign = lookupFasteign(getFastanumer());
+		List list = getFasteignaListi();
+		Fasteign fasteign;
+		if (list == null) {
+			fasteign = rafverktaka.getFasteign();
+		}
+		else {
+			fasteign = lookupFasteign(getFastanumer());
+		}
 		RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fasteign);
 		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBean();
 		changeElectricianBean.initializeElectricalInstallationList(realEstateIdentifier);
@@ -1126,22 +1237,21 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		initialize();
 	}
 	
-	
-	public String getWorkingPlaceErrorMessage() {
-		return workingPlaceErrorMessage;
-	}
-
-	
-	public void setWorkingPlaceErrorMessage(String workingPlaceErrorMessage) {
-		this.workingPlaceErrorMessage = workingPlaceErrorMessage;
-	}
-
-	
 	public String getCurrentWorkingPlaceErrorMessage() {
 		return currentWorkingPlaceErrorMessage;
 	}
 	
-	public boolean isShowChangeElectricianOption() {
-		return showChangeElectricianOption;
+	/*
+	 * Called by JSF
+	 */
+	public String getShowChangeElectricianOption() {
+		return (showChangeElectricianOption) ? "display:block" : "display:none";
+	}
+	
+	/*
+	 * Called by DWR
+	 */
+	public String getShowChangeElectricianOptionForDWR() {
+		return (showChangeElectricianOption) ? "block" : "none";
 	}
 }

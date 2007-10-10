@@ -2,6 +2,7 @@ package is.idega.nest.rafverk.business;
 
 
 import com.idega.util.datastructures.list.KeyValuePair;
+import java.util.Map;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import com.idega.user.data.User;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -15,7 +16,6 @@ import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import javax.ejb.FinderException;
 import com.idega.business.IBOService;
 import is.idega.nest.rafverk.domain.Rafverktaka;
-import java.util.List;
 import is.idega.nest.rafverk.data.MaelirList;
 
 public interface ElectricalInstallationBusiness extends IBOService {
@@ -31,6 +31,12 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	public boolean changesForUser(User user) throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#changeElectrician
+	 */
+	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner)
+			throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getChildElectricalInstallationOrNull
 	 */
 	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation)
@@ -39,14 +45,20 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#isSomeoneAlreadyWorkingAtThisPlace
 	 */
-	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, ElectricalInstallation electricalInstallation)
+	public Map isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, ElectricalInstallation electricalInstallation)
 			throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#isSomeoneAlreadyWorkingAtThisPlace
 	 */
-	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstateIdentifier realEstateIdentifier,
+	public Map isSomeoneAlreadyWorkingAtThisPlace(RealEstateIdentifier realEstateIdentifier,
 			ElectricalInstallation electricalInstallation) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#checkOutWorkingPlace
+	 */
+	public boolean checkOutWorkingPlace(Rafverktaka rafverktaka, TilkynningVertakaBean tilkynningVertakaBean,
+			TilkynningLokVerksBean tilkynningLokVerksBean) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplication
@@ -113,14 +125,19 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherClosedElectricalInstallationByRealEstate
 	 */
-	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate,
-			ElectricalInstallation currentElectricalInstallation) throws FinderException, RemoteException;
+	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
+			throws FinderException, RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherClosedElectricalInstallationByRealEstateIdentifer
 	 */
 	public Collection getOtherClosedElectricalInstallationByRealEstateIdentifer(
-			RealEstateIdentifier realEstateIdentifier, ElectricalInstallation currentElectricalInstallation)
+			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException, RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getOtherOpenElectricalInstallationByRealEstate
+	 */
+	public Collection getOtherOpenElectricalInstallationByRealEstate(RealEstate realEstate, User user)
 			throws FinderException, RemoteException;
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateIdentifier.java,v 1.2 2007/09/28 15:00:20 thomas Exp $
+ * $Id: RealEstateIdentifier.java,v 1.3 2007/10/10 13:19:42 thomas Exp $
  * Created on Sep 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,10 +19,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/28 15:00:20 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class RealEstateIdentifier {
 	
@@ -69,6 +69,9 @@ public class RealEstateIdentifier {
 	
 	public static RealEstateIdentifier getInstance(RealEstate realEstate) {
 		RealEstateIdentifier realEstateIdentifier = new RealEstateIdentifier();
+		if (realEstate == null) {
+			return realEstateIdentifier;
+		}
 		realEstateIdentifier.setLandNumber(realEstate.getLandRegisterMapNumber());
 		realEstateIdentifier.setRealEstateNumber(realEstate.getRealEstateNumber());
 		realEstateIdentifier.setRealEstateUnit(realEstate.getRealEstateUnit());
@@ -78,6 +81,9 @@ public class RealEstateIdentifier {
 	
 	public static RealEstateIdentifier getInstance(Fasteign fasteign) {
 		RealEstateIdentifier realEstateIdentifier = new RealEstateIdentifier();
+		if (fasteign == null) {
+			return realEstateIdentifier;
+		}
 		realEstateIdentifier.setLandNumber(fasteign.getLandnumer());
 		realEstateIdentifier.setRealEstateNumber(fasteign.getFastaNumer());
 		realEstateIdentifier.setRealEstateUnit(fasteign.getMatseiningNumer());
@@ -87,10 +93,10 @@ public class RealEstateIdentifier {
 		
 
 	public static String getIdentifierAsString(RealEstate realEstate) {
-		String landNumer = realEstate.getLandRegisterMapNumber();
-		String fastaNumer = realEstate.getRealEstateNumber();
-		String matseiningNumer = realEstate.getRealEstateUnit();
-		String merking = realEstate.getRealEstateUnit();
+		String landNumer = (realEstate == null) ? null : realEstate.getLandRegisterMapNumber();
+		String fastaNumer = (realEstate == null) ? null : realEstate.getRealEstateNumber();
+		String matseiningNumer = (realEstate == null) ? null : realEstate.getRealEstateUnit();
+		String merking = (realEstate == null) ? null : realEstate.getRealEstateUnit();
 
 		StringBuffer buffer = new StringBuffer(StringHandler.replaceIfEmpty(landNumer,RealEstateIdentifier.NULL_STRING));
 		buffer.append(RealEstateIdentifier.AT_TOKEN);
@@ -103,10 +109,10 @@ public class RealEstateIdentifier {
 	}
 	
 	public static String getIdentifierAsString(Fasteign fasteign) {
-		String landNumer = fasteign.getLandnumer();
-		String fastaNumer = fasteign.getFastaNumer();
-		String matseiningNumer = fasteign.getMatseiningNumer();
-		String merking = fasteign.getMerking();
+		String landNumer = (fasteign == null) ? null : fasteign.getLandnumer();
+		String fastaNumer = (fasteign == null) ? null :fasteign.getFastaNumer();
+		String matseiningNumer = (fasteign == null) ? null : fasteign.getMatseiningNumer();
+		String merking = (fasteign == null) ? null : fasteign.getMerking();
 
 		StringBuffer buffer = new StringBuffer(StringHandler.replaceIfEmpty(landNumer,RealEstateIdentifier.NULL_STRING));
 		buffer.append(RealEstateIdentifier.AT_TOKEN);

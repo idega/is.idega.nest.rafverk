@@ -254,6 +254,11 @@ public class Rafverktaka {
 		return newOwner;
 	}
 	
+	public Fasteign getFasteign() {
+		return fasteign;
+	}
+	
+	
 	public String getVeitustadurDisplay() {
 		if (fasteign != null) {
 			return fasteign.getDescription();

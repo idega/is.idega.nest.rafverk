@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.2 2007/09/11 16:15:02 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.3 2007/10/10 13:19:42 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/11 16:15:02 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ChangeElectricianConfirmationBean {
 	
@@ -133,17 +133,10 @@ public class ChangeElectricianConfirmationBean {
 	}
 	
 	public String confirmChangeOfElectrician() {
-		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
 		ElectricalInstallationBusiness electricalInstallationBusinessLocal = getElectricalInstallationBusiness();
 		try {
-			Rafverktaka newRafverktaka = new Rafverktaka(oldElectricalInstallation, electricalInstallationBusinessLocal);
-			electricalInstallationBusinessLocal.initializeManagedBeans(newRafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
-			// set reference to electrical installation to null to force recreation of a new electrical installation
-			newRafverktaka.setElectricalInstallation(null);
-			// change to new owner of the electrical installation
-			newRafverktaka.getRafverktaki().setElectrician(requestSender);
-			if (! electricalInstallationBusinessLocal.storeApplication(newRafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean)) {
+			ElectricalInstallation newElectricalInstallation = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender);
+			if (newElectricalInstallation == null) {
 				messageStoring = "Error occurred";
 			}
 			else {
@@ -153,19 +146,6 @@ public class ChangeElectricianConfirmationBean {
 				String deleted = getElectricalInstallationCaseBusiness().getCaseStatusDeletedString();
 				changeElectricanCase.setStatus(deleted);
 				changeElectricanCase.store();
-				
-				// copy status from old elecrical installation to new electrical installation
-				String  status = oldElectricalInstallation.getStatus();
-				ElectricalInstallation newElectricalInstallation = newRafverktaka.getElectricalInstallation();
-				newElectricalInstallation.setStatus(status);
-				
-				// set old one as parent to new one (to keep track of history not used at the moment)
-				newElectricalInstallation.setParentCase(oldElectricalInstallation);
-				newElectricalInstallation.store();
-				
-				// flag old electrical installation as changed (that is change status)
-				electricalInstallationBusinessLocal.getElectricalInstallationState().changeElectrician(oldElectricalInstallation);
-				oldElectricalInstallation.store();
 				
 				// update stored rafverktaka
 				rafverktaka.initialize(oldElectricalInstallation, electricalInstallationBusinessLocal);

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.18 2007/10/02 13:40:08 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.19 2007/10/10 13:19:42 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,10 +64,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -101,6 +102,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		getElectricalInstallationCache().addChangeForUser(user);
 	}
 	
+	
 	/**
 	 * Check if there are changes for the specified user. If there are changes the Managed Beans for the user must be initialized again to retrieve
 	 * the latest data from the database.
@@ -109,6 +111,36 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationCache().changesForUser(user);
 	}
 
+	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner) {
+		ElectricalInstallation newElectricalInstallation = null;
+		try {
+			newElectricalInstallation = getElectricalInstallationHome().create();
+		}
+		catch (CreateException e) {
+			e.printStackTrace();
+			newElectricalInstallation = null;
+		}
+		// take only the working place data over
+		newElectricalInstallation.setRealEstate(electricalInstallation.getRealEstate());
+		newElectricalInstallation.setEnergyConsumerName(electricalInstallation.getEnergyConsumerName());
+		newElectricalInstallation.setEnergyConsumerPersonalID(electricalInstallation.getEnergyConsumerPersonalID());
+		newElectricalInstallation.setEnergyConsumerHomePhone(electricalInstallation.getEnergyConsumerHomePhone());
+		newElectricalInstallation.setEnergyConsumerWorkPhone(electricalInstallation.getEnergyConsumerWorkPhone());
+		newElectricalInstallation.setElectrician(newOwner);
+		// set status to store, do not keep the old one
+		getElectricalInstallationState().storeApplication(newElectricalInstallation);
+		// set old one as parent to new one (to keep track of history not used at the moment)
+		newElectricalInstallation.setParentCase(electricalInstallation);
+		newElectricalInstallation.store();
+		
+		// flag old electrical installation as changed (that is change status)
+		getElectricalInstallationState().changeElectrician(electricalInstallation);
+		electricalInstallation.store();
+		
+		return newElectricalInstallation;
+	}
+	
+	
 	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation) {
 		try {
 			if (getElectricalInstallationState().isApplicationHasNewOwner(electricalInstallation)) { 
@@ -123,41 +155,68 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 	}
 	
-	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, ElectricalInstallation electricalInstallation) {
+	public Map isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, ElectricalInstallation electricalInstallation) {
 		return isSomeoneAlreadyWorkingAtThisPlace(realEstate, null, electricalInstallation);
 	}
 	
 	
-	public List isSomeoneAlreadyWorkingAtThisPlace(RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
+	public Map isSomeoneAlreadyWorkingAtThisPlace(RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
 		return isSomeoneAlreadyWorkingAtThisPlace(null, realEstateIdentifier, electricalInstallation);
 	}
 	
 	
-	private List isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
+	private Map isSomeoneAlreadyWorkingAtThisPlace(RealEstate realEstate, RealEstateIdentifier realEstateIdentifier, ElectricalInstallation electricalInstallation) {
 		if ((realEstate == null || realEstate.isDummy()) &&
 			(realEstateIdentifier == null || realEstateIdentifier.isDummy())) {
-
+			return null;
 		}
-		Collection coll;
+		Collection closed;
+		Collection available;
+		User user = (electricalInstallation != null) ? electricalInstallation.getElectrician() : null;
+		if (user == null) {
+			user = BaseBean.getCurrentUser();
+		}
+		// closed
 		try {
 			if (realEstate != null ) {
-				coll = getOtherClosedElectricalInstallationByRealEstate(realEstate, electricalInstallation);
+				closed = getOtherClosedElectricalInstallationByRealEstate(realEstate, user);
 			}
 			else {
-				coll = getOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, electricalInstallation);
+				closed = getOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, user);
 			}
 		}
 		catch (FinderException e) {
-			coll = null;
+			closed = null;
 		}
-		if (coll == null || coll.isEmpty()) {
-			// great, everything is fine no one is working there
-			return null;
+		if (closed == null) {
+			closed = new ArrayList(0);
 		}
-		// Note: There should be at most one user in the list
-		// we are still checking the whole list to see inconsistency
-		List users = new ArrayList(coll.size());
-		Iterator iterator = coll.iterator();
+		// available
+		try {
+			if (realEstate != null ) {
+				available = getOtherOpenElectricalInstallationByRealEstate(realEstate, user);
+			}
+			else {
+				available = getOtherOpenElectricalInstallationByRealEstateIdentifier(realEstateIdentifier, user);
+			}
+		}
+		catch (FinderException e) {
+			available = null;
+		}
+		if (available == null) {
+			available = new ArrayList(0);
+		}
+		List usersClosedCases = getUsers(closed);
+		List usersAvailableCases = getUsers(available);
+		Map result = new HashMap(2);
+		result.put(ElectricalInstallationState.CLOSED_STATUS_KEY, usersClosedCases);
+		result.put(ElectricalInstallationState.AVAILABLE_STATUS_KEY, usersAvailableCases);
+		return result;
+	}
+	
+	private List getUsers(Collection electricalInstallations) {
+		List users = new ArrayList(electricalInstallations.size());
+		Iterator iterator = electricalInstallations.iterator();
 		while (iterator.hasNext()) {
 			ElectricalInstallation electricalInstallationOther = (ElectricalInstallation) iterator.next();
 			User userOther = electricalInstallationOther.getElectrician();
@@ -166,6 +225,23 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return users;
 	}
 
+	public boolean checkOutWorkingPlace(			
+			Rafverktaka rafverktaka ,
+			TilkynningVertakaBean tilkynningVertakaBean, 
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		
+		if (! createElectricalInstallationIfNecessary(rafverktaka)) {
+			return false; 
+		}
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		getElectricalInstallationState().checkOutWorkingPlace(electricalInstallation);
+		boolean result = storeDataCheckingOutWorkingPlaceStep1(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		if (result) {
+			rafverktaka.initialize(electricalInstallation, this);
+		}
+		return result;
+	}
+	
 	
 	public boolean sendApplication(
 			Rafverktaka rafverktaka) {
@@ -194,7 +270,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().storeApplication(electricalInstallation);
-		boolean result = storeData(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		boolean result = storeDataStep1(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 		if (result) {
 			rafverktaka.initialize(electricalInstallation, this);
 		}
@@ -210,7 +286,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
 		getElectricalInstallationState().storeApplicationReport(electricalInstallation);
-		boolean result = storeData(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+		boolean result = storeDataStep1(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
 		if (result) {
 			rafverktaka.initialize(electricalInstallation, this);
 		}
@@ -235,48 +311,95 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return true;
 	}
 	
-	private boolean storeData(			
+	private boolean storeDataCheckingOutWorkingPlaceStep1(			
 			Rafverktaka rafverktaka ,
 			TilkynningVertakaBean tilkynningVertakaBean, 
 			TilkynningLokVerksBean tilkynningLokVerksBean) {
 		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
-		// store real estate
-		try {
-			storeRealEstate(electricalInstallation, tilkynningVertakaBean);
+		RealEstateIdentifier realEstateIdentifer = tilkynningVertakaBean.getRealEstateIdentifier();
+		// security check, this method should not be called if someoen is already working at this place
+		Map result = isSomeoneAlreadyWorkingAtThisPlace(realEstateIdentifer, electricalInstallation);
+		List resultClosedCases = (List) result.get(ElectricalInstallationState.CLOSED_STATUS_KEY);
+		if (! resultClosedCases.isEmpty()) {
+			return false; 
 		}
-		catch (CreateException e) {
-			e.printStackTrace();
+		// security checks end
+		if (! storeWorkingPlace(electricalInstallation, tilkynningVertakaBean, false)) {
 			return false;
 		}
-		catch (EJBException e) {
-			e.printStackTrace();
+		return storeDataStep2(electricalInstallation, rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	}
+	
+	private boolean storeDataStep1(			
+			Rafverktaka rafverktaka ,
+			TilkynningVertakaBean tilkynningVertakaBean, 
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		ElectricalInstallation electricalInstallation = rafverktaka.getElectricalInstallation();
+		boolean workingPlaceFixed = getElectricalInstallationState().isWorkingPlaceFixed(electricalInstallation);
+		if (! storeWorkingPlace(electricalInstallation, tilkynningVertakaBean, workingPlaceFixed)) {
 			return false;
 		}
-		catch (RemoveException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return storeDataStep2(electricalInstallation, rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+	}
+	
+	private boolean storeDataStep2(
+			ElectricalInstallation electricalInstallation,
+			Rafverktaka rafverktaka ,
+			TilkynningVertakaBean tilkynningVertakaBean, 
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
 		storeElectrician(rafverktaka);
 		storeManagedBean(rafverktaka, tilkynningVertakaBean);
 		storeManagedBean(rafverktaka, tilkynningLokVerksBean);
-		try {
-			storeMetersOfManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
-		}
-		catch (EJBException e) {
-			e.printStackTrace();
-			return false;
-		}
-		catch (CreateException e) {
-			e.printStackTrace();
-			return false;
-		}
-		catch (RemoveException e) {
-			e.printStackTrace();
+		if (! storeMeters(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean)) {
 			return false;
 		}
 		electricalInstallation.store();
 		rafverktaka.initialize(electricalInstallation, this);
 		return true;
+	}
+	
+	private boolean storeWorkingPlace(ElectricalInstallation electricalInstallation, TilkynningVertakaBean tilkynningVertakaBean, boolean workingPlaceFixed) {
+		// store real estate
+		if (! workingPlaceFixed) {
+			try {
+				storeRealEstate(electricalInstallation, tilkynningVertakaBean);
+			}
+			catch (CreateException e) {
+				e.printStackTrace();
+				return false;
+			}
+			catch (EJBException e) {
+				e.printStackTrace();
+				return false;
+			}
+			catch (RemoveException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean storeMeters(		
+			Rafverktaka rafverktaka, 
+			TilkynningVertakaBean tilkynningVertakaBean,
+			TilkynningLokVerksBean tilkynningLokVerksBean) {
+		try {
+			storeMetersOfManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+			return true;
+		}
+		catch (EJBException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (CreateException e) {
+			e.printStackTrace();
+			return false;
+		}
+		catch (RemoveException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	private ElectricalInstallation createElectricalInstallation() throws CreateException {
@@ -742,6 +865,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			return;
 		}
 		tilkynningVertakaBean.initialize();
+		// has to be done at the beginning
+		tilkynningVertakaBean.setRafverktaka(rafverktaka);
 		// energy company
 		Integer energyCompanyInteger = electricalInstallation.getEnergyCompanyID();
 		String energyCompany = (energyCompanyInteger == null) ? null : energyCompanyInteger.toString();
@@ -755,6 +880,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 				Fasteign fasteign = new Fasteign(realEstate);
 				tilkynningVertakaBean.initFastanumer(realEstateIdentifier.getIdentifierAsString());
 				tilkynningVertakaBean.setVeitustadurDisplay(fasteign.getDescription());
+				tilkynningVertakaBean.initializeWorkingPlaceErrorMessage(fasteign);
 			}
 			Street street = realEstate.getStreet();
 			if (street != null) { 
@@ -770,7 +896,6 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		tilkynningVertakaBean.setOrkuveitufyrirtaeki(energyCompany);
 		tilkynningVertakaBean.setExternalProjectID(electricalInstallation.getExternalProjectID());
 		tilkynningVertakaBean.setPersonInCharge(electricalInstallation.getPersonInCharge());
-		tilkynningVertakaBean.setRafverktaka(rafverktaka);
 		tilkynningVertakaBean.setNotkunarflokkur(electricalInstallation.getType());
 		tilkynningVertakaBean.setHeimtaug(electricalInstallation.getCurrentLineModification());
 		tilkynningVertakaBean.setHeimtaugTengist(electricalInstallation.getCurrentLineConnectionModification());
@@ -965,12 +1090,16 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationHome().findElectricalInstallationByRealEstateNumber(realEstateNumber);
 	}
 	
-	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, ElectricalInstallation currentElectricalInstallation) throws FinderException {
-		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstate(realEstate, currentElectricalInstallation);
+	public Collection getOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser) throws FinderException {
+		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstate(realEstate, currentUser);
 	}
 	
-	public Collection getOtherClosedElectricalInstallationByRealEstateIdentifer(RealEstateIdentifier realEstateIdentifier, ElectricalInstallation currentElectricalInstallation) throws FinderException {
-		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, currentElectricalInstallation);
+	public Collection getOtherClosedElectricalInstallationByRealEstateIdentifer(RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException {
+		return getElectricalInstallationHome().findOtherClosedElectricalInstallationByRealEstateIdentifer(realEstateIdentifier, currentUser);
+	}
+	
+	public Collection getOtherOpenElectricalInstallationByRealEstate(RealEstate realEstate, User user) throws FinderException {
+		return getElectricalInstallationHome().findOtherOpenElectricalInstallationByRealEstate(realEstate, user);
 	}
 	
 	public Collection getOtherOpenElectricalInstallationByRealEstateIdentifier(RealEstateIdentifier realEstateIdentifier, User user) throws FinderException {

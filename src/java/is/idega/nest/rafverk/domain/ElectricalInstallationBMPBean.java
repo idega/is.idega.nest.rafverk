@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.12 2007/10/02 13:40:08 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.13 2007/10/10 13:19:42 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,10 +29,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
 	
@@ -697,7 +697,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	}
 	
 	public Collection ejbFindOtherOpenElectricalInstallationByRealEstateIdentifier(RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException {
-		IDOQuery query = getFirstPartOfQuery();
+		IDOQuery query = getFirstPartOfQueryForRealEstateIdentifier();
 		checkRealEstateByIdentifier(realEstateIdentifier, query);
 		query.appendAnd();
 		ignoreCurrentUser(currentUser, query);
@@ -707,36 +707,49 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		return idoFindPKsByQuery(query);
 	}
 	
-	public Collection ejbFindOtherClosedElectricalInstallationByRealEstateIdentifer(RealEstateIdentifier realEstateIdentifer, ElectricalInstallation currentElectricalInstallation) throws FinderException {
-		IDOQuery query = getFirstPartOfQuery();
+	public Collection ejbFindOtherOpenElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser) throws FinderException {
+		IDOQuery query = getFirstPartOfQueryForRealEstate();
+		checkRealEstate(realEstate, query);
+		query.appendAnd();
+		ignoreCurrentUser(currentUser, query);
+		query.appendAnd();
+		checkStatusFirstPart(query);
+		checkStatusSecondPartOpenCases(query);
+		return idoFindPKsByQuery(query);
+	}
+	
+	public Collection ejbFindOtherClosedElectricalInstallationByRealEstateIdentifer(RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException {
+		IDOQuery query = getFirstPartOfQueryForRealEstateIdentifier();
 		checkRealEstateByIdentifier(realEstateIdentifer, query);
 		query.appendAnd();
-		// #1 check also the current user (a second application should not be done by the same user!)
-		// that is do NOT call checkUser(currentUser, query)
-		// #2 do not check the current application
-		ignoreCurrentApplication(currentElectricalInstallation, query);
+		ignoreCurrentUser(currentUser, query);
+		query.appendAnd();
 		checkStatusFirstPart(query);
 		checkStatusSecondPartClosedCases(query);
 		return idoFindPKsByQuery(query);
 	}
 	
-	public Collection ejbFindOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, ElectricalInstallation currentElectricalInstallation) throws FinderException {
-		// first part of query without real_estate table
-		IDOQuery query = idoQuery("select n.* from nest_el_install n, proc_case c");
+	public Collection ejbFindOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser) throws FinderException {
+		IDOQuery query = getFirstPartOfQueryForRealEstate();
 		query.appendWhere();
 		checkRealEstate(realEstate, query);
 		query.appendAnd();
-		// #1 check also the current user (a second application should not be done by the same user!)
-		// that is do NOT call checkUser(currentUser, query)
-		// #2 do not check the current application
-		ignoreCurrentApplication(currentElectricalInstallation, query);
+		ignoreCurrentUser(currentUser, query);
+		query.appendAnd();
 		checkStatusFirstPart(query);
 		checkStatusSecondPartClosedCases(query);
 		return idoFindPKsByQuery(query);
 	}
 		
-	private IDOQuery getFirstPartOfQuery() {
+	private IDOQuery getFirstPartOfQueryForRealEstateIdentifier() {
 		IDOQuery query = idoQuery("select n.* from nest_el_install n, ic_real_estate ic, proc_case c");
+		query.appendWhere();
+		return query;
+	}
+	
+	private IDOQuery getFirstPartOfQueryForRealEstate() {
+		// first part of query without real_estate table
+		IDOQuery query = idoQuery("select n.* from nest_el_install n, proc_case c");
 		query.appendWhere();
 		return query;
 	}
@@ -761,11 +774,6 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		query.append("n.electrician_id").appendNOTEqual().append(user);
 	}
 	
-	private void ignoreCurrentApplication(ElectricalInstallation electricalInstallation, IDOQuery query) {
-		if (electricalInstallation != null) {
-			query.append("n.nest_el_install_id").appendNOTEqual().append(electricalInstallation).appendAnd();
-		}
-	}
 	
 	private void checkStatusFirstPart(IDOQuery query) {
 		query.append("n.nest_el_install_id").appendEqualSign().append("c.proc_case_id");
@@ -775,7 +783,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	}
 	
 	private void checkStatusSecondPartClosedCases(IDOQuery query) { 
-		List closedCases = ElectricalInstallationState.getFreeStatuses();
+		List closedCases = ElectricalInstallationState.getFreeOrOpenStatuses();
 		query.appendNotInForStringCollectionWithSingleQuotes(closedCases);
 	}
 	

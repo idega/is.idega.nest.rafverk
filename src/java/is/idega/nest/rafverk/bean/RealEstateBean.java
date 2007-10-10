@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.6 2007/10/02 13:40:08 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.7 2007/10/10 13:19:42 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -30,10 +30,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class RealEstateBean {
 	
@@ -94,8 +94,10 @@ public class RealEstateBean {
 				return;
 			}
 			Fasteign fasteign = lookupFasteign(fastanumer);
-			String description = fasteign.getDescription();
-			setVeitustadurDisplay(description);
+			if (fasteign != null) {
+				String description = fasteign.getDescription();
+				setVeitustadurDisplay(description);
+			}
 			changedRealEstate(fasteign);
 		}
 		this.fastanumer = fastanumer;

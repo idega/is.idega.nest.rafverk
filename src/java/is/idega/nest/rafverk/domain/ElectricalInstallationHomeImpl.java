@@ -55,21 +55,29 @@ public class ElectricalInstallationHomeImpl extends IDOFactory implements Electr
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
-			RealEstateIdentifier realEstateIdentifer, ElectricalInstallation currentElectricalInstallation)
+	public Collection findOtherOpenElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
 			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherClosedElectricalInstallationByRealEstateIdentifer(
-				realEstateIdentifer, currentElectricalInstallation);
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherOpenElectricalInstallationByRealEstate(
+				realEstate, currentUser);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate,
-			ElectricalInstallation currentElectricalInstallation) throws FinderException {
+	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
+			RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherClosedElectricalInstallationByRealEstateIdentifer(
+				realEstateIdentifer, currentUser);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
+			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((ElectricalInstallationBMPBean) entity).ejbFindOtherClosedElectricalInstallationByRealEstate(
-				realEstate, currentElectricalInstallation);
+				realEstate, currentUser);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.7 2007/10/02 13:40:08 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.8 2007/10/10 13:19:42 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,16 +35,24 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ElectricalInstallationState {
+	
+	// for keys in map identifying groups of cases
+	
+	public static final String CLOSED_STATUS_KEY = "closedStatusKey";
+	// available means - can be taken over 
+	public static final String AVAILABLE_STATUS_KEY = "availableStatusKey";
 	
 	// for electrical installation case
 	public static final String THJONUSTUBEIDNI_GEYMD = "THJONUSTUBEIDNI_GEYMD";
 	public static final String SKYRSLA_GEYMD = "SKYRSLA_GEYMD";
+	public static final String VERK_TEKID = "VERK_TEKID";
+	public static final String VERK_TEKID_SKYRSLA_GEYMD ="VSKYRSLA_GEYMD";
 	public static final String MOTTEKIN = "MOTTEKIN";
 	public static final String MOTTEKIN_SKYRSLA_GEYMD = "MSKYRSLA_GEYMD";
 	public static final String TILKYNNT_LOK = "TILKYNNT_LOK";
@@ -58,18 +66,18 @@ public class ElectricalInstallationState {
 	// for electrical installation change case
 	public static final String BEIDNI_UM_SKIPTI = "BEIDNI_UM_SKIPTI";
 	
-	// status that are called "open"
+	// status that are called "open" (working places with status that can be taken over)
 	public static final String[] OPEN_STATUS = {
-		THJONUSTUBEIDNI_GEYMD, 
-		SKYRSLA_GEYMD,
 		MOTTEKIN,
-		MOTTEKIN_SKYRSLA_GEYMD
+		MOTTEKIN_SKYRSLA_GEYMD,
+		VERK_TEKID,
+		VERK_TEKID_SKYRSLA_GEYMD
 	};
 	
 	// !! initialized in static block below !!
 	public static final List OPEN_STATUS_LIST;  
 	
-	// status that are called free (working places with status that can be used)
+	// status that are called "free" (working places with status that can be used)
 	public static final String[] FREE_STATUS = {
 		THJONUSTUBEIDNI_GEYMD, 
 		SKYRSLA_GEYMD,
@@ -83,14 +91,19 @@ public class ElectricalInstallationState {
 	public static final String[] STADA = {
 		"Þjónustubeiðni geymd", THJONUSTUBEIDNI_GEYMD,
 		"Skýrsla geymd", SKYRSLA_GEYMD,
+		"Verk tekið", VERK_TEKID,
+		"Verk tekið og Skýrsla geymd", VERK_TEKID_SKYRSLA_GEYMD,
 		"Móttekin", MOTTEKIN,
-		"Móttekin og Skýrlsa geymd", MOTTEKIN_SKYRSLA_GEYMD,
+		"Móttekin og Skýrsla geymd", MOTTEKIN_SKYRSLA_GEYMD,
 		"Tilkynnt lok", TILKYNNT_LOK,
 		"í skoðun", I_SKODUN,
 		"Skoðun lokið", SKODUN_LOKID,
 		"Lokið", LOKID,
 		"Skipt um rafverktaka", SKIPT_UM_RAFVERKTAKA
 	};
+	
+	// !! initialized in static block below !!
+	public static final List FREE_OR_OPEN_STATUS_LIST;
 	
 	public static final List STADA_LIST = Arrays.asList(STADA);
 
@@ -106,6 +119,10 @@ public class ElectricalInstallationState {
 		return FREE_STATUS_LIST;
 	}
 	
+	public static List getFreeOrOpenStatuses() {
+		return FREE_OR_OPEN_STATUS_LIST;
+	}
+	
 	static 
 	{
 		OPEN_STATUS_LIST = new ArrayList(OPEN_STATUS.length);
@@ -116,6 +133,9 @@ public class ElectricalInstallationState {
 		for (int i = 0; i < FREE_STATUS.length; i++) {
 			FREE_STATUS_LIST.add(FREE_STATUS[i].substring(0,4));
 		}
+		FREE_OR_OPEN_STATUS_LIST = new ArrayList(FREE_STATUS_LIST.size() + OPEN_STATUS_LIST.size());
+		FREE_OR_OPEN_STATUS_LIST.addAll(FREE_STATUS_LIST);
+		FREE_OR_OPEN_STATUS_LIST.addAll(OPEN_STATUS_LIST);
 	}
 	
 	private IWApplicationContext iwac = null;
@@ -139,41 +159,95 @@ public class ElectricalInstallationState {
 	
 	public void storeApplication(ElectricalInstallation electricalInstallation) {
 		String status = electricalInstallation.getStatus();
-		if (SKYRSLA_GEYMD.startsWith(status)) {
+		if (hasNoStatus(status)) {
+			setStatus(electricalInstallation, THJONUSTUBEIDNI_GEYMD);
 			return;
 		}
-		setStatus(electricalInstallation, THJONUSTUBEIDNI_GEYMD);
 	}
 	
 	public void storeApplicationReport(ElectricalInstallation electricalInstallation) {
 		String status = electricalInstallation.getStatus();
-		if (MOTTEKIN_SKYRSLA_GEYMD.startsWith(status)) {
+		if (hasNoStatus(status)) {
+			setStatus(electricalInstallation, SKYRSLA_GEYMD);
+			return;
+		}
+		if (THJONUSTUBEIDNI_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, SKYRSLA_GEYMD);
+		}
+		if (VERK_TEKID.startsWith(status)) {
+			setStatus(electricalInstallation, VERK_TEKID_SKYRSLA_GEYMD);
 			return;
 		}
 		if (MOTTEKIN.startsWith(status)) {
 			setStatus(electricalInstallation, MOTTEKIN_SKYRSLA_GEYMD);
 			return;
 		}
-		setStatus(electricalInstallation, SKYRSLA_GEYMD);
+		return;
 	}
 	
-	public void sendRequestForChange(Case myCase) {
-		setStatus(myCase, BEIDNI_UM_SKIPTI);
+	public void checkOutWorkingPlace(ElectricalInstallation electricalInstallation) {
+		String status = electricalInstallation.getStatus();
+		if (hasNoStatus(status)) {
+			setStatus(electricalInstallation, VERK_TEKID);
+			return;
+		}
+		if (THJONUSTUBEIDNI_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, VERK_TEKID);
+			return;
+		}
+		if (SKYRSLA_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, VERK_TEKID_SKYRSLA_GEYMD);
+			return;
+		}
+		return;
 	}
+	
 	
 	public void sendApplication(ElectricalInstallation electricalInstallation) {
-		setStatus(electricalInstallation,MOTTEKIN);
+		String status = electricalInstallation.getStatus();
+		if (hasNoStatus(status)) {
+			setStatus(electricalInstallation, MOTTEKIN);
+			return;
+		}
+		if (THJONUSTUBEIDNI_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, MOTTEKIN);
+			return;
+		}
+		if (VERK_TEKID.startsWith(status)) {
+			setStatus(electricalInstallation, MOTTEKIN);
+		}
+		if (SKYRSLA_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, MOTTEKIN_SKYRSLA_GEYMD);
+			return;
+		}
+		if (VERK_TEKID_SKYRSLA_GEYMD.startsWith(status)) {
+			setStatus(electricalInstallation, MOTTEKIN_SKYRSLA_GEYMD);
+			return;
+		}
+		return;
 	}
 	
 	public void sendApplicationReport(ElectricalInstallation electricalInstallation) {
 		setStatus(electricalInstallation,TILKYNNT_LOK);
 	}
+
+	
+	public void sendRequestForChange(Case myCase) {
+		setStatus(myCase, BEIDNI_UM_SKIPTI);
+	}
+	
+
+	
+
 	
 	public boolean isApplicationHasNewOwner(ElectricalInstallation electricalInstallation) {
 		if (electricalInstallation == null) {
 			return false;
 		}
 		String status = electricalInstallation.getStatus();
+		if (hasNoStatus(status)) {
+			return false;
+		}
 		return SKIPT_UM_RAFVERKTAKA.startsWith(status);
 	}
 	
@@ -182,7 +256,14 @@ public class ElectricalInstallationState {
 			return false;
 		}
 		String status = electricalInstallation.getStatus();
-		return !(THJONUSTUBEIDNI_GEYMD.startsWith(status) || MOTTEKIN.startsWith(status));
+		if (hasNoStatus(status)) {
+			return false;
+		}
+		return 
+			SKYRSLA_GEYMD.startsWith(status) ||
+			VERK_TEKID_SKYRSLA_GEYMD.startsWith(status) ||
+			MOTTEKIN_SKYRSLA_GEYMD.startsWith(status) ||
+			TILKYNNT_LOK.startsWith(status);
 	}
 	
 	public boolean isApplicationStorable(ElectricalInstallation electricalInstallation) {
@@ -190,10 +271,12 @@ public class ElectricalInstallationState {
 			return true;
 		}
 		String status = electricalInstallation.getStatus();
-		return (StringHandler.isEmpty(status) || 
-				openCaseStatus.startsWith(status) ||
-				THJONUSTUBEIDNI_GEYMD.startsWith(status) || 
-				SKYRSLA_GEYMD.startsWith(status));
+		return  
+			hasNoStatus(status) || 
+			THJONUSTUBEIDNI_GEYMD.startsWith(status) || 
+			SKYRSLA_GEYMD.startsWith(status) ||
+			VERK_TEKID.startsWith(status) ||
+			VERK_TEKID_SKYRSLA_GEYMD.startsWith(status);
 	}
 	
 	public boolean isApplicationSendable(ElectricalInstallation electricalInstallation) {
@@ -205,11 +288,29 @@ public class ElectricalInstallationState {
 			return true;
 		}
 		String status = electricalInstallation.getStatus();
-		return isApplicationStorable(electricalInstallation) || MOTTEKIN.startsWith(status) || MOTTEKIN_SKYRSLA_GEYMD.startsWith(status);
+		return 
+			isApplicationStorable(electricalInstallation) ||
+			MOTTEKIN.startsWith(status) ||
+			MOTTEKIN_SKYRSLA_GEYMD.startsWith(status);
 	}
 	
 	public boolean isApplicationReportSendable(ElectricalInstallation electricalInstallation) {
 		return isApplicationReportStorable(electricalInstallation);
+	}
+	
+	public boolean isCheckingOutWorkingPlaceAllowed(ElectricalInstallation electricalInstallation) {
+		if (electricalInstallation == null) {
+			return true;
+		}
+		String status = electricalInstallation.getStatus();
+		return 
+			hasNoStatus(status) || 
+			THJONUSTUBEIDNI_GEYMD.startsWith(status) || 
+			SKYRSLA_GEYMD.startsWith(status);
+	}
+	
+	public boolean isWorkingPlaceFixed(ElectricalInstallation electricalInstallation) {
+		return ! isCheckingOutWorkingPlaceAllowed(electricalInstallation);
 	}
 	
 	private void setStatus(Case electricalInstallationCase, String status) {
@@ -250,6 +351,11 @@ public class ElectricalInstallationState {
 		catch (IDOLookupException ile) {
 			throw new IBORuntimeException(ile);
 		}
+	}
+	
+	private boolean hasNoStatus(String status) {
+		return status == null || StringHandler.isEmpty(status) || openCaseStatus.startsWith(status);
+		
 	}
 	
 }
