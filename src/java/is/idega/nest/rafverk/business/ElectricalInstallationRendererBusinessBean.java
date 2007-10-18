@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.8 2007/08/09 16:35:35 thomas Exp $
+ * $Id: ElectricalInstallationRendererBusinessBean.java,v 1.9 2007/10/18 16:32:39 thomas Exp $
  * Created on Apr 11, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -45,10 +45,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean implements ElectricalInstallationRendererBusiness {
 	
@@ -158,7 +158,7 @@ public class ElectricalInstallationRendererBusinessBean extends IBOServiceBean i
 		if (energyCompany != null) {
 			energyCompanyString = energyCompany.getName();
 		}
-		return new PropertyImpl("energyCompany","Orkuveitu",energyCompanyString);
+		return new PropertyImpl(FieldID.ENERGY_COMPANY,"Orkuveitu",energyCompanyString);
 	}
 	
 	private Property getExternalData(ElectricalInstallation electricalInstallation) {

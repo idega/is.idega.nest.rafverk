@@ -2,7 +2,10 @@ package is.idega.nest.rafverk.bean;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
@@ -81,7 +84,34 @@ public class BaseBean implements Serializable{
 		}
 		return getSeviceBean(serviceBeanClass);
 	}
+ 
+	public static UIComponent findComponentInRoot(String id) {
+	    FacesContext facesContext = FacesContext.getCurrentInstance();
+	    if (facesContext != null) {
+	      UIComponent root = facesContext.getViewRoot();
+	      return findComponent(root, id);
+	    }
+	    return null;
+	}
 	
+	public static UIComponent findComponent(UIComponent component, String id) {
+		List components = new ArrayList();
+		int i = 0;
+		do {
+			if (component != null) {
+				components.addAll(component.getChildren());
+				components.addAll(component.getFacets().values());
+				if (id.equals(component.getId())) {
+					return component;
+				}
+			}
+			if (components.size() <= i) {
+				return null;
+			}
+			component = (UIComponent) components.get(i++);
+		}
+		while (true);
+	}
 	
 	private static IBOService getSeviceBean(Class serviceBeanClass) {
 		IBOService myServiceBean = null;

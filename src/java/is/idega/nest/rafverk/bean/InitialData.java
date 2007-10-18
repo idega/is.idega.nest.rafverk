@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import javax.faces.model.SelectItem;
 
+import com.idega.util.StringHandler;
+
 public class InitialData extends BaseBean {
 	
 	// first step
@@ -46,6 +48,7 @@ public class InitialData extends BaseBean {
 	// first step
 	
 	public static final String[] NOTKUNARFLOKKUR = {
+		"Veldu notkunarflokk", StringHandler.EMPTY_STRING,
 		"Íbúðarhúsnæði", "IBUDARHUSNAEDI", 
 		"Sumarhús", "SUMARHUS",
 		"Landb./Garðyrkja", "GARDYRKJA",

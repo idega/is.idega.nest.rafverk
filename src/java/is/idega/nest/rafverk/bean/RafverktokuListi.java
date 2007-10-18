@@ -34,6 +34,8 @@ import com.idega.util.StringHandler;
 
 public class RafverktokuListi extends BaseBean  {
 	
+	private static final String DATASCROLLER_ID = "myDatascroller"; 
+	
 	boolean hasChanged = true;
 	
 	// searching start...
@@ -57,8 +59,6 @@ public class RafverktokuListi extends BaseBean  {
 	// ...searching end
 	
 	String numberOfRowsPerPage = "10";
-	
-	HtmlDataScroller dataScroller;
 	
 	Map rafverktokuListi = null;
 	
@@ -135,8 +135,10 @@ public class RafverktokuListi extends BaseBean  {
 	}
 	
 	private void resetList() {
-		if (dataScroller != null) {
-			UIData uiData = dataScroller.getUIData();
+		HtmlDataScroller scroller = (HtmlDataScroller) 
+			BaseBean.findComponentInRoot(DATASCROLLER_ID);
+		if (scroller != null) {
+			UIData uiData = scroller.getUIData();
 			if (uiData != null) {
 				uiData.setFirst(0);
 			}
@@ -354,16 +356,6 @@ public class RafverktokuListi extends BaseBean  {
 	
 	public int getNumberOfRowsPerPageAsInt() {
 		return Integer.valueOf(getNumberOfRowsPerPage()).intValue();
-	}
-
-	
-	public HtmlDataScroller getDataScroller() {
-		return dataScroller;
-	}
-
-	
-	public void setDataScroller(HtmlDataScroller dataScroller) {
-		this.dataScroller = dataScroller;
 	}
 
 }

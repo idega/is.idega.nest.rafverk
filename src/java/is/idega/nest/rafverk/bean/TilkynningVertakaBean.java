@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.32 2007/10/10 13:19:42 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.33 2007/10/18 16:32:39 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,11 +29,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -48,10 +46,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -814,6 +812,10 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public List getRafveituListiSelects(){
 		if (cachedListOfEnergyCompanies == null) {
 			cachedListOfEnergyCompanies = new ArrayList();
+			SelectItem defaultItem = new SelectItem();
+			defaultItem.setLabel("Veldu orkuveitufyrirtæki");
+			defaultItem.setValue(StringHandler.EMPTY_STRING);
+			cachedListOfEnergyCompanies.add(defaultItem);
 			List rafveitur = getRafveituListi();
 			for (Iterator iter = rafveitur.iterator(); iter.hasNext();) {
 				Group fyrirtaeki = (Group) iter.next();
@@ -1125,32 +1127,32 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 	
 	private String getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(List usersOfAvailableCases, List usersOfClosedCases) {
-		Set users = new HashSet(usersOfAvailableCases.size() + usersOfClosedCases.size());
-		users.addAll(usersOfAvailableCases);
-		users.addAll(usersOfClosedCases);
-		if (users == null) {
+		if (usersOfAvailableCases == null && usersOfClosedCases == null) {
 			return "Veitustaður óþekktur";
 		}
-		if (users.isEmpty()) {
-			return StringHandler.EMPTY_STRING;
-		}
-		// Note: There should be at most one user in the list
-		// we are still checking the whole list to see inconsistency
-		StringBuffer buffer = new StringBuffer("Eftirfarandi rafverktaki er nú þegar að vinna á þessum veiturstað ");
-		Iterator iterator = users.iterator();
-		while (iterator.hasNext()) {
-			User user = (User) iterator.next();
-			if (user != null) {
-				buffer.append(user.getName());
-				// if there are more than one user it is always the same 
-				// (same user might block the working place more than one time), 
-				// so just return
-				return buffer.toString();
+		User user = null;
+		if (usersOfAvailableCases != null) {
+			Iterator iterator = usersOfAvailableCases.iterator();
+			if (iterator.hasNext()) {
+				user = (User) iterator.next();
 			}
 		}
-		// just in case something is wrong, users should never be empty
+		else if (usersOfClosedCases != null) {
+			Iterator iterator = usersOfClosedCases.iterator();
+			if (iterator.hasNext()) {
+				user = (User) iterator.next();
+			}
+		}
+		if (user == null) {
+			// everything is fine
+			return StringHandler.EMPTY_STRING;
+		}
+		StringBuffer buffer = new StringBuffer("Eftirfarandi rafverktaki er nú þegar að vinna á þessum veiturstað ");
+		buffer.append(user.getName());
 		return buffer.toString();
 	}
+	
+	
 	
 	
 	

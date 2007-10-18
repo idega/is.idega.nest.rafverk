@@ -1,5 +1,5 @@
 /*
- * $Id: FieldID.java,v 1.3 2007/08/09 16:37:15 thomas Exp $
+ * $Id: FieldID.java,v 1.4 2007/10/18 16:32:39 thomas Exp $
  * Created on May 14, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,6 +14,7 @@ public class FieldID {
 	// application +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
 	// application first page
+	public final static String ENERGY_COMPANY = "energyCompany";
 	public final static String WORKING_PLACE = "workingPlace";
 	public final static String NAME = "name";
 	public final static String ENERGY_CONSUMER_PERSONAL_ID = "energyConsumerPersonalId";

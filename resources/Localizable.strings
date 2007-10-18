@@ -64,3 +64,5 @@ case_status_key.SHUT=Processed
 case_status_key.TYST=Processed
 case_status_key.UBEH=Received
 case_status_key.WAIT=Under hold
+case_status_key.VERK=VERK
+case_status_key.SKIP=SKIP

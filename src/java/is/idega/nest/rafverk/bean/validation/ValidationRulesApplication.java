@@ -1,5 +1,5 @@
 /*
- * $Id: ValidationRulesApplication.java,v 1.1 2007/08/09 16:35:35 thomas Exp $
+ * $Id: ValidationRulesApplication.java,v 1.2 2007/10/18 16:32:39 thomas Exp $
  * Created on Aug 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.fop.validator.impl.NotEmptyValidator;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ValidationRulesApplication implements ValidationRules {
 	
@@ -75,6 +75,7 @@ public class ValidationRulesApplication implements ValidationRules {
 	private void initialize() {
 		validators = new HashMap();
 		userMessages = new HashMap();
+		put(FieldID.ENERGY_COMPANY, notEmptyValidator);
 		put(FieldID.WORKING_PLACE, realEstateValidator);
 		
 		put(FieldID.NAME, notEmptyValidator);

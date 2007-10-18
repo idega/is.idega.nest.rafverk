@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.19 2007/10/10 13:19:42 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.20 2007/10/18 16:32:39 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -64,10 +64,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -127,8 +127,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		newElectricalInstallation.setEnergyConsumerHomePhone(electricalInstallation.getEnergyConsumerHomePhone());
 		newElectricalInstallation.setEnergyConsumerWorkPhone(electricalInstallation.getEnergyConsumerWorkPhone());
 		newElectricalInstallation.setElectrician(newOwner);
-		// set status to store, do not keep the old one
-		getElectricalInstallationState().storeApplication(newElectricalInstallation);
+		// set status to checked out workspace, do not keep the old one
+		getElectricalInstallationState().checkOutWorkingPlace(newElectricalInstallation);
 		// set old one as parent to new one (to keep track of history not used at the moment)
 		newElectricalInstallation.setParentCase(electricalInstallation);
 		newElectricalInstallation.store();
