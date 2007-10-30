@@ -6,7 +6,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
-version="1.2">
+ version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
@@ -240,6 +240,19 @@ Upplysingar um rafveitu/orkuveitu
 </f:verbatim>
 </wf:container>
 
+<wf:container 
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+styleClass="formItem">
+<h:outputText
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+value="Þetta mál er núna í vinnslu hjá: "/>
+</wf:container>
+<wf:container styleClass="formItem">
+<h:outputText
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+id="newOwner" value="#{TilkynningVertakaBean.newOwnerOfCase.nafn}"/>
+</wf:container>
+
 <wf:container styleClass="formItem required">
 <h:outputLabel for="orkuveituDrop" value="Orkuveitufyrirtæki"/>
 <h:selectOneMenu
@@ -290,11 +303,10 @@ Upplysingar um rafverktaka
 </f:verbatim>
 </wf:container>
 
-<wf:container styleClass="formItem required floated">
+<wf:container styleClass="formItem floated">
 <h:outputLabel for="rafverktakaFyrirtaeki" value="Rafverktakafyrirtæki"/>
 <h:inputText
-id="rafverktakaFyrirtaeki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafnFyrirtaekis}"
-disabled="true"/>
+id="rafverktakaFyrirtaeki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafnFyrirtaekis}"/>
 </wf:container>
 
 <wf:container styleClass="formItem required floated">
