@@ -14,15 +14,15 @@ version="1.2">
 <h:form id="form1" styleClass="rafverk">
 <!--div class="generalContent"-->
 
-<f:verbatim><h1 class="applicationHeading">Thjonustubeidni</h1></f:verbatim>
+<f:verbatim><h1 class="applicationHeading">Þjónustubeiðni</h1></f:verbatim>
 
-<wf:container styleClass="header">
+<x:div styleClass="header">
 
-<f:verbatim><h1>1. Upplysingar um neisluveitu
+<f:verbatim><h1>2. Upplýsingar um neysluveitu
 </h1></f:verbatim>
 
 <!-- phases -->
-<wf:container styleClass="phases">
+<x:div styleClass="phases">
 
 <f:verbatim>
 <!-- ul -->
@@ -37,204 +37,250 @@ version="1.2">
 <!-- end of ul -->
 </f:verbatim>
 
-</wf:container>
+</x:div>
 <!-- end of phases -->
 
-</wf:container>
+</x:div>
 <!-- end of header -->
 
 <!-- form section -->
-<wf:container styleClass="info">
+<x:div styleClass="info">
 
-<wf:container styleClass="personInfo" id="name">
-<h:outputText value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafn}"/>
-</wf:container>
+<x:div styleClass="personInfo" id="name" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.nafn}"/>
+</x:div>
 
-</wf:container>
+<x:div styleClass="personInfo" id="personalID" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.kennitala}"/>
+</x:div>
+
+<x:div styleClass="personInfo" id="address" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.heimilisfang.display}"/>
+</x:div>
+
+</x:div>
 <!-- end of formsection-->
 
 <f:verbatim>
-<h1 class="subHeader topSubHeader">Tilkynning um rafverktoku
-</h1>
+<h1 class="subHeader topSubHeader">Tilkynning um rafverktöku</h1>
 </f:verbatim>
 
 <!-- form section -->
-<wf:container styleClass="formSection">
+<x:div styleClass="formSection">
 
-<wf:container styleClass="helperText">
-<f:verbatim>
-Adrar upplysingar
-</f:verbatim>
-</wf:container>
-
+<x:div styleClass="helperText">
+<f:verbatim>Fylltu inn viðeigandi gildi. Athugaðu að allir reitirnir eru skilyrtir.</f:verbatim>
+</x:div>
 
 <!-- 5 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['type'] == null ? 'color:black' : 'color:red'}" for="notkunarflokkar" value="Notkunarflokkur"/>
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectOneMenu
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="notkunarflokkar" value="#{TilkynningVertakaBean.notkunarflokkur}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['type'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['type']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['type'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="notkunarflokkar" value="Notkunarflokkur"/>
+<h:selectOneMenu disabled="#{! TilkynningVertakaBean.applicationStorable}" id="notkunarflokkar" value="#{TilkynningVertakaBean.notkunarflokkur}">
 <f:selectItems value="#{RafverktakaInitialdata.notkunarflokkurListiSelects}"/>
 </h:selectOneMenu>
-</wf:container>
+</x:div>
 
 <!-- 6 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['currentLineModification'] == null ? 'color:black' : 'color:red'}" for="heimtaug" value="Heimtaug"/>
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectOneRadio
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="heimtaug" value="#{TilkynningVertakaBean.heimtaug}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['currentLineModification'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['currentLineModification']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['currentLineModification'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="heimtaug" value="Heimtaug"/>
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaug" value="#{TilkynningVertakaBean.heimtaug}">
 <f:selectItems value="#{RafverktakaInitialdata.heimtaugListiSelects}"/>
 </h:selectOneRadio>
-</wf:container>
+</x:div>
 
 <!-- 7 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['currentLineConnectionModification'] == null ? 'color:black' : 'color:red'}" for="heimtaugTengist" value="Heimtaug tengist i"/>
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectOneRadio
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="heimtaugTengist" value="#{TilkynningVertakaBean.heimtaugTengist}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['currentLineConnectionModification'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['currentLineConnectionModification']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['currentLineConnectionModification'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="heimtaugTengist" value="Heimtaug tengist i"/>
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaugTengist" value="#{TilkynningVertakaBean.heimtaugTengist}">
 <f:selectItems value="#{RafverktakaInitialdata.heimtaugTengistListiSelects}"/>
 </h:selectOneRadio>
-</wf:container>
+</x:div>
 
 <!-- 8 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['homeLine'] == null ? 'color:black' : 'color:red'}" for="stofnKvisl1" value="Stofn/kvisl" />
-</wf:container>
-<wf:container styleClass="stofninput">
-<h:inputText size="4"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="stofnKvisl1" value="#{TilkynningVertakaBean.stofn1}"/>
-<h:outputLabel for="stofnKvisl1" value="x"/>
-<h:message for="stofnKvisl1"></h:message>
-<h:inputText size="4"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="stofnKvisl2" value="#{TilkynningVertakaBean.stofn2}"/>
-<h:outputLabel for="stofnKvisl2" value="+"/>
-<h:message for="stofnKvisl2"></h:message>
-<h:inputText size="4"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="stofnKvisl3" value="#{TilkynningVertakaBean.stofn3}"/>
-<h:outputLabel for="stofnKvisl3" value="mm²" />
-<h:message for="stofnKvisl3"></h:message>
-</wf:container>
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['homeLine'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['homeLine']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['homeLine'] != null ? 'formItem floatingFormItem required hasError' : 'formItem floatingFormItem required'}">
+<h:outputLabel value="Stofn/kvisl" for="stofnKvisl1"/>
+
+<h:inputText styleClass="smallInput" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stofnKvisl1" value="#{TilkynningVertakaBean.stofn1}"/>
+<h:outputLabel styleClass="floatingLabel" for="stofnKvisl1" value="x"/>
+
+
+<h:inputText styleClass="smallInput" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stofnKvisl2" value="#{TilkynningVertakaBean.stofn2}"/>
+<h:outputLabel styleClass="floatingLabel" for="stofnKvisl2" value="+"/>
+
+
+<h:inputText styleClass="smallInput" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stofnKvisl3" value="#{TilkynningVertakaBean.stofn3}"/>
+<h:outputLabel styleClass="floatingLabel" for="stofnKvisl3" value="mm²" />
+
+</x:div>
 
 <!-- 9 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['switchPanelModification'] == null ? 'color:black' : 'color:red'}" for="adaltafla" value="Adaltafla/Maelitafla"/>
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectOneRadio
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="adaltafla" value="#{TilkynningVertakaBean.adaltafla}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['switchPanelModification'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['switchPanelModification']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['switchPanelModification'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="adaltafla" value="Aðaltafla/Mælitafla"/>
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="adaltafla" value="#{TilkynningVertakaBean.adaltafla}">
 <f:selectItems value="#{RafverktakaInitialdata.adaltaflaListiSelects}"/>
 </h:selectOneRadio>
-</wf:container>
+</x:div>
 
 <!-- 10 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['electronicalProtectiveMeasures'] == null ? 'color:black' : 'color:red'}" for="varnaradstoefun" value="Varnarráðstöfun"/>
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectManyCheckbox
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="varnaradstoefun" value="#{TilkynningVertakaBean.varnarradstoefun}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasures'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasures']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasures'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="varnaradstoefun" value="Varnarráðstöfun"/>
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectManyCheckbox disabled="#{! TilkynningVertakaBean.applicationStorable}" id="varnaradstoefun" value="#{TilkynningVertakaBean.varnarradstoefun}">
 <f:selectItems value="#{RafverktakaInitialdata.varnarradstoefunListiSelects}"/>
 </h:selectManyCheckbox>
-</wf:container>
+</x:div>
 
-<wf:container styleClass="fieldsetContainer">
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Upplýsingar um rafverktökubeiðni</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
+
+<x:div styleClass="helperText">
+<f:verbatim>Fylltu inn viðeigandi gildi. Athugaðu að hægt er að velja fleira en eitt gildi fyrir hvað beiðnin er um.</f:verbatim>
+</x:div>
+
 <!-- 11 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['application'] == null ? 'color:black' : 'color:red'}" for="beidni" value="Beiðni um" />
-</wf:container>
-<wf:container styleClass="rafverkcheck">
-<h:selectManyCheckbox
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="beidni" value="#{TilkynningVertakaBean.beidniUm}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['application'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['application']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['application'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel for="beidni" value="Beiðni um" />
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectManyCheckbox disabled="#{! TilkynningVertakaBean.applicationStorable}" id="beidni" value="#{TilkynningVertakaBean.beidniUm}">
 <f:selectItems value="#{RafverktakaInitialdata.beidniListiSelects}"/>
 </h:selectManyCheckbox>
-</wf:container>
+</x:div>
 
 <!-- 12 -->
-<wf:container styleClass="formItem">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['power'] == null ? 'color:black' : 'color:red'}" for="beidniKiloWatt" value="Uppsett afl" />
-</wf:container>
-<wf:container>
-<h:inputText size="8"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="beidniKiloWatt" value="#{TilkynningVertakaBean.uppsett}"/>
-<h:outputLabel for="beidniKiloWatt" value="kW"/>
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['power'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['power']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['power'] != null ? 'formItem floatingFormItem hasError' : 'formItem floatingFormItem'}">
+<h:outputLabel for="beidniKiloWatt" value="Uppsett afl" />
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="beidniKiloWatt" value="#{TilkynningVertakaBean.uppsett}"/>
+<h:outputLabel styleClass="floatingLabel" for="beidniKiloWatt" value="kW"/>
 <h:message for="beidniKiloWatt"></h:message>
-</wf:container>
-</wf:container>
+</x:div>
 
-<!-- 13a -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['placeMeter'] == null ? 'color:black' : 'color:red'}" for="stadurMaelis" value="Staður mælis"/>
-<h:inputText size="24"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="stadurMaelis" value="#{TilkynningVertakaBean.stadurMaelir.stadur}"/>
-</wf:container>
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Upplýsingar um mæli og töflu</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
+
+<x:div styleClass="helperText">
+<f:verbatim>Fylltu inn viðeigandi gildi um stað mælis og númer töflu.</f:verbatim>
+</x:div>
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['placeMeter'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['placeMeter']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['placeMeter'] != null ? 'formItem hasError' : 'formItem'}">
+<h:outputLabel for="stadurMaelis" value="Staður mælis"/>
+<h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stadurMaelis" value="#{TilkynningVertakaBean.stadurMaelir.stadur}"/>
+</x:div>
 
 <!-- 13b -->
-<wf:container styleClass="formItem">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['switchPanelNumber'] == null ? 'color:black' : 'color:red'}" for="numerToeflu" value="Númer töflu"/>
-<h:inputText size="24"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="numerToeflu" value="#{TilkynningVertakaBean.numerToeflu}"/>
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['switchPanelNumber']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null ? 'formItem hasError' : 'formItem'}">
+<h:outputLabel style="" for="numerToeflu" value="Númer töflu"/>
+<h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="numerToeflu" value="#{TilkynningVertakaBean.numerToeflu}"/>
 <h:message for="numerToeflu"></h:message>
-</wf:container>
-</wf:container>
+</x:div>
 
-<wf:container styleClass="fieldsetContainer">
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Upplýsingar um spennukerfi</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
+
+<x:div styleClass="helperText">
+<f:verbatim>Fylltu inn viðeigandi gildi um tegund spennukerfis. Ef valið er 'Annað' þarftu að gefa upp nánari skýringu í textasvæðið.</f:verbatim>
+</x:div>
+
 <!-- 14 -->
-<wf:container styleClass="formItem required">
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['voltageSystemGroup'] == null ? 'color:black' : 'color:red'}" for="spennukerfi" value="Spennukerfi" />
-</wf:container>
-<wf:container styleClass="checkboxItem">
-<h:selectOneRadio
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="spennukerfi" value="#{TilkynningVertakaBean.spennukerfi}">
+<x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['voltageSystemGroup'] != null}">
+<h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['voltageSystemGroup']}" />
+</x:div>
+<x:div styleClass="#{TilkynningVertakaBean.invalid['voltageSystemGroup'] != null ? 'formItem required hasError' : 'formItem required'}">
+<h:outputLabel style="" for="spennukerfi" value="Spennukerfi" />
+</x:div>
+<x:div styleClass="checkboxItem">
+<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="spennukerfi" value="#{TilkynningVertakaBean.spennukerfi}">
 <f:selectItems value="#{RafverktakaInitialdata.spennukerfiListiSelects}"/>
 </h:selectOneRadio>
-</wf:container>
+</x:div>
 
 <!-- 15 -->
-<wf:container styleClass="formItem">
+<x:div styleClass="formItem">
 <h:outputLabel for="annadSpennukerfi" value="Annað" />
-<h:inputText size="24"
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="annadSpennukerfi" value="#{TilkynningVertakaBean.annad}"/>
-</wf:container>
-</wf:container>
+<h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="annadSpennukerfi" value="#{TilkynningVertakaBean.annad}"/>
+</x:div>
 
 <!-- formsection end -->
-</wf:container>
+</x:div>
 
-<wf:container styleClass="button">
-<h:commandButton
-action="back"
-value="til baka"/>
-<h:commandButton
-action="next"
-value="áfram"/>
+<x:div styleClass="bottom">
+<h:commandLink action="back">
+<f:verbatim>
+<span class="buttonSpan">
+<span class="left"></span>
+<span class="middle">Til baka</span>
+<span class="right"></span>
+</span>
+</f:verbatim>
+</h:commandLink>
 
-<h:outputText value=" "/>
-
-<h:commandButton
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-action="#{TilkynningVertakaBean.store}"
-value="geyma"/>
-</wf:container>
+<h:commandLink action="next">
+<f:verbatim>
+<span class="buttonSpan">
+<span class="left"></span>
+<span class="middle">Áfram</span>
+<span class="right"></span>
+</span>
+</f:verbatim>
+</h:commandLink>
+</x:div>
 </h:form>
 
 

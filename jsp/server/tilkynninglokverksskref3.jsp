@@ -12,8 +12,9 @@ version="1.2">
 <builder:region id="left" label="left">
 <h:form id="form1" styleClass="rafverk">
 
-<wf:container rendered="#{TilkynningVertakaBean.reportInvalid}" styleClass="errorLayer">
-<wf:container rendered="#{TilkynningVertakaBean.reportInvalid}" styleClass="errorImage"/>
+<wf:container rendered="#{TilkynningVertakaBean.reportInvalid || TilkynningVertakaBean.workingPlaceInvalid}" styleClass="errorLayer">
+<wf:container rendered="#{TilkynningVertakaBean.reportInvalid || TilkynningVertakaBean.workingPlaceInvalid}" styleClass="errorImage"/>
+<h:outputText rendered="#{TilkynningVertakaBean.workingPlaceInvalid}" value="#{TilkynningVertakaBean.workingPlaceErrorMessage}"/>
 <h:outputText rendered="#{TilkynningVertakaBean.reportInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti"/>
 <h:outputText value=" "/>
 <h:commandButton

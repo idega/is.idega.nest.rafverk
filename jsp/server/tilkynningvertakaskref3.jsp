@@ -1,416 +1,497 @@
 <?xml version="1.0"?>
-<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-xmlns:h="http://java.sun.com/jsf/html"
-xmlns:f="http://java.sun.com/jsf/core"
-xmlns:builder="http://xmlns.idega.com/com.idega.builder"
-xmlns:x="http://myfaces.apache.org/tomahawk"
-xmlns:wf="http://xmlns.idega.com/com.idega.webface"
-version="1.2">
-<jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:builder="http://xmlns.idega.com/com.idega.builder" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:wf="http://xmlns.idega.com/com.idega.webface" version="1.2">
+<jsp:directive.page contentType="text/html" pageEncoding="UTF-8" />
 <f:view>
 <builder:page id="builderpage_344" template="93">
 <builder:region id="left" label="left">
 <h:form id="form1" styleClass="rafverk">
 
 
-<wf:container rendered="#{TilkynningVertakaBean.applicationInvalid}" styleClass="errorLayer">
-<wf:container rendered="#{TilkynningVertakaBean.applicationInvalid}" styleClass="errorImage"/>
-<h:outputText rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti"/>
-<h:outputText value=" "/>
-<h:commandButton
-styleClass="jsfButton"
-rendered="#{TilkynningVertakaBean.applicationInvalid}"
-action="firstWizardPage"
-value="Fara á fyrsta skref"/>
-</wf:container>
+<x:div rendered="#{TilkynningVertakaBean.applicationInvalid || TilkynningVertakaBean.currentWorkingPlaceErrorMessageNotEmpty}" styleClass="errorLayer">
+<x:div rendered="#{TilkynningVertakaBean.applicationInvalid || TilkynningVertakaBean.currentWorkingPlaceErrorMessageNotEmpty}" styleClass="errorImage" />
+<h:outputText rendered="#{TilkynningVertakaBean.currentWorkingPlaceErrorMessageNotEmpty}" value="#{TilkynningVertakaBean.currentWorkingPlaceErrorMessage}" />
+<h:outputText value=" " />
+<h:commandLink rendered="#{TilkynningVertakaBean.currentWorkingPlaceErrorMessageNotEmpty}" value="Fara á rangt skráðan reit" action="firstWizardPage"/>
+<h:outputText rendered="#{TilkynningVertakaBean.applicationInvalid}" value="Sending mistókst: Fylla verður í alla skilyrta reiti" />
+<x:div rendered="#{TilkynningVertakaBean.invalid['energyCompany'] != null}">
+<h:outputText value=" Orkuveitufyrirtæki" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['energyCompany']}" action="firstWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['name'] != null}">
+<h:outputText value="Nafn orkukaupanda" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['name']}" action="firstWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['energyConsumerPersonalId'] != null}">
+<h:outputText value="Kennitala" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['energyConsumerPersonalId']}" action="firstWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['energyConsumerHomePhone'] != null}">
+<h:outputText value="Heimasími" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['energyConsumerHomePhone']}" action="firstWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['energyConsumerWorkPhone'] != null}">
+<h:outputText value="Vinnusími" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['energyConsumerWorkPhone']}" action="firstWizardPage"/>
+</x:div>
 
-<f:verbatim><h1 class="applicationHeading">Thjonustubeidni</h1></f:verbatim>
+<x:div rendered="#{TilkynningVertakaBean.invalid['type'] != null}">
+<h:outputText value="Notkunarflokkur" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['type']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['currentLineModification'] != null}">
+<h:outputText value="Heimtaug" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['currentLineModification']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['currentLineConnectionModification'] != null}">
+<h:outputText value="Heimtaug tengist i" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['currentLineConnectionModification']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['homeLine'] != null}">
+<h:outputText value="Stofn/kvisl" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['homeLine']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['switchPanelModification'] != null}">
+<h:outputText value="Aðaltafla/Mælitafla" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['switchPanelModification']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasures'] != null}">
+<h:outputText value="Varnarráðstöfun" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['electronicProtectiveMeasures']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['application'] != null}">
+<h:outputText value="Beiðni um" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['application']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['power'] != null}">
+<h:outputText value="Uppsett afl" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['power']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['placeMeter'] != null}">
+<h:outputText value="Staður mælis" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['placeMeter']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null}">
+<h:outputText value="Númer töflu" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['switchPanelNumber']}" action="secondWizardPage"/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['voltageSystemGroup'] != null}">
+<h:outputText value="Upplýsingar um spennukerfi" /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['voltageSystemGroup']}" action="secondWizardPage"/>
+</x:div>
 
-<wf:container styleClass="header">
+<x:div rendered="#{TilkynningVertakaBean.invalid['taka'] != null}">
+<h:outputText value="Taka mæli..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['taka']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['fyrir'] != null}">
+<h:outputText value="Fyrir er..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['fyrir']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['setja'] != null}">
+<h:outputText value="Setja mæli..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['setja']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['fluttA'] != null}">
+<h:outputText value="Flutt á..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['fluttA']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['fluttAf'] != null}">
+<h:outputText value="Flutt af..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['fluttAf']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['hjalpataeki'] != null}">
+<h:outputText value="Setja hjálpatæki..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['hjalpataeki']}" action=""/>
+</x:div>
+<x:div rendered="#{TilkynningVertakaBean.invalid['straumspenna'] != null}">
+<h:outputText value="Setja straumspennamæli..." /><h:outputText value=" " />
+<h:commandLink value="#{TilkynningVertakaBean.invalid['straumspenna']}" action=""/>
+</x:div>
+</x:div>
 
-<f:verbatim><h1>1. Upplysingar um neisluveitu
-</h1></f:verbatim>
+<f:verbatim>
+<h1 class="applicationHeading">Þjónustubeiðni</h1>
+</f:verbatim>
+
+<x:div styleClass="header">
+
+<f:verbatim>
+<h1>3. Upplýsingar um neysluveitu</h1>
+</f:verbatim>
 
 <!-- phases -->
-<wf:container styleClass="phases">
+<x:div styleClass="phases">
 
 <f:verbatim>
 <!-- ul -->
 <ul>
-<li>1
-</li>
-<li>2
-</li>
-<li class="current">3
-</li>
+<li>1</li>
+<li>2</li>
+<li class="current">3</li>
 </ul>
 <!-- end of ul -->
 </f:verbatim>
 
-</wf:container>
+</x:div>
 <!-- end of phases -->
 
-</wf:container>
+</x:div>
 <!-- end of header -->
 
 
 <!-- form section -->
-<wf:container styleClass="info">
+<x:div styleClass="info">
 
-<wf:container styleClass="personInfo" id="name">
-<h:outputText value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafn}"/>
-</wf:container>
+<x:div styleClass="personInfo" id="name" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.nafn}" />
+</x:div>
 
-</wf:container>
+<x:div styleClass="personInfo" id="personalID" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.kennitala}" />
+</x:div>
+
+<x:div styleClass="personInfo" id="address" forceId="true">
+<h:outputText value="#{TilkynningLokVerksBean.rafverktaka.rafverktaki.heimilisfang.display}" />
+</x:div>
+
+</x:div>
 <!-- end of formsection-->
 
 <f:verbatim>
-<h1 class="subHeader topSubHeader">Tilkynning um rafverktoku
-</h1>
+<h1 class="subHeader topSubHeader">Tilkynning um rafverktöku</h1>
 </f:verbatim>
 
 <!-- form section -->
-<wf:container styleClass="formSection">
-
+<x:div styleClass="formSection">
 
 <!-- taka -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="takaAddAnchor" name="takaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['taka'] == null ? 'color:black' : 'color:red'}" id="takaAddAnchor" value="Taka mæli..."/>
-</wf:container>
-<h:dataTable id='taka' value="#{TilkynningVertakaBean.list['taka']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['taka'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="takaAddAnchor" name="takaAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel id="takaAddAnchor" value="Taka mæli..." />
+</x:div>
+
+<h:dataTable styleClass="rafverkTable" id='taka' value="#{TilkynningVertakaBean.list['taka']}" var="maelir">
 <h:column>
-
-<h:commandLink
-id="takaAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="addLink" id="takaAdd" action="#{maelir.add}" rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="takaAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
 
-<h:commandLink
-id="takaDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{(maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="removeLink" id="takaDelete" action="#{maelir.delete}" rendered="#{(maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="takaAddAnchor" />
+<f:verbatim>
+<span>Fjarlægja</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
+<h:outputText value=" " />
 
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="taka"
-value="#{maelir.numer}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="taka"
-value="mæli numer"
-rendered="#{maelir.valid}"/>
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="taka" value="#{maelir.numer}" rendered="#{maelir.valid}" />
+<h:outputLabel for="taka" value="mæli númer" rendered="#{maelir.valid}" />
 <h:message for="taka"></h:message>
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- fyrir -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="fyrirAddAnchor" name="fyrirAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['fyrir'] == null ? 'color:black' : 'color:red'}" value="Fyrir er..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['fyrir']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['fyrir'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="fyrirAddAnchor" name="fyrirAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel style="" value="Fyrir er..." />
+</x:div>
+<h:dataTable styleClass="rafverkTable" value="#{TilkynningVertakaBean.list['fyrir']}" var="maelir">
 <h:column>
 
-<h:commandLink
-id="fyrirAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="addLink" id="fyrirAdd" action="#{maelir.add}" rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fyrirAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
 
-<h:commandLink
-id="fyrirDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{(maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="removeLink" id="fyrirDelete" action="#{maelir.delete}" rendered="#{(maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fyrirAddAnchor" />
+<f:verbatim>
+<span>Fjarlægja</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
 
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="fyrir"
-value="#{maelir.numer}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="fyrir"
-value="mæli numer"
-rendered="#{maelir.valid}"/>
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="fyrir" value="#{maelir.numer}" rendered="#{maelir.valid}" />
+<h:outputLabel for="fyrir" value="mæli númer" rendered="#{maelir.valid}" />
 <h:message for="fyrir"></h:message>
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- setja maeli -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="setjaAddAnchor" name="setjaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['setja'] == null ? 'color:black' : 'color:red'}" value="Setja mæli..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['setja']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['setja'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="setjaAddAnchor" name="setjaAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel value="Setja mæli..." />
+</x:div>
+
+<h:dataTable styleClass="rafverkTable threeRowsTable" value="#{TilkynningVertakaBean.list['setja']}" var="maelir">
 <h:column>
 
-<h:commandLink
-id="setjaAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="addLink" id="setjaAdd" action="#{maelir.add}" rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="setjaAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
-<h:commandLink
-id="setjaDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+
+<h:commandLink styleClass="removeLink" id="setjaDelete" action="#{maelir.delete}" rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="setjaAddAnchor" />
+<f:verbatim>
+<span>Fjarlægja</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
-<h:selectOneRadio
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-value="#{maelir.fasa}"
-rendered="#{maelir.valid}">
-<f:selectItems value="#{RafverktakaInitialdata.maeliListiSelects}"/>
+
+<x:div styleClass="rafverkItem">
+<h:selectOneRadio styleClass="rafverkTableCheckboxes" disabled="#{! TilkynningVertakaBean.applicationStorable}" value="#{maelir.fasa}" rendered="#{maelir.valid}">
+<f:selectItems value="#{RafverktakaInitialdata.maeliListiSelects}" />
 </h:selectOneRadio>
-<h:outputLabel
-for="setja"
-value="Stærð"
-rendered="#{maelir.valid}"/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-size="4"
-id="setja"
-value="#{maelir.ampere}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="setja"
-value="A"
-rendered="#{maelir.valid}"/>
+</x:div>
+
+<x:div styleClass="rafverkItem">
+<h:outputLabel for="setja" value="Stærð" rendered="#{maelir.valid}" />
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" size="4" id="setja" value="#{maelir.ampere}" rendered="#{maelir.valid}" />
+<h:outputLabel for="setja" value="A" rendered="#{maelir.valid}" />
 <h:message for="setja"></h:message>
-<h:outputLabel
-for="setjaT"
-value="Taxti"
-rendered="#{maelir.valid}"/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="setjaT"
-value="#{maelir.taxti}"
-rendered="#{maelir.valid}"/>
+</x:div>
+
+<x:div styleClass="rafverkItem">
+<h:outputLabel for="setjaT" value="Taxti" rendered="#{maelir.valid}" />
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="setjaT" value="#{maelir.taxti}" rendered="#{maelir.valid}" />
+</x:div>
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- flutt a -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="fluttAAddAnchor" name="fluttAAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['fluttA'] == null ? 'color:black' : 'color:red'}" value="Flutt á..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['fluttA']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['fluttA'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="fluttAAddAnchor" name="fluttAAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel value="Flutt á..." />
+</x:div>
+<h:dataTable styleClass="rafverkTable" value="#{TilkynningVertakaBean.list['fluttA']}" var="maelir">
 <h:column>
 
-<h:commandLink
-id="fluttAAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="addLink" id="fluttAAdd" action="#{maelir.add}" rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fluttAAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
 
-<h:commandLink
-id="fluttADelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="removeLink" id="fluttADelete" action="#{maelir.delete}" rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fluttAAddAnchor" />
+<f:verbatim>
+<span>Fjarlægja</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
 
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="fluttA"
-value="#{maelir.numer}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="fluttA"
-value="mæli numer"
-rendered="#{maelir.valid}"/>
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="fluttA" value="#{maelir.numer}" rendered="#{maelir.valid}" />
+<h:outputLabel for="fluttA" value="mæli númer" rendered="#{maelir.valid}" />
 <h:message for="fluttA"></h:message>
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- flutt af -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="fluttAfAddAnchor" name="fluttAfAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['fluttAf'] == null ? 'color:black' : 'color:red'}" value="Flutt af..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['fluttAf']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['fluttAf'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="fluttAfAddAnchor" name="fluttAfAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel value="Flutt af..." />
+</x:div>
+
+<h:dataTable styleClass="rafverkTable" value="#{TilkynningVertakaBean.list['fluttAf']}" var="maelir">
 <h:column>
 
-<h:commandLink
-id="fluttAfAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="addLink" id="fluttAfAdd" action="#{maelir.add}" rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fluttAfAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
 
-<h:commandLink
-id="fluttAfDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+<h:commandLink styleClass="removeLink" id="fluttAfDelete" action="#{maelir.delete}" rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="fluttAfAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="fluttAf"
-value="#{maelir.numer}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="fluttAf"
-value="mæli numer"
-rendered="#{maelir.valid}"/>
+
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="fluttAf" value="#{maelir.numer}" rendered="#{maelir.valid}" />
+<h:outputLabel for="fluttAf" value="mæli númer" rendered="#{maelir.valid}" />
 <h:message for="fluttAf"></h:message>
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- hjalpataeki -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="hjalpataekiAddAnchor" name="hjalpataekiAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['hjalpataeki'] == null ? 'color:black' : 'color:red'}" value="Setja hjálpatæki..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['hjalpataeki']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['hjalpataeki'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="hjalpataekiAddAnchor" name="hjalpataekiAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel value="Setja hjálpatæki..." />
+</x:div>
+
+<h:dataTable styleClass="rafverkTable" value="#{TilkynningVertakaBean.list['hjalpataeki']}" var="maelir">
 <h:column>
-<h:commandLink
-id="hjalpataekiAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+
+<h:commandLink styleClass="addLink" id="hjalpataekiAdd" action="#{maelir.add}" rendered="#{(! maelir.valid) and (TilkynningVertakaBean.applicationStorable)}">
+<f:param name="anchorName" value="hjalpataekiAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
+</h:commandLink>
+
+<h:commandLink styleClass="removeLink" id="hjalpataekiDelete" action="#{maelir.delete}" rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="hjalpataekiAddAnchor" />
 </h:commandLink>
-<h:commandLink
-id="hjalpataekiDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
-<f:param name="anchorName" value="hjalpataekiAddAnchor" />
-</h:commandLink>
-<h:outputText value=" "/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="hjalpataeki"
-value="#{maelir.hjalpataeki}"
-rendered="#{maelir.valid}"/>
+
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="hjalpataeki" value="#{maelir.hjalpataeki}" rendered="#{maelir.valid}" />
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- setja maeli -->
-<wf:container styleClass="fieldsetContainer">
-<wf:container styleClass="formItem">
-<f:verbatim><a id="straumspennaAddAnchor" name="straumspennaAddAnchor" style="color:white">&#160;</a></f:verbatim>
-<h:outputLabel style="#{TilkynningVertakaBean.invalid['straumspenna'] == null ? 'color:black' : 'color:red'}" value="Setja straumspennamæli..."/>
-</wf:container>
-<h:dataTable value="#{TilkynningVertakaBean.list['straumspenna']}" var="maelir">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['straumspenna'] != null ? 'formItem hasError' : 'formItem'}">
+<f:verbatim>
+<a id="straumspennaAddAnchor" name="straumspennaAddAnchor" style="color: white">&#160;</a>
+</f:verbatim>
+<h:outputLabel value="Setja straumspennamæli..." />
+</x:div>
+
+<h:dataTable styleClass="rafverkTable twoRowsTable" value="#{TilkynningVertakaBean.list['straumspenna']}" var="maelir">
 <h:column>
-<h:commandLink
-id="straumspennaAdd"
-action="#{maelir.add}"
-value="bæta við"
-rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+
+<h:commandLink styleClass="addLink" id="straumspennaAdd" action="#{maelir.add}" rendered="#{! maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="straumspennaAddAnchor" />
+<f:verbatim>
+<span>Bæta við</span>
+</f:verbatim>
 </h:commandLink>
-<h:commandLink
-id="straumspennaDelete"
-action="#{maelir.delete}"
-value="fjarlægja"
-rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
+
+<h:commandLink styleClass="removeLink" id="straumspennaDelete" action="#{maelir.delete}" rendered="#{maelir.valid and (TilkynningVertakaBean.applicationStorable)}">
 <f:param name="anchorName" value="straumspennaAddAnchor" />
+<f:verbatim>
+<span>Fjarlægja</span>
+</f:verbatim>
 </h:commandLink>
-<h:outputText value=" "/>
-<h:outputLabel
-for="straumspenna"
-value="Stærð"
-rendered="#{maelir.valid}"/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-size="4"
-id="straumspenna"
-value="#{maelir.ampere}"
-rendered="#{maelir.valid}"/>
-<h:outputLabel
-for="straumspenna"
-value="A"
-rendered="#{maelir.valid}"/>
+
+<x:div styleClass="rafverkItem">
+<h:outputLabel for="straumspenna" value="Stærð" rendered="#{maelir.valid}" />
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" size="4" id="straumspenna" value="#{maelir.ampere}" rendered="#{maelir.valid}" />
+<h:outputLabel for="straumspenna" value="A" rendered="#{maelir.valid}" />
 <h:message for="straumspenna"></h:message>
-<h:outputLabel
-for="straumspennaT"
-value="Taxti"
-rendered="#{maelir.valid}"/>
-<h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="straumspennaT"
-value="#{maelir.taxti}"
-rendered="#{maelir.valid}"/>
+</x:div>
+
+<x:div styleClass="rafverkItem">
+<h:outputLabel for="straumspennaT" value="Taxti" rendered="#{maelir.valid}" />
+<h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="straumspennaT" value="#{maelir.taxti}" rendered="#{maelir.valid}" />
+</x:div>
+
 </h:column>
 </h:dataTable>
-</wf:container>
+
+</x:div>
+<!-- end of formsection-->
+
+<f:verbatim>
+<h1 class="subHeader">Tilkynning um rafverktöku</h1>
+</f:verbatim>
+
+<!-- form section -->
+<x:div styleClass="formSection">
 
 <!-- 26 -->
-<wf:container styleClass="formItem">
-<h:outputLabel for="skyringar" value="Skyringar"/>
-<h:inputTextarea
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}"/>
-</wf:container>
+<x:div styleClass="formItem">
+<h:outputLabel for="skyringar" value="Skýringar" />
+<h:inputTextarea disabled="#{! TilkynningVertakaBean.applicationStorable}" id="skyringar" rows="3" cols="60" value="#{TilkynningVertakaBean.skyringar}" />
+</x:div>
 
-<wf:container styleClass="button">
+</x:div>
+<!-- end of formsection-->
 
-<h:commandButton
-action="back"
-value="til baka"/>
+<x:div styleClass="bottom">
+<h:commandLink action="back">
+<f:verbatim>
+<span class="buttonSpan"> <span class="left"></span> <span class="middle">Til baka</span> <span class="right"></span> </span>
+</f:verbatim>
+</h:commandLink>
 
-<h:outputText value=" "/>
+<h:commandLink rendered="#{TilkynningVertakaBean.applicationSendable}" action="#{TilkynningVertakaBean.send}">
+<f:verbatim>
+<span class="buttonSpan"> <span class="left"></span> <span class="middle">Senda</span> <span class="right"></span> </span>
+</f:verbatim>
+</h:commandLink>
+</x:div>
 
-<h:commandButton
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
-action="#{TilkynningVertakaBean.store}"
-value="geyma"/>
-<h:commandButton
-disabled="#{! TilkynningVertakaBean.applicationSendable}"
-action="#{TilkynningVertakaBean.send}"
-value="senda"/>
-
-<h:outputText value=" "/>
-
-<h:commandButton
-action="#{TilkynningVertakaBean.goToTilkynningLokVerks}"
-value="Tilkynning um lok verks"/>
-
-</wf:container>
-
-</wf:container>
 </h:form>
-
-
-
-</builder:region></builder:page>
+</builder:region>
+</builder:page>
 </f:view>
 </jsp:root>

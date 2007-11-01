@@ -33,15 +33,17 @@ id="welcome_2"
 action="#{TilkynningVertakaBean.startTilkynningLokVerks}"
 immediate="true"
 value="Skrá skýrslu um neysluveitu"/>
+
+<h:commandButton styleClass="jsfButton"
+id="welcome_3"
+action="rafverktakaskipti"
+immediate="true"
+value="Ósk um rafverktakaskipti"/>
+
 </wf:container>
 
 <wf:container styleClass="formSection">
 <wf:container styleClass="formItem">
-<h:outputLabel for="filterVerktakaStatuses" value="Staða verks"/>
-
-<h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
-<f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
-</h:selectOneMenu>
 
 <wf:container>
 <h:outputText value="Hægt er að nota algildistákn (*,?) í leitarskilyrðum"/>
@@ -55,6 +57,12 @@ value="Skrá skýrslu um neysluveitu"/>
 
 <h:outputLabel for="veitustadur" value="Veitustaður"/>
 <h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
+
+<h:outputLabel for="filterVerktakaStatuses" value="Staða verks"/>
+
+<h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
+<f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
+</h:selectOneMenu>
 </wf:container>
 
 <h:commandButton styleClass="jsfButton"
