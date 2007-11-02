@@ -1,5 +1,5 @@
 /*
- * $Id: ValidationRulesApplication.java,v 1.2 2007/10/18 16:32:39 thomas Exp $
+ * $Id: ValidationRulesApplication.java,v 1.3 2007/11/02 16:37:39 thomas Exp $
  * Created on Aug 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.fop.validator.impl.NotEmptyValidator;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ValidationRulesApplication implements ValidationRules {
 	
@@ -75,33 +75,33 @@ public class ValidationRulesApplication implements ValidationRules {
 	private void initialize() {
 		validators = new HashMap();
 		userMessages = new HashMap();
-		put(FieldID.ENERGY_COMPANY, notEmptyValidator);
-		put(FieldID.WORKING_PLACE, realEstateValidator);
+		put(FieldID.ENERGY_COMPANY, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.WORKING_PLACE, realEstateValidator, "Þú verður að setja gildi í reitinn");
 		
-		put(FieldID.NAME, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_PERSONAL_ID, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_HOME_PHONE, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_WORK_PHONE, notEmptyValidator);
+		put(FieldID.NAME, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_PERSONAL_ID, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_HOME_PHONE, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_WORK_PHONE, notEmptyValidator, "Þú verður að setja gildi í reitinn");
  
-		put(FieldID.TYPE, notEmptyValidator, "type not fine" );
-		put(FieldID.CURRENT_LINE_MODIFICATION, notEmptyValidator, "is empty");
-		put(FieldID.CURRENT_LINE_CONNECTION_MODIFICATION, notEmptyValidator);
-		put(FieldID.HOME_LINE, notEmptyValidator);
-		put(FieldID.SWITCH_PANEL_MODIFICATION, notEmptyValidator);
-		put(FieldID.ELECTRONIC_PROTECTIVE_MEASURES, notEmptyValidator);
-		put(FieldID.APPLICATION, notEmptyValidator);
-		put(FieldID.POWER, emptyGreaterThanZeroValidator);
-		put(FieldID.PLACE_METER,notEmptyValidator);
-		put(FieldID.SWITCH_PANEL_NUMBER,notEmptyValidator);
-		put(FieldID.VOLTAGE_SYSTEM_GROUP, voltageSystemGroupValidator);
+		put(FieldID.TYPE, notEmptyValidator, "Þú verður að setja gildi í reitinn" );
+		put(FieldID.CURRENT_LINE_MODIFICATION, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.CURRENT_LINE_CONNECTION_MODIFICATION, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.HOME_LINE, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.SWITCH_PANEL_MODIFICATION, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ELECTRONIC_PROTECTIVE_MEASURES, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.APPLICATION, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.POWER, emptyGreaterThanZeroValidator, "Talan verður að vera stærri en núll");
+		put(FieldID.PLACE_METER,notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.SWITCH_PANEL_NUMBER,notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.VOLTAGE_SYSTEM_GROUP, voltageSystemGroupValidator, "Þú verður að setja gildi í reitinn");
 		// meters
-		put(InitialData.TAKA, onlyNumberValidator);
-		put(InitialData.FYRIR, onlyNumberValidator);
-		put(InitialData.SETJA, phaseAmpereRateValidator);
-		put(InitialData.FLUTT_A, onlyNumberValidator);
-		put(InitialData.FLUTT_AF, onlyNumberValidator);
-		put(InitialData.HJALPATAEKI, deviceValidator);
-		put(InitialData.STRAUMSPENNA, ampereRateValidator);	
+		put(InitialData.TAKA, onlyNumberValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.FYRIR, onlyNumberValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.SETJA, phaseAmpereRateValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.FLUTT_A, onlyNumberValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.FLUTT_AF, onlyNumberValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.HJALPATAEKI, deviceValidator, "Þú verður að setja gildi í reitinn");
+		put(InitialData.STRAUMSPENNA, ampereRateValidator, "Þú verður að setja gildi í reitinn");	
 	}
 	
 	private void put (String key, PropertyValidator propertyValidator) {

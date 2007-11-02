@@ -1,6 +1,6 @@
 package is.idega.nest.rafverk.bean;
 
-import is.idega.nest.rafverk.domain.Fasteign;
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;

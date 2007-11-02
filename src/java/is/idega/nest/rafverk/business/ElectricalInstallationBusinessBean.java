@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.20 2007/10/18 16:32:39 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.21 2007/11/02 16:37:39 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.business;
 
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
@@ -19,7 +20,6 @@ import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.ElectricalInstallationHome;
-import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Meter;
 import is.idega.nest.rafverk.domain.MeterHome;
 import is.idega.nest.rafverk.domain.Rafverktaka;
@@ -64,10 +64,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	

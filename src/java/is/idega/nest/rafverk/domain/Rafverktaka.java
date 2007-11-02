@@ -1,5 +1,6 @@
 package is.idega.nest.rafverk.domain;
 
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;

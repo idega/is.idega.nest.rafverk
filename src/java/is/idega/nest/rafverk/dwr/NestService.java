@@ -22,13 +22,13 @@ public interface NestService extends IBOService {
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean
 	 */
 	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street,
-			String streetNumber) throws RemoteException;
+			String streetNumber, String freetext) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumber
 	 */
-	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber)
-			throws RemoteException;
+	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber,
+			String freetext) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getElectricInstallationList

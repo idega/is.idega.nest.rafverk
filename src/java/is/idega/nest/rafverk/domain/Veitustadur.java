@@ -1,5 +1,6 @@
 package is.idega.nest.rafverk.domain;
 
+import is.fmr.landskra.Fasteign;
 import is.postur.Gata;
 
 public class Veitustadur extends BaseBean{

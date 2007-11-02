@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.9 2007/10/10 13:19:42 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.10 2007/11/02 16:37:38 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -50,18 +50,18 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		return realEstateBean.getStreetsByDWR();
 	}
 
-	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street, String streetNumber) {
+	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street, String streetNumber, String freeText) {
 		ChangeElectricianBean changeElectricianBean = BaseBean.getChangeElectricianBeanByDWR();
-		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, changeElectricianBean);
+		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, freeText, changeElectricianBean);
 	}
 	
-	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber) {
+	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, String freeText) {
 		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBeanByDWR();
-		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, tilkynningVertakaBean);
+		return getRealEstatesByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, freeText, tilkynningVertakaBean);
 	}
 		
-	private Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, RealEstateBean realEstateBean) {
-		realEstateBean.setRealEstateListByPostalCodeStreetStreetNumber(postalCode, street, streetNumber);
+	private Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, String freeText, RealEstateBean realEstateBean) {
+		realEstateBean.setRealEstateListByPostalCodeStreetStreetNumber(postalCode, street, streetNumber, freeText);
 		return realEstateBean.getRealEstates();
 	}
 	

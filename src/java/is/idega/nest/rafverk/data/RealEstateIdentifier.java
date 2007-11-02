@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateIdentifier.java,v 1.3 2007/10/10 13:19:42 thomas Exp $
+ * $Id: RealEstateIdentifier.java,v 1.4 2007/11/02 16:37:39 thomas Exp $
  * Created on Sep 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,7 +9,7 @@
  */
 package is.idega.nest.rafverk.data;
 
-import is.idega.nest.rafverk.domain.Fasteign;
+import is.fmr.landskra.Fasteign;
 
 import java.util.StringTokenizer;
 
@@ -19,10 +19,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class RealEstateIdentifier {
 	

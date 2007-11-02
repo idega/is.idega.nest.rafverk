@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.33 2007/10/18 16:32:39 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.34 2007/11/02 16:37:38 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
@@ -17,8 +18,6 @@ import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
-import is.idega.nest.rafverk.domain.Fasteign;
-import is.idega.nest.rafverk.domain.FasteignaEigandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 
@@ -46,10 +45,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -573,11 +572,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	// might be overwritten by subclasses
 	void changedRealEstate(Fasteign fasteign) {
 		if (fasteign != null) {
-			FasteignaEigandi eigandi = fasteign.getEigandi();
-			if(eigandi!=null){
-				setNafnOrkukaupandaAndLock(eigandi.getNafn());
-				setKennitalaOrkukaupandaAndLock(eigandi.getKennitala());
-			}
+			setNafnOrkukaupandaAndLock(fasteign.getOwnerName());
+			setKennitalaOrkukaupandaAndLock(fasteign.getOwnerKennitala());
 		}
 		initializeWorkingPlaceErrorMessage(fasteign);
 	}
@@ -836,8 +832,11 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			Iterator groupIterator = groups.iterator();
 			while (groupIterator.hasNext()) {
 				Group group = (Group) groupIterator.next();
-				Collection children = groupBusinessTemp.getChildGroups(group);
-				list.addAll(children);
+				List parents = group.getParentGroups();
+				if (parents == null ||parents.isEmpty()) {
+					Collection children = groupBusinessTemp.getChildGroups(group);
+					list.addAll(children);
+				}
  			}
 		}
 		catch (RemoteException e) {
@@ -1234,7 +1233,12 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		changeElectricianBean.setPostnumer(getPostnumer());
 		changeElectricianBean.setGata(getGata());
 		changeElectricianBean.setGotunumer(getGotunumer());
-		changeElectricianBean.flettaUppIFasteignaskra();
+		changeElectricianBean.setFreeText(getFreeText());
+		changeElectricianBean.setStreetNumber(getStreetNumber());
+		changeElectricianBean.setFasteignaListi(getFasteignaListi());
+		changeElectricianBean.setFastanumer(getFastanumer());
+		changeElectricianBean.setVeitustadurDisplay(getVeitustadurDisplay());
+		
 		// good bye to tilkynningvertaka bean
 		initialize();
 	}

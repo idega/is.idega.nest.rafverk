@@ -1,7 +1,7 @@
 package is.idega.nest.rafverk.bean;
 
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
-import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Heimilisfang;
 import is.idega.nest.rafverk.domain.Orkufyrirtaeki;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
@@ -35,6 +35,10 @@ public class InitialData extends BaseBean {
 	
 	// special key for none street
 	public static final String NONE_STREET = "none_street";
+	
+	public static final String NONE_STREET_NUMBER = "none_street_number";
+	
+	public static final String ALL_STREET_NUMBERS = "all_street_numbers";
 	
 	public static final String NONE_REAL_ESTATE_SELECTION = "none_real_estate_selection";
 	
@@ -239,6 +243,8 @@ public class InitialData extends BaseBean {
 	
 	public static final List NUMBER_OF_ROWS_PER_PAGE_LIST = Arrays.asList(NUMBER_OF_ROWS_PER_PAGE);
 	
+	private static final int MAX_STREET_NUMBER = 260;
+	
 
 	public Orkufyrirtaeki getRarik() {
 		Orkufyrirtaeki rarik = new Orkufyrirtaeki();
@@ -387,6 +393,20 @@ public class InitialData extends BaseBean {
 			selects.add(item);
 		}
 		return selects;
+	}
+	
+	public List getStreetNumberSelects() {
+		List numbers = new ArrayList(MAX_STREET_NUMBER);
+		SelectItem noneNumbersItem = new SelectItem(NONE_STREET_NUMBER, "Veldu götunumer");
+		SelectItem allNumbersItem = new SelectItem(ALL_STREET_NUMBERS, "*");
+		numbers.add(noneNumbersItem);
+		numbers.add(allNumbersItem);
+		for (int i = 1; i <= MAX_STREET_NUMBER; i++) {
+			String value = Integer.toString(i);
+			SelectItem item = new SelectItem(value, value);
+			numbers.add(item);
+		}
+		return numbers;
 	}
 
 	public Postnumer getRvk104() {

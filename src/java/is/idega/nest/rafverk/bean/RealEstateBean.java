@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.7 2007/10/10 13:19:42 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.8 2007/11/02 16:37:38 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,12 +9,6 @@
  */
 package is.idega.nest.rafverk.bean;
 
-import is.fmr.landskra.FasteignaskraClient;
-import is.idega.nest.rafverk.data.RealEstateIdentifier;
-import is.idega.nest.rafverk.domain.Fasteign;
-import is.idega.nest.rafverk.fmr.FMRLookupBean;
-import is.postur.Gata;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,6 +17,12 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import is.fmr.landskra.Fasteign;
+import is.fmr.landskra.FasteignaskraClient;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
+import is.idega.nest.rafverk.fmr.FMRLookupBean;
+import is.postur.Gata;
+
 import javax.faces.model.SelectItem;
 
 import com.idega.util.StringHandler;
@@ -30,10 +30,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class RealEstateBean {
 	
@@ -43,16 +43,24 @@ public class RealEstateBean {
     
     private String gotunumer = null;
     
+    private String freeText = null;
+    
+    private String streetNumber = null;
+    
     private String fastanumer = null;
     
     private String veitustadurDisplay = null;
     
     private List fasteignaListi = null;
     
+
+    
     void initializeForm() {
 	    postnumer = null;
 	    gata = null;
 	    gotunumer = null;
+	    streetNumber = null;
+	    freeText = null;
 	    fastanumer = null;
 	    fasteignaListi = null;
 	    veitustadurDisplay = null;
@@ -66,15 +74,26 @@ public class RealEstateBean {
 	}
 	
 	// called by NestService
-	public void setRealEstateListByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber) {
+	public void setRealEstateListByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, String freeText) {
 		if (StringHandler.isEmpty(postalCode)) {
 			fasteignaListi = null;
 		}
+		String streetNumberTemp = null;
 		if (InitialData.NONE_STREET.equals(street)) {
+			// no street selected, free text search
 			street = null;
+			streetNumberTemp = freeText;
+		}
+		else if (InitialData.ALL_STREET_NUMBERS.equals(streetNumber) || StringHandler.isEmpty(streetNumber)) {
+			// change * to null
+			// street selected, no street number specified
+			streetNumberTemp = null;
+		}
+		else {
+			streetNumberTemp = streetNumber;
 		}
 		FMRLookupBean lookup = getFMRLookup();
-		fasteignaListi = lookup.getFasteignir(street, streetNumber,postalCode);
+		fasteignaListi = lookup.getFasteignir(street, streetNumberTemp, postalCode);
 	}
 
 	// called by NestService 
@@ -305,7 +324,7 @@ public class RealEstateBean {
 	}
 	
 	List getListiSelects(Map map) {
-		ArrayList selects = new ArrayList(map.size());
+		List selects = new ArrayList(map.size());
 		Iterator iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
 			String value = (String) iterator.next();
@@ -316,6 +335,40 @@ public class RealEstateBean {
 			selects.add(item);
 		}
 		return selects;
+	}
+	
+	
+	public String getShowStreetNumberSelects() {
+		return ! (InitialData.NONE_STREET.equals(getGata())) ? "display:block" : "display:none";
+	}
+	
+	public String getShowFreetextGotunumer() {
+		return (InitialData.NONE_STREET.equals(getGata())) ? "display:block" : "display:none";
+	}
+
+	
+
+	
+	public String getStreetNumber() {
+		return streetNumber;
+	}
+
+
+	
+	public void setStreetNumber(String streetNumber) {
+		this.streetNumber = streetNumber;
+	}
+
+
+	
+	public String getFreeText() {
+		return freeText;
+	}
+
+
+	
+	public void setFreeText(String freeText) {
+		this.freeText = freeText;
 	}
 	
 

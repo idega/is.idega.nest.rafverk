@@ -1,5 +1,5 @@
 /*
- * $Id: ValidationRulesReport.java,v 1.1 2007/08/09 16:35:35 thomas Exp $
+ * $Id: ValidationRulesReport.java,v 1.2 2007/11/02 16:37:39 thomas Exp $
  * Created on Aug 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -27,10 +27,10 @@ import com.idega.fop.validator.impl.NotEmptyValidator;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ValidationRulesReport implements ValidationRules {
 	
@@ -74,20 +74,20 @@ public class ValidationRulesReport implements ValidationRules {
 		userMessages = new HashMap();
 		put(FieldID.WORKING_PLACE, realEstateValidator);
 		
-		put(FieldID.NAME, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_PERSONAL_ID, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_HOME_PHONE, notEmptyValidator);
-		put(FieldID.ENERGY_CONSUMER_WORK_PHONE, notEmptyValidator);
+		put(FieldID.NAME, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_PERSONAL_ID, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_HOME_PHONE, notEmptyValidator, "Þú verður að setja gildi í reitinn");
+		put(FieldID.ENERGY_CONSUMER_WORK_PHONE, notEmptyValidator, "Þú verður að setja gildi í reitinn");
 		
-		put(FieldID.ANNOUNCEMENT_GROUP,announcementGroupValidator);
+		put(FieldID.ANNOUNCEMENT_GROUP,announcementGroupValidator, "Þú verður að setja gildi í reitinn");
  
-		put(FieldID.TYPE_IN_REPORT, notEmptyValidator, "type not fine" );
+		put(FieldID.TYPE_IN_REPORT, notEmptyValidator, "Þú verður að setja gildi í reitinn" );
 		
-		put(FieldID.VOLTAGE_SYSTEM_GROUP_IN_REPORT, voltageSystemGroupValidator);
+		put(FieldID.VOLTAGE_SYSTEM_GROUP_IN_REPORT, voltageSystemGroupValidator, "Þú verður að setja gildi í reitinn");
 		
-		put(FieldID.ELECTRONIC_PROTECTIVE_MEASURES_IN_REPORT, notEmptyValidator);
+		put(FieldID.ELECTRONIC_PROTECTIVE_MEASURES_IN_REPORT, notEmptyValidator, "Þú verður að setja gildi í reitinn");
 		
-		put(FieldID.FUSE, fuseValidator);
+		put(FieldID.FUSE, fuseValidator, "Þú verður að setja gildi í reitinn");
 	}
 		
 		

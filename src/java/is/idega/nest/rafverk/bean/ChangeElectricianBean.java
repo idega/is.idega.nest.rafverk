@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.6 2007/10/02 13:40:08 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.7 2007/11/02 16:37:38 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,11 +9,11 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
-import is.idega.nest.rafverk.domain.Fasteign;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/02 13:40:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	

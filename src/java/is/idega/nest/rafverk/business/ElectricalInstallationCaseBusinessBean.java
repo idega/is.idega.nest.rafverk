@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.4 2007/09/05 16:33:16 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.5 2007/11/02 16:37:39 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -31,10 +31,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/09/05 16:33:16 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
 	
@@ -64,7 +64,13 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 	}
 	
 	public List getChildrenOfCaseAsElectricalInstallation(Case parentCase)  {
+		if (parentCase == null) {
+			return null;
+		}
 		Collection coll = parentCase.getChildren();
+		if (coll == null) {
+			return null;
+		}
 		List result = new ArrayList(coll.size());
 		Iterator iterator = coll.iterator();
 		while (iterator.hasNext()) {
