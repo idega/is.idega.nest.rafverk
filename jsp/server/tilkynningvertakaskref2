@@ -12,6 +12,20 @@ version="1.2">
 <builder:region id="left" label="left">
 
 <h:form id="form1" styleClass="rafverk">
+<f:verbatim>
+<script type="text/javascript">
+function enableInput(radio) {
+var input = document.getElementById('form1:annadSpennukerfi');
+if (radio.value == 'ANNAD') {
+input.disabled = false;
+}
+else {
+input.value="";
+input.disabled = true;
+}
+}
+</script>
+</f:verbatim>
 <!--div class="generalContent"-->
 
 <f:verbatim><h1 class="applicationHeading">Þjónustubeiðni</h1></f:verbatim>
@@ -91,7 +105,7 @@ version="1.2">
 <h:outputLabel for="heimtaug" value="Heimtaug"/>
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaug" value="#{TilkynningVertakaBean.heimtaug}">
+<h:selectOneRadio layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaug" value="#{TilkynningVertakaBean.heimtaug}">
 <f:selectItems value="#{RafverktakaInitialdata.heimtaugListiSelects}"/>
 </h:selectOneRadio>
 </x:div>
@@ -104,7 +118,7 @@ version="1.2">
 <h:outputLabel for="heimtaugTengist" value="Heimtaug tengist i"/>
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaugTengist" value="#{TilkynningVertakaBean.heimtaugTengist}">
+<h:selectOneRadio layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="heimtaugTengist" value="#{TilkynningVertakaBean.heimtaugTengist}">
 <f:selectItems value="#{RafverktakaInitialdata.heimtaugTengistListiSelects}"/>
 </h:selectOneRadio>
 </x:div>
@@ -116,6 +130,7 @@ version="1.2">
 <x:div styleClass="#{TilkynningVertakaBean.invalid['homeLine'] != null ? 'formItem floatingFormItem required hasError' : 'formItem floatingFormItem required'}">
 <h:outputLabel value="Stofn/kvisl" for="stofnKvisl1"/>
 
+<x:div styleClass="floatingContainer">
 <h:inputText styleClass="smallInput" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stofnKvisl1" value="#{TilkynningVertakaBean.stofn1}"/>
 <h:outputLabel styleClass="floatingLabel" for="stofnKvisl1" value="x"/>
 
@@ -126,7 +141,7 @@ version="1.2">
 
 <h:inputText styleClass="smallInput" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stofnKvisl3" value="#{TilkynningVertakaBean.stofn3}"/>
 <h:outputLabel styleClass="floatingLabel" for="stofnKvisl3" value="mm²" />
-
+</x:div>
 </x:div>
 
 <!-- 9 -->
@@ -137,7 +152,7 @@ version="1.2">
 <h:outputLabel for="adaltafla" value="Aðaltafla/Mælitafla"/>
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="adaltafla" value="#{TilkynningVertakaBean.adaltafla}">
+<h:selectOneRadio layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="adaltafla" value="#{TilkynningVertakaBean.adaltafla}">
 <f:selectItems value="#{RafverktakaInitialdata.adaltaflaListiSelects}"/>
 </h:selectOneRadio>
 </x:div>
@@ -150,7 +165,7 @@ version="1.2">
 <h:outputLabel for="varnaradstoefun" value="Varnarráðstöfun"/>
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectManyCheckbox disabled="#{! TilkynningVertakaBean.applicationStorable}" id="varnaradstoefun" value="#{TilkynningVertakaBean.varnarradstoefun}">
+<h:selectManyCheckbox layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="varnaradstoefun" value="#{TilkynningVertakaBean.varnarradstoefun}">
 <f:selectItems value="#{RafverktakaInitialdata.varnarradstoefunListiSelects}"/>
 </h:selectManyCheckbox>
 </x:div>
@@ -177,7 +192,7 @@ version="1.2">
 <h:outputLabel for="beidni" value="Beiðni um" />
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectManyCheckbox disabled="#{! TilkynningVertakaBean.applicationStorable}" id="beidni" value="#{TilkynningVertakaBean.beidniUm}">
+<h:selectManyCheckbox layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="beidni" value="#{TilkynningVertakaBean.beidniUm}">
 <f:selectItems value="#{RafverktakaInitialdata.beidniListiSelects}"/>
 </h:selectManyCheckbox>
 </x:div>
@@ -188,9 +203,11 @@ version="1.2">
 </x:div>
 <x:div styleClass="#{TilkynningVertakaBean.invalid['power'] != null ? 'formItem floatingFormItem hasError' : 'formItem floatingFormItem'}">
 <h:outputLabel for="beidniKiloWatt" value="Uppsett afl" />
+<x:div styleClass="floatingContainer">
 <h:inputText disabled="#{! TilkynningVertakaBean.applicationStorable}" id="beidniKiloWatt" value="#{TilkynningVertakaBean.uppsett}"/>
 <h:outputLabel styleClass="floatingLabel" for="beidniKiloWatt" value="kW"/>
 <h:message for="beidniKiloWatt"></h:message>
+</x:div>
 </x:div>
 
 </x:div>
@@ -209,7 +226,7 @@ version="1.2">
 <x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['placeMeter'] != null}">
 <h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['placeMeter']}" />
 </x:div>
-<x:div styleClass="#{TilkynningVertakaBean.invalid['placeMeter'] != null ? 'formItem hasError' : 'formItem'}">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['placeMeter'] != null ? 'formItem required hasError' : 'formItem required'}">
 <h:outputLabel for="stadurMaelis" value="Staður mælis"/>
 <h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="stadurMaelis" value="#{TilkynningVertakaBean.stadurMaelir.stadur}"/>
 </x:div>
@@ -218,7 +235,7 @@ version="1.2">
 <x:div style="formItem" rendered="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null}">
 <h:outputText style="color:red" value="#{TilkynningVertakaBean.invalid['switchPanelNumber']}" />
 </x:div>
-<x:div styleClass="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null ? 'formItem hasError' : 'formItem'}">
+<x:div styleClass="#{TilkynningVertakaBean.invalid['switchPanelNumber'] != null ? 'formItem required hasError' : 'formItem required'}">
 <h:outputLabel style="" for="numerToeflu" value="Númer töflu"/>
 <h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="numerToeflu" value="#{TilkynningVertakaBean.numerToeflu}"/>
 <h:message for="numerToeflu"></h:message>
@@ -246,7 +263,7 @@ version="1.2">
 <h:outputLabel style="" for="spennukerfi" value="Spennukerfi" />
 </x:div>
 <x:div styleClass="checkboxItem">
-<h:selectOneRadio disabled="#{! TilkynningVertakaBean.applicationStorable}" id="spennukerfi" value="#{TilkynningVertakaBean.spennukerfi}">
+<h:selectOneRadio onclick="enableInput(this);" styleClass="radioSpennukerfi" layout="pageDirection" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="spennukerfi" value="#{TilkynningVertakaBean.spennukerfi}">
 <f:selectItems value="#{RafverktakaInitialdata.spennukerfiListiSelects}"/>
 </h:selectOneRadio>
 </x:div>
@@ -254,32 +271,35 @@ version="1.2">
 <!-- 15 -->
 <x:div styleClass="formItem">
 <h:outputLabel for="annadSpennukerfi" value="Annað" />
-<h:inputText size="24" disabled="#{! TilkynningVertakaBean.applicationStorable}" id="annadSpennukerfi" value="#{TilkynningVertakaBean.annad}"/>
+<h:inputText size="24" disabled="#{!TilkynningVertakaBean.applicationStorable || TilkynningVerktakaBean.spennukerfi != 'ANNAD'}" id="annadSpennukerfi" value="#{TilkynningVertakaBean.annad}"/>
 </x:div>
 
 <!-- formsection end -->
 </x:div>
 
 <x:div styleClass="bottom">
-<h:commandLink action="back">
+<h:commandLink styleClass="button"
+actionListener="#{TilkynningVertakaBean.triggerValidation}"
+action="back">
 <f:verbatim>
-<span class="buttonSpan">
-<span class="left"></span>
-<span class="middle">Til baka</span>
-<span class="right"></span>
-</span>
+<span class="buttonSpan">Til baka</span>
 </f:verbatim>
 </h:commandLink>
 
-<h:commandLink action="next">
+<h:commandLink styleClass="button"
+actionListener="#{TilkynningVertakaBean.triggerValidation}"
+action="next">
 <f:verbatim>
-<span class="buttonSpan">
-<span class="left"></span>
-<span class="middle">Áfram</span>
-<span class="right"></span>
-</span>
+<span class="buttonSpan">Áfram</span>
 </f:verbatim>
 </h:commandLink>
+
+<h:commandButton
+styleClass="buttonSpan"
+id="storeButton"
+disabled="#{! TilkynningVertakaBean.applicationStorable}"
+action="#{TilkynningVertakaBean.store}"
+value="Geyma"/>
 </x:div>
 </h:form>
 
