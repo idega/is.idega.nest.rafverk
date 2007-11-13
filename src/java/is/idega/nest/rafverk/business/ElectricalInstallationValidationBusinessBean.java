@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationValidationBusinessBean.java,v 1.1 2007/08/09 16:35:35 thomas Exp $
+ * $Id: ElectricalInstallationValidationBusinessBean.java,v 1.2 2007/11/13 16:25:19 thomas Exp $
  * Created on Aug 8, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -13,7 +13,7 @@ import is.idega.nest.rafverk.bean.validation.ElectricalInstallationValidator;
 import is.idega.nest.rafverk.bean.validation.ValidationRules;
 import is.idega.nest.rafverk.bean.validation.ValidationRulesApplication;
 import is.idega.nest.rafverk.bean.validation.ValidationRulesReport;
-import is.idega.nest.rafverk.domain.ElectricalInstallation;
+import is.idega.nest.rafverk.domain.SimpleElectricalInstallation;
 
 import java.rmi.RemoteException;
 import java.util.Iterator;
@@ -28,10 +28,10 @@ import com.idega.fop.data.Property;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/09 16:35:35 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ElectricalInstallationValidationBusinessBean extends IBOServiceBean implements ElectricalInstallationValidationBusiness{
 	
@@ -65,14 +65,14 @@ public class ElectricalInstallationValidationBusinessBean extends IBOServiceBean
 	}
 	
 	
-	public Map validateApplication(ElectricalInstallation electricalInstallation) throws RemoteException {
+	public Map validateApplication(SimpleElectricalInstallation electricalInstallation) throws RemoteException {
 		Property property = getElectricalInstallationRendererBusiness().getApplicationProperty(electricalInstallation);
 		ElectricalInstallationValidator handler = new ElectricalInstallationValidator(getValidationRulesApplication());
 		property.accept(handler);
 		return handler.getResults();
 	}
 	
-	public Map validateReport(ElectricalInstallation electricalInstallation) throws RemoteException {
+	public Map validateReport(SimpleElectricalInstallation electricalInstallation) throws RemoteException {
 		Property property = getElectricalInstallationRendererBusiness().getReportProperty(electricalInstallation);
 		ElectricalInstallationValidator handler = new ElectricalInstallationValidator(getValidationRulesReport());
 		property.accept(handler);

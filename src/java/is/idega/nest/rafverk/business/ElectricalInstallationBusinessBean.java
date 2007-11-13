@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.21 2007/11/02 16:37:39 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.22 2007/11/13 16:25:19 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.business;
 import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.InitialData;
+import is.idega.nest.rafverk.bean.RafverktokuListi;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import is.idega.nest.rafverk.bean.TilkynningVertakaBean;
 import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
@@ -64,10 +65,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/02 16:37:39 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -111,7 +112,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationCache().changesForUser(user);
 	}
 
-	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner) {
+	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner, RafverktokuListi rafverktokuListi) {
 		ElectricalInstallation newElectricalInstallation = null;
 		try {
 			newElectricalInstallation = getElectricalInstallationHome().create();
@@ -121,7 +122,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			newElectricalInstallation = null;
 		}
 		// take only the working place data over
-		newElectricalInstallation.setRealEstate(electricalInstallation.getRealEstate());
+		RealEstate realEstate = electricalInstallation.getRealEstate();
+		newElectricalInstallation.setRealEstate(realEstate);
 		newElectricalInstallation.setEnergyConsumerName(electricalInstallation.getEnergyConsumerName());
 		newElectricalInstallation.setEnergyConsumerPersonalID(electricalInstallation.getEnergyConsumerPersonalID());
 		newElectricalInstallation.setEnergyConsumerHomePhone(electricalInstallation.getEnergyConsumerHomePhone());
@@ -135,6 +137,24 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		
 		// flag old electrical installation as changed (that is change status)
 		getElectricalInstallationState().changeElectrician(electricalInstallation);
+		// flag all others electrical installations as changed 
+		User user = electricalInstallation.getElectrician();
+		try {
+			Collection coll = getElectricalInstallationHome().findNotFreeElectricalinstallationByRealEstate(realEstate, user);
+			Iterator iterator = coll.iterator();
+			while (iterator.hasNext()) {
+				ElectricalInstallation electricalInstallationLocal = (ElectricalInstallation) iterator.next();
+				getElectricalInstallationState().changeElectrician(electricalInstallationLocal);
+				electricalInstallationLocal.store();
+				// update rafverktaka 
+				Rafverktaka rafverktaka = rafverktokuListi.getRafverktaka(electricalInstallationLocal.getPrimaryKey().toString());
+				rafverktaka.initialize(electricalInstallationLocal, this);
+			}
+		}
+		catch (FinderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		electricalInstallation.store();
 		
 		return newElectricalInstallation;
@@ -673,6 +693,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		electricalInstallation.setEnergyConsumerPersonalID(tilkynningVertakaBean.getKennitalaOrkukaupanda());
 		electricalInstallation.setEnergyConsumerWorkPhone(tilkynningVertakaBean.getVinnusimiOrkukaupanda());
 		electricalInstallation.setEnergyConsumerHomePhone(tilkynningVertakaBean.getHeimasimiOrkukaupanda());
+		electricalInstallation.setEnergyConsumerEmail(tilkynningVertakaBean.getEnergyConsumerEmail());
 		
 		electricalInstallation.setType(tilkynningVertakaBean.getNotkunarflokkur());
 		electricalInstallation.setCurrentLineModification(tilkynningVertakaBean.getHeimtaug());

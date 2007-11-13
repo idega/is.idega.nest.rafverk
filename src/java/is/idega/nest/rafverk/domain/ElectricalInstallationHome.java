@@ -22,6 +22,9 @@ public interface ElectricalInstallationHome extends IDOHome {
 
 	public Collection findElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException;
 
+	public Collection findNotFreeElectricalinstallationByRealEstate(RealEstate realEstate, User currentUser)
+			throws FinderException;
+
 	public Collection findOtherOpenElectricalInstallationByRealEstateIdentifier(
 			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException;
 

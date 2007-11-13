@@ -1,9 +1,9 @@
 package is.idega.nest.rafverk.business;
 
 
+import is.idega.nest.rafverk.domain.SimpleElectricalInstallation;
 import java.util.Map;
 import com.idega.business.IBOService;
-import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import java.rmi.RemoteException;
 
 public interface ElectricalInstallationValidationBusiness extends IBOService {
@@ -21,10 +21,12 @@ public interface ElectricalInstallationValidationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationValidationBusinessBean#validateApplication
 	 */
-	public Map validateApplication(ElectricalInstallation electricalInstallation) throws RemoteException;
+	public Map validateApplication(SimpleElectricalInstallation electricalInstallation) throws RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationValidationBusinessBean#validateReport
 	 */
-	public Map validateReport(ElectricalInstallation electricalInstallation) throws RemoteException;
+	public Map validateReport(SimpleElectricalInstallation electricalInstallation) throws RemoteException,
+			RemoteException;
 }

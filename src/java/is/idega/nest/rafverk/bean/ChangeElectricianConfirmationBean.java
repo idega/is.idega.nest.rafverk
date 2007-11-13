@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.3 2007/10/10 13:19:42 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.4 2007/11/13 16:25:19 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ChangeElectricianConfirmationBean {
 	
@@ -135,7 +135,8 @@ public class ChangeElectricianConfirmationBean {
 	public String confirmChangeOfElectrician() {
 		ElectricalInstallationBusiness electricalInstallationBusinessLocal = getElectricalInstallationBusiness();
 		try {
-			ElectricalInstallation newElectricalInstallation = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender);
+			RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
+			ElectricalInstallation newElectricalInstallation = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender, rafverktokuListi);
 			if (newElectricalInstallation == null) {
 				messageStoring = "Error occurred";
 			}
@@ -146,9 +147,6 @@ public class ChangeElectricianConfirmationBean {
 				String deleted = getElectricalInstallationCaseBusiness().getCaseStatusDeletedString();
 				changeElectricanCase.setStatus(deleted);
 				changeElectricanCase.store();
-				
-				// update stored rafverktaka
-				rafverktaka.initialize(oldElectricalInstallation, electricalInstallationBusinessLocal);
 				
 				// mark changes for the user that sent the request
 				electricalInstallationBusinessLocal.addChangeForUser(requestSender);

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.7 2007/11/02 16:37:38 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.8 2007/11/13 16:25:18 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -19,12 +19,17 @@ import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
 
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.ejb.FinderException;
@@ -35,10 +40,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:18 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -93,15 +98,35 @@ public class ChangeElectricianBean extends RealEstateBean {
 			electricalInstallationList.put(InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION, "ekkert fannst");
 		}
 		else {
+			// show only one electrical installation, if the electrician is the same
+			// note: one electrician can have more than one application per working place
+			// show here the oldest one!
+			Set users = new HashSet();
 			electricalInstallationList.put(InitialData.NONE_ELECTRIC_INSTALLATION_SELECTION, "Veldu rafverktöku");
+			Comparator comparator = new Comparator() {
+
+				public int compare(Object o1, Object o2) {
+					ElectricalInstallation e1 = (ElectricalInstallation) o1;
+					ElectricalInstallation e2 = (ElectricalInstallation) o2;
+					Timestamp t1 = e1.getCreated();
+					Timestamp t2 = e2.getCreated();
+					return t1.compareTo(t2);
+				}
+			};
+			List verktokurList = new ArrayList(verktokur);
+			Collections.sort(verktokurList, comparator);
 			Iterator iterator = verktokur.iterator();
 			while (iterator.hasNext()) {
 				ElectricalInstallation electricalInstallation = (ElectricalInstallation) iterator.next();
-				Rafverktaka verktaka = new Rafverktaka(electricalInstallation, getElectricalInstallationBusiness());
-				String id = verktaka.getId();
-				String label = getElectricalInstallationLabel(verktaka);
-				electricalInstallationList.put(id, label);	
-				electricalInstallationMap.put(id, verktaka);
+				User user = electricalInstallation.getElectrician();
+				if (! users.contains(user)) {
+					users.add(user);
+					Rafverktaka verktaka = new Rafverktaka(electricalInstallation, getElectricalInstallationBusiness());
+					String id = verktaka.getId();
+					String label = getElectricalInstallationLabel(verktaka);
+					electricalInstallationList.put(id, label);	
+					electricalInstallationMap.put(id, verktaka);
+				}
 			}
 		}
 	}
@@ -115,8 +140,8 @@ public class ChangeElectricianBean extends RealEstateBean {
 			add(buffer, rafverktaki.getNafn());
 		}
 		
-		buffer.append(", Verknúmer: ");
-		add(buffer, rafverktaka.getExternalProjectID());
+//		buffer.append(", Verknúmer: ");
+//		add(buffer, rafverktaka.getExternalProjectID());
 		
 		buffer.append(", Orkukaupandi: ");
 		Orkukaupandi orkukaupandi = rafverktaka.getOrkukaupandi();
@@ -124,8 +149,8 @@ public class ChangeElectricianBean extends RealEstateBean {
 			add(buffer, orkukaupandi.getNafn());
 		}
 		
-		buffer.append(", Stada: ");
-		add(buffer, rafverktaka.getStadaDisplay());
+//		buffer.append(", Stada: ");
+//		add(buffer, rafverktaka.getStadaDisplay());
 		
 		return buffer.toString();
 	}

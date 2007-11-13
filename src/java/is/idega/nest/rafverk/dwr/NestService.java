@@ -22,13 +22,13 @@ public interface NestService extends IBOService {
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean
 	 */
 	public Map getRealEstatesByPostalCodeStreetStreetNumberForChangeElectricianBean(String postalCode, String street,
-			String streetNumber, String freetext) throws RemoteException;
+			String streetNumber, String freeText) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getRealEstatesByPostalCodeStreetStreetNumber
 	 */
 	public Map getRealEstatesByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber,
-			String freetext) throws RemoteException;
+			String freeText) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getElectricInstallationList
@@ -39,4 +39,9 @@ public interface NestService extends IBOService {
 	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#getEnergyConsumerFields
 	 */
 	public List getEnergyConsumerFields(String realEstateNumber) throws RemoteException;
+
+	/**
+	 * @see is.idega.nest.rafverk.dwr.NestServiceBean#setInputTextDisabled
+	 */
+	public void setInputTextDisabled(String id) throws RemoteException;
 }

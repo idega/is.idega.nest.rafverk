@@ -9,6 +9,7 @@ public class Orkukaupandi extends BaseBean {
 	Heimilisfang heimilisfang;
 	String vinnusimi;
 	String heimasimi;
+	String email;
 	
 	public Orkukaupandi() {
 	}
@@ -18,6 +19,8 @@ public class Orkukaupandi extends BaseBean {
 		kennitala = electricalInstallation.getEnergyConsumerPersonalID();
 		vinnusimi = electricalInstallation.getEnergyConsumerWorkPhone();
 		heimasimi = electricalInstallation.getEnergyConsumerHomePhone();
+		email = electricalInstallation.getEnergyConsumerEmail();
+		
 	}
 	
 	public String getHeimasimi() {
@@ -65,5 +68,13 @@ public class Orkukaupandi extends BaseBean {
 	}
 	public void setVinnusimi(String vinnusimi) {
 		this.vinnusimi = vinnusimi;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

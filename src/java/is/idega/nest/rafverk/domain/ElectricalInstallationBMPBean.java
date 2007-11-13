@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.13 2007/10/10 13:19:42 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.14 2007/11/13 16:25:19 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,16 +10,20 @@
 package is.idega.nest.rafverk.domain;
 
 import is.idega.nest.rafverk.bean.constants.CaseConstants;
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
+import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.util.DataConverter;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.FinderException;
 
 import com.idega.block.process.data.AbstractCaseBMPBean;
+import com.idega.business.IBORuntimeException;
 import com.idega.core.location.data.RealEstate;
 import com.idega.data.IDOQuery;
 import com.idega.user.data.Group;
@@ -29,12 +33,12 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/10/10 13:19:42 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
-public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation{
+public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation {
 	
 	/* Following fields are in application as well as in report -
 	At the beginning the fields are set to be the same that is 
@@ -83,6 +87,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	private static final String COLUMN_ENERGY_CONSUMER_NAME = "CONSUMER_NAME";
 	private static final String COLUMN_CON_HOME_PHONE = "CON_HOME_PHONE";
 	private static final String COLUMN_CON_WORK_PHONE = "CON_WORK_PHONE";
+	private static final String COLUMN_CON_EMAIL = "CON_EMAIL";
 	
 	// veitustadur
 	private static final String COLUMN_REAL_ESTATE_ID = "REAL_ESTATE_ID";
@@ -237,6 +242,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		addAttribute(COLUMN_ENERGY_CONSUMER_NAME, "energy consumer name", String.class, LONG_INPUT_FIELD);
 		addAttribute(COLUMN_CON_HOME_PHONE, "consumer home phone", String.class, LONG_INPUT_FIELD);
 		addAttribute(COLUMN_CON_WORK_PHONE, "consumer work phone", String.class, LONG_INPUT_FIELD);
+		addAttribute(COLUMN_CON_EMAIL, "comsumer email", String.class, LONG_INPUT_FIELD);
 		
 		addAttribute(COLUMN_TYPE, "type", String.class, IDENTIFIER);
 		addAttribute(COLUMN_REPORT_TYPE, "report type", String.class, IDENTIFIER);
@@ -331,6 +337,14 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	
 	public String getEnergyConsumerWorkPhone() {
 		return (String) getColumnValue(COLUMN_CON_WORK_PHONE);
+	}
+	
+	public void setEnergyConsumerEmail(String consumerEmail) {
+		setColumn(COLUMN_CON_EMAIL, consumerEmail);
+	}
+	
+	public String getEnergyConsumerEmail() {
+		return (String) getColumnValue(COLUMN_CON_EMAIL);
 	}
 	
 	public void setType(String type) {
@@ -696,6 +710,19 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	    return idoFindPKsByQuery(query);
 	}
 	
+	public Collection ejbFindNotFreeElectricalinstallationByRealEstate(RealEstate realEstate, User currentUser) throws FinderException {
+		IDOQuery query = getFirstPartOfQueryForRealEstate();
+		checkRealEstate(realEstate, query);
+		query.appendAnd();
+		onlyCurrentUser(currentUser, query);
+		query.appendAnd();
+		checkStatusFirstPart(query);
+		checkStatusSecondPartNotFreeCases(query);
+		return idoFindPKsByQuery(query);
+	}
+	
+	
+	
 	public Collection ejbFindOtherOpenElectricalInstallationByRealEstateIdentifier(RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException {
 		IDOQuery query = getFirstPartOfQueryForRealEstateIdentifier();
 		checkRealEstateByIdentifier(realEstateIdentifier, query);
@@ -774,6 +801,10 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		query.append("n.electrician_id").appendNOTEqual().append(user);
 	}
 	
+	private void onlyCurrentUser(User user, IDOQuery query) {
+		query.append("n.electrician_id").appendEqualSign().append(user);
+	}
+	
 	
 	private void checkStatusFirstPart(IDOQuery query) {
 		query.append("n.nest_el_install_id").appendEqualSign().append("c.proc_case_id");
@@ -791,6 +822,11 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		List openCases = ElectricalInstallationState.getOpenStatuses();
 		query.appendInForStringCollectionWithSingleQuotes(openCases);
 	}
+	
+	private void checkStatusSecondPartNotFreeCases(IDOQuery query) {
+		List openCases = ElectricalInstallationState.getFreeStatuses();
+		query.appendNotInForStringCollectionWithSingleQuotes(openCases);
+	}
 
 	
 	private IDOQuery appendNullOrEqual(IDOQuery query, String columnName, String value) { 
@@ -802,6 +838,15 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 			query.appendEqualsQuoted(column, value);
 		}
 		return query;
+	}
+	
+	public MaelirList getMaelirList(ElectricalInstallationBusiness electricalInstallationBusiness) {
+		try {
+			return electricalInstallationBusiness.getMaelirList(this);
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException(e);
+		}
 	}
 	
 }

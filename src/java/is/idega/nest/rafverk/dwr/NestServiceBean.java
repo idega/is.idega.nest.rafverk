@@ -1,5 +1,5 @@
 /*
- * $Id: NestServiceBean.java,v 1.10 2007/11/02 16:37:38 thomas Exp $
+ * $Id: NestServiceBean.java,v 1.11 2007/11/13 16:25:17 thomas Exp $
  * Created on Jun 7, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -18,16 +18,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.component.html.HtmlInputText;
+
 import com.idega.business.IBOServiceBean;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:17 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class NestServiceBean extends IBOServiceBean implements NestService{
 	
@@ -103,6 +105,11 @@ public class NestServiceBean extends IBOServiceBean implements NestService{
 		return list;
 	}
 	
+	public void setInputTextDisabled(String id) {
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBeanByDWR();
+		HtmlInputText component = (HtmlInputText) tilkynningVertakaBean.getComponent(id);
+		component.setValue(null);
+	}
 
 //	public void updateMeter(String pageURI, String componentID) {
 //		ViewManager viewManager = ViewManager.getInstance(getIWMainApplication());

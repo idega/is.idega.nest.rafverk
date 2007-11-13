@@ -1,6 +1,7 @@
 package is.idega.nest.rafverk.business;
 
 
+import is.idega.nest.rafverk.domain.SimpleElectricalInstallation;
 import java.io.IOException;
 import com.idega.business.IBOService;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
@@ -32,10 +33,10 @@ public interface ElectricalInstallationRendererBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getApplicationProperty
 	 */
-	public Property getApplicationProperty(ElectricalInstallation electricalInstallation) throws RemoteException;
+	public Property getApplicationProperty(SimpleElectricalInstallation electricalInstallation) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationRendererBusinessBean#getReportProperty
 	 */
-	public Property getReportProperty(ElectricalInstallation electricalInstallation) throws RemoteException;
+	public Property getReportProperty(SimpleElectricalInstallation electricalInstallation) throws RemoteException;
 }

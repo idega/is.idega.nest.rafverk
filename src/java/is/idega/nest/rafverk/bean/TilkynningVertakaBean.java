@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.34 2007/11/02 16:37:38 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.35 2007/11/13 16:25:18 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -17,9 +17,11 @@ import is.idega.nest.rafverk.business.ElectricalInstallationValidationBusiness;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
+import is.idega.nest.rafverk.data.SimpleElectricalInstallationWrapper;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.domain.Rafverktaki;
+import is.idega.nest.rafverk.domain.SimpleElectricalInstallation;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -32,6 +34,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.FinderException;
+import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
@@ -45,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:18 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -137,6 +141,9 @@ public class TilkynningVertakaBean extends RealEstateBean {
     
     private boolean workingPlaceChangeable = false;
     
+    // component map
+    Map componentMap;
+    
     
     
 	public TilkynningVertakaBean() {
@@ -217,11 +224,15 @@ public class TilkynningVertakaBean extends RealEstateBean {
 				else {
 					messageStoring = "Þjónustubeiðni ekki send";
 				}
+				// good bye to tilkynningvertaka bean
+				initialize();
 				return "send";
 			}
 			// successfully stored but validation problems, stay on same page
 			return null;
 		}
+		// good bye to tilkynningvertaka bean
+		initialize();
 		messageStoring = "Þjónustubeiðni ekki geymd";
 		return "send";
 	}
@@ -256,11 +267,19 @@ public class TilkynningVertakaBean extends RealEstateBean {
 				else {
 					messageStoring = "Skýrsla ekki send";
 				}
+				// good bye to tilkynningvertaka bean
+				initialize();
+				// good bye to tilkynning lok verks bean 
+				BaseBean.getTilkynningLokVerksBean().initialize();
 				return "send";
 			}
 			// successfully stored but validation problems, stay on same page
 			return null;
 		}
+		// good bye to tilkynningvertaka bean
+		initialize();
+		// good bye to tilkynning lok verks bean 
+		BaseBean.getTilkynningLokVerksBean().initialize();
 		messageStoring = "Skýrsla ekki geymd";
 		return "send";
 		
@@ -373,6 +392,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public Map getList() {
 		return maelirListMap;
 	}
+
 	
 	/**
 	 * Called by JSF page (application form)
@@ -491,24 +511,14 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		this.adaltafla = adaltafla;
 	}
 
-
-
-
 	
 	public String getAnnad() {
 		return annad;
 	}
-
-
-
-
 	
 	public void setAnnad(String annad) {
 		this.annad = annad;
 	}
-
-
-
 
 	
 	public List getBeidniUm() {
@@ -663,6 +673,23 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	public String getOrkuveitufyrirtaeki() {
 		return orkuveitufyrirtaeki;
 	}
+	
+	public Group getEnergyCompany() {
+		try {
+			String primaryKey = getOrkuveitufyrirtaeki();
+			if (StringHandler.isEmpty(primaryKey)) {
+				return null;
+			}
+			return (Group) getGroupBusiness().getGroupHome().findByPrimaryKey(getOrkuveitufyrirtaeki());
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException(e);
+		}
+		catch (FinderException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 
 
@@ -778,6 +805,15 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	
 	public void setVinnusimiOrkukaupanda(String vinnusimiOrkukaupanda) {
 		getRafverktaka().getOrkukaupandi().setVinnusimi(vinnusimiOrkukaupanda);
+	}
+	
+	public String getEnergyConsumerEmail() {
+		return getRafverktaka().getOrkukaupandi().getEmail();
+	}
+
+	
+	public void setEnergyConsumerEmail(String consumerEmail) {
+		getRafverktaka().getOrkukaupandi().setEmail(consumerEmail);
 	}
 
 	
@@ -1251,13 +1287,52 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	 * Called by JSF
 	 */
 	public String getShowChangeElectricianOption() {
-		return (showChangeElectricianOption) ? "display:block" : "display:none";
+		return (showChangeElectricianOption) ? "display:" : "display:none";
 	}
 	
 	/*
 	 * Called by DWR
 	 */
 	public String getShowChangeElectricianOptionForDWR() {
-		return (showChangeElectricianOption) ? "block" : "none";
+		return (showChangeElectricianOption) ? "" : "none";
+	}
+	
+	public void triggerValidation(ActionEvent actionEvent) {
+		// do vaildation if someone tried to send the application
+		if (isApplicationInvalid()) {
+			SimpleElectricalInstallation simpleElectricalInstallation = 
+				new SimpleElectricalInstallationWrapper(this, BaseBean.getTilkynningLokVerksBean());
+			try {
+				validationResults =  getElectricalInstallationValidationBusiness().validateApplication(simpleElectricalInstallation);
+			}
+			catch (RemoteException e) {
+				throw new IBORuntimeException(e);
+			}
+		}
+	}
+	
+	public void triggerValidationReport(ActionEvent actionEvent) {
+		// do vaildation if someone tried to send the application
+		if (isReportInvalid()) {
+			SimpleElectricalInstallation simpleElectricalInstallation = 
+				new SimpleElectricalInstallationWrapper(this, BaseBean.getTilkynningLokVerksBean());
+			try {
+				validationResults =  getElectricalInstallationValidationBusiness().validateReport(simpleElectricalInstallation);
+			}
+			catch (RemoteException e) {
+				throw new IBORuntimeException(e);
+			}
+		}
+	}
+	
+	public UIComponent getComponent(String name) {
+		return (UIComponent) componentMap.get(name);
+	}
+	
+	public Map getComponentMap() {
+		if (componentMap == null) {
+			componentMap = new HashMap();
+		}
+		return componentMap;
 	}
 }

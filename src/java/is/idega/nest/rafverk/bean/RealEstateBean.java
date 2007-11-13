@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.8 2007/11/02 16:37:38 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.9 2007/11/13 16:25:19 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package is.idega.nest.rafverk.bean;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,35 +24,42 @@ import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.fmr.FMRLookupBean;
 import is.postur.Gata;
 
+import javax.ejb.FinderException;
 import javax.faces.model.SelectItem;
 
+import com.idega.core.location.data.RealEstate;
+import com.idega.core.location.data.RealEstateHome;
+import com.idega.data.IDOHome;
+import com.idega.data.IDOLookup;
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/02 16:37:38 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class RealEstateBean {
 	
-    private String postnumer = null;
+    private String postnumer;
     
-    private String gata = null;
+    private String gata;
     
-    private String gotunumer = null;
+    private String gotunumer;
     
-    private String freeText = null;
+    private String freeText;
     
-    private String streetNumber = null;
+    private String streetNumber;
     
-    private String fastanumer = null;
+    private String fastanumer;
     
-    private String veitustadurDisplay = null;
+    private String veitustadurDisplay;
     
-    private List fasteignaListi = null;
+    private List fasteignaListi;
+    
+    private RealEstateHome realEstateHome;
     
 
     
@@ -77,12 +85,17 @@ public class RealEstateBean {
 	public void setRealEstateListByPostalCodeStreetStreetNumber(String postalCode, String street, String streetNumber, String freeText) {
 		if (StringHandler.isEmpty(postalCode)) {
 			fasteignaListi = null;
+			return;
 		}
 		String streetNumberTemp = null;
 		if (InitialData.NONE_STREET.equals(street)) {
 			// no street selected, free text search
 			street = null;
 			streetNumberTemp = freeText;
+		}
+		else if (InitialData.NONE_STREET_NUMBER.equals(streetNumber)) {
+			fasteignaListi = null;
+			return;
 		}
 		else if (InitialData.ALL_STREET_NUMBERS.equals(streetNumber) || StringHandler.isEmpty(streetNumber)) {
 			// change * to null
@@ -107,19 +120,23 @@ public class RealEstateBean {
 			// do nothing, leave everything unchanged
 			return;
 		}
-		if(StringHandler.isNotEmpty(fastanumer)) {
-			// do not do anything if there is no change
-			if (fastanumer.equals(this.fastanumer)) {
-				return;
-			}
-			Fasteign fasteign = lookupFasteign(fastanumer);
-			if (fasteign != null) {
-				String description = fasteign.getDescription();
-				setVeitustadurDisplay(description);
-			}
-			changedRealEstate(fasteign);
+		if (StringHandler.isEmpty(fastanumer)) {
+			// set and good bye
+			this.fastanumer = fastanumer;
+			return;
 		}
+		// do not do anything if there is no change
+		if (fastanumer.equals(this.fastanumer)) {
+			return;
+		}
+		// quite important: set fastanumer before calling changedRealEstate
 		this.fastanumer = fastanumer;
+		Fasteign fasteign = lookupFasteign(fastanumer);
+		if (fasteign != null) {
+			String description = fasteign.getDescription();
+			setVeitustadurDisplay(description);
+		}
+		changedRealEstate(fasteign);
 	}
 	
 	// might be overwritten by subclasses
@@ -140,11 +157,12 @@ public class RealEstateBean {
 		int size =  (realEstateList == null) ? 1 : realEstateList.size();
 		
 		Map realEstates = new LinkedHashMap(size);
-		realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Vinsamlegast veldu rétta fasteign:");
-		if (realEstateList == null) {
+
+		if (realEstateList == null || realEstateList.isEmpty()) {
+			realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Fletta í Landskrá Fasteigna fyrst");
 			return realEstates;
 		}
-		
+		realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Vinsamlegast veldu rétta fasteign:");
 
 		// sorting by street numbers else keep order
 		SortedMap streetMap = new TreeMap();
@@ -285,6 +303,29 @@ public class RealEstateBean {
 	public String getFastanumer() {
 		return fastanumer;
 	}
+	
+	public RealEstate getRealEstate() {
+		String fastanumer = getFastanumer();
+		if (StringHandler.isNotEmpty(fastanumer)) {
+			RealEstateIdentifier realEstateIdentifier = RealEstateIdentifier.getInstance(fastanumer);
+			if (realEstateIdentifier.isDummy()) {
+				return null;
+			}
+			try {
+				return getRealEstateHome().findRealEstateByRealEstateIdentifier(
+						realEstateIdentifier.getLandNumber(), 
+						realEstateIdentifier.getRealEstateNumber(), 
+						realEstateIdentifier.getRealEstateUnit(), 
+						realEstateIdentifier.getRealEstateCode());
+			}
+			catch (FinderException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+ 	}
 
 	// called when populating the form with a previous stored form
 	public void initFastanumer(String fastanumer) {
@@ -371,7 +412,23 @@ public class RealEstateBean {
 		this.freeText = freeText;
 	}
 	
-
+	private RealEstateHome getRealEstateHome() {
+		if (realEstateHome == null) {
+			realEstateHome = (RealEstateHome) retrieveHome(RealEstate.class);
+		}
+		return realEstateHome;
+	}
+	
+	private IDOHome retrieveHome(Class entityClass ) {
+		IDOHome home = null;
+		try {
+			home = IDOLookup.getHome(entityClass);
+		}
+		catch (RemoteException rme) {
+			throw new RuntimeException(rme.getMessage());
+		}
+		return home;
+	}
 	
 
  }

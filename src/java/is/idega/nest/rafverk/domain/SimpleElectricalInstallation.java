@@ -1,18 +1,33 @@
+/*
+ * $Id: SimpleElectricalInstallation.java,v 1.1 2007/11/13 16:25:19 thomas Exp $
+ * Created on Nov 7, 2007
+ *
+ * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
+ *
+ * This software is the proprietary information of Idega hf.
+ * Use is subject to license terms.
+ */
 package is.idega.nest.rafverk.domain;
-
 
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.data.MaelirList;
 
 import java.util.List;
 
-import com.idega.block.process.data.Case;
 import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
-public interface ElectricalInstallation extends Case, SimpleElectricalInstallation {
+/**
+ * Interface implemented by ElectricalInstallation and SimpleElectricalInstallationWrapper 
+ * 
+ */
 
+
+public interface SimpleElectricalInstallation {
+	
+	public MaelirList getMaelirList(ElectricalInstallationBusiness electricalInstallationBusiness);
+	
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCaseCodeDescription
 	 */
@@ -74,7 +89,7 @@ public interface ElectricalInstallation extends Case, SimpleElectricalInstallati
 	public String getEnergyConsumerWorkPhone();
 
 	/**
-	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setEnergyConsumerEmail
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setEnergyConsumersEmail
 	 */
 	public void setEnergyConsumerEmail(String consumerEmail);
 
@@ -82,7 +97,7 @@ public interface ElectricalInstallation extends Case, SimpleElectricalInstallati
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getEnergyConsumerEmail
 	 */
 	public String getEnergyConsumerEmail();
-
+	
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setType
 	 */
@@ -503,8 +518,4 @@ public interface ElectricalInstallation extends Case, SimpleElectricalInstallati
 	 */
 	public RealEstate getRealEstate();
 
-	/**
-	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getMaelirList
-	 */
-	public MaelirList getMaelirList(ElectricalInstallationBusiness electricalInstallationBusiness);
 }

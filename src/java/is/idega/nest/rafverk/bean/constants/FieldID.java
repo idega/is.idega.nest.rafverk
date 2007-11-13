@@ -1,5 +1,5 @@
 /*
- * $Id: FieldID.java,v 1.4 2007/10/18 16:32:39 thomas Exp $
+ * $Id: FieldID.java,v 1.5 2007/11/13 16:25:19 thomas Exp $
  * Created on May 14, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -16,10 +16,11 @@ public class FieldID {
 	// application first page
 	public final static String ENERGY_COMPANY = "energyCompany";
 	public final static String WORKING_PLACE = "workingPlace";
-	public final static String NAME = "name";
+	public final static String NAME = "energyConsumerName";
 	public final static String ENERGY_CONSUMER_PERSONAL_ID = "energyConsumerPersonalId";
 	public final static String ENERGY_CONSUMER_HOME_PHONE = "energyConsumerHomePhone";
 	public final static String ENERGY_CONSUMER_WORK_PHONE = "energyConsumerWorkPhone";
+	public final static String ENERGY_CONSUMER_EMAIL = "energyConsumerEmail";
 	
 	
 	// application second page

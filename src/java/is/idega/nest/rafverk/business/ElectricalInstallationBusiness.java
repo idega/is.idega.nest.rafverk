@@ -10,13 +10,14 @@ import java.rmi.RemoteException;
 import is.idega.nest.rafverk.cache.ElectricalInstallationCache;
 import com.idega.core.location.data.RealEstate;
 import java.util.Collection;
-import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import java.io.IOException;
+import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.bean.TilkynningLokVerksBean;
 import javax.ejb.FinderException;
 import com.idega.business.IBOService;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.data.MaelirList;
+import is.idega.nest.rafverk.bean.RafverktokuListi;
 
 public interface ElectricalInstallationBusiness extends IBOService {
 
@@ -33,8 +34,8 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#changeElectrician
 	 */
-	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner)
-			throws RemoteException;
+	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner,
+			RafverktokuListi rafverktokuListi) throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#getChildElectricalInstallationOrNull

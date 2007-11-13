@@ -382,18 +382,18 @@ public class InitialData extends BaseBean {
 		return selects;
 	}
 	
-	public List getGotuListiSelects(){
-		ArrayList selects = new ArrayList();
-		List gotuListi = getGotuListi();
-		for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
-			Gata gata = (Gata) iter.next();
-			SelectItem item = new SelectItem();
-			item.setLabel(gata.getNafn());
-			item.setValue(gata.getGotuId());
-			selects.add(item);
-		}
-		return selects;
-	}
+//	public List getGotuListiSelects(){
+//		ArrayList selects = new ArrayList();
+//		List gotuListi = getGotuListi();
+//		for (Iterator iter = gotuListi.iterator(); iter.hasNext();) {
+//			Gata gata = (Gata) iter.next();
+//			SelectItem item = new SelectItem();
+//			item.setLabel(gata.getNafn());
+//			item.setValue(gata.getGotuId());
+//			selects.add(item);
+//		}
+//		return selects;
+//	}
 	
 	public List getStreetNumberSelects() {
 		List numbers = new ArrayList(MAX_STREET_NUMBER);
@@ -430,28 +430,28 @@ public class InitialData extends BaseBean {
 		return Postnumeraskra.getCached().getPostnumerByNumer("101");
 	}
 	
-	public List getGotuListi(){
-		/*ArrayList listi = new ArrayList();
-		
-		Gata adalstr = getGataAdalstraeti();
-		listi.add(adalstr);
-		
-		Gata austurstraeti = getGataAusturstraeti();
-		listi.add(austurstraeti);
-		
-		Gata engjavegur = getGataEngjavegur();
-		listi.add(engjavegur);
-		
-		Gata engjateigur = getGataEngjateigur();
-		listi.add(engjateigur);
-		
-		
-		return listi;*/
-		
-		Gotuskra skra=null;
-		skra = Gotuskra.getCached();
-		return skra.getGotur();
-	}
+//	public List getGotuListi(){
+//		/*ArrayList listi = new ArrayList();
+//		
+//		Gata adalstr = getGataAdalstraeti();
+//		listi.add(adalstr);
+//		
+//		Gata austurstraeti = getGataAusturstraeti();
+//		listi.add(austurstraeti);
+//		
+//		Gata engjavegur = getGataEngjavegur();
+//		listi.add(engjavegur);
+//		
+//		Gata engjateigur = getGataEngjateigur();
+//		listi.add(engjateigur);
+//		
+//		
+//		return listi;*/
+//		
+//		Gotuskra skra=null;
+//		skra = Gotuskra.getCached();
+//		return skra.getGotur();
+//	}
 	
 	public List getGotuListiByPostnumer(String postnumer){
 		return Gotuskra.getCached().getGoturByPostnumer(postnumer);
