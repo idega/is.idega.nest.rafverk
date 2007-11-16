@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.35 2007/11/13 16:25:18 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.36 2007/11/16 16:30:51 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/13 16:25:18 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -156,6 +156,12 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		initializeValidation();
 	}
 	
+	public void initializeAfterSendingPage() {
+		// do not initialize everything because sent page needs some piece of data
+		initializeForm();
+		initializeValidation();
+	}
+	
 	void initializeForm() {
 		super.initializeForm();
 	    orkuveitufyrirtaeki = null;
@@ -225,14 +231,14 @@ public class TilkynningVertakaBean extends RealEstateBean {
 					messageStoring = "Þjónustubeiðni ekki send";
 				}
 				// good bye to tilkynningvertaka bean
-				initialize();
+				initializeAfterSendingPage();
 				return "send";
 			}
 			// successfully stored but validation problems, stay on same page
 			return null;
 		}
 		// good bye to tilkynningvertaka bean
-		initialize();
+		initializeAfterSendingPage();
 		messageStoring = "Þjónustubeiðni ekki geymd";
 		return "send";
 	}
@@ -268,7 +274,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 					messageStoring = "Skýrsla ekki send";
 				}
 				// good bye to tilkynningvertaka bean
-				initialize();
+				initializeAfterSendingPage();
 				// good bye to tilkynning lok verks bean 
 				BaseBean.getTilkynningLokVerksBean().initialize();
 				return "send";
@@ -277,7 +283,7 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			return null;
 		}
 		// good bye to tilkynningvertaka bean
-		initialize();
+		initializeAfterSendingPage();
 		// good bye to tilkynning lok verks bean 
 		BaseBean.getTilkynningLokVerksBean().initialize();
 		messageStoring = "Skýrsla ekki geymd";
@@ -296,7 +302,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	
 	private boolean sendApplicationReportData() {
 		try {
-			return getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka());
+			RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
+			return getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka(),rafverktokuListi);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());

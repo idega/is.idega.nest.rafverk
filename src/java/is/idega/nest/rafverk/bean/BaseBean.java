@@ -1,5 +1,7 @@
 package is.idega.nest.rafverk.bean;
 
+import is.idega.nest.rafverk.bean.constants.CaseConstants;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -14,6 +16,9 @@ import uk.ltd.getahead.dwr.WebContextFactory;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
 import com.idega.idegaweb.IWApplicationContext;
+import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
+import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.user.data.User;
 
@@ -125,5 +130,14 @@ public class BaseBean implements Serializable{
 			throw new RuntimeException(rme.getMessage());
 		}
 		return myServiceBean;
+	}
+	
+	
+	public static IWResourceBundle getResourceBundle() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		IWContext iwc = IWContext.getIWContext(facesContext);
+		IWMainApplication mainApplication = iwc.getApplicationContext().getIWMainApplication();
+		IWBundle bundle = mainApplication.getBundle(CaseConstants.BUNDLE_IDENTIFIER);
+		return bundle.getResourceBundle(iwc);
 	}
 }

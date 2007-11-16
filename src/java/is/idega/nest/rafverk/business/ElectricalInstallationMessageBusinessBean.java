@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.2 2007/08/17 17:07:21 thomas Exp $
+ * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.3 2007/11/16 16:30:50 thomas Exp $
  * Created on Jun 18, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -39,10 +39,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/08/17 17:07:21 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/16 16:30:50 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean implements ElectricalInstallationMessageBusiness {
 	
@@ -58,7 +58,7 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
-	public String createStatusChangedUserMessage(ElectricalInstallation electricalInstallation, User sender, String text) {
+	public String createStatusChangedUserMessage(ElectricalInstallation electricalInstallation, User sender, User receiver, String text) {
 		String statusDescription;
 		try {
 			statusDescription = getElectricalInstallationBusiness().getElectricalInstallationState().getStatusDescription(electricalInstallation);
@@ -69,15 +69,15 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 		}
 		// composing email
 		String subject = StringHandler.concat("Bryett staða: ", statusDescription);
-		return createUserMessage(electricalInstallation, sender, subject, text);
+		return createUserMessage(electricalInstallation, sender, receiver, subject, text);
 	}
 		
-	public String createUserMessage(ElectricalInstallation electricalInstallation, User sender, String subject, String text) {
-		User electrician = electricalInstallation.getElectrician();
+	public String createUserMessage(ElectricalInstallation electricalInstallationParentCase, User sender, User receiver, String subject, String text) {
+
 		MessageValue messageValue = new MessageValue();
 		messageValue.setSender(sender);
-		messageValue.setReceiver(electrician);
-		messageValue.setParentCase(electricalInstallation);
+		messageValue.setReceiver(receiver);
+		messageValue.setParentCase(electricalInstallationParentCase);
 		messageValue.setSubject(subject);
 		messageValue.setBody(text);
 		// first create message (for message box)
@@ -93,8 +93,8 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 			throw new IBORuntimeException();
 		}
 		// second send email if desired
-		if (userPrefersMessageByEmail(electrician)) {
-			return sendEmail(sender, electrician, subject, text, getSMTPMailserver());
+		if (userPrefersMessageByEmail(receiver)) {
+			return sendEmail(sender, receiver, subject, text, getSMTPMailserver());
 		}
 		return null;
 	}

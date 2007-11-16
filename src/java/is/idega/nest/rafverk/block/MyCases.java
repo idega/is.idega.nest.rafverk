@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.4 2007/09/05 16:34:14 thomas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.5 2007/11/16 16:30:51 thomas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -411,7 +411,8 @@ public class MyCases extends CasesList {
 		
 		ElectricalInstallationMessageBusiness messageBusiness = getElectricalInstallationMessageBusiness(iwc);
 		User sender = iwc.getCurrentUser();
-		return messageBusiness.createStatusChangedUserMessage(electricalInstallation, sender, reply);
+		User receiver = electricalInstallation.getElectrician();
+		return messageBusiness.createStatusChangedUserMessage(electricalInstallation, sender, receiver, reply);
 	}
 
 	protected boolean showCheckBox() {

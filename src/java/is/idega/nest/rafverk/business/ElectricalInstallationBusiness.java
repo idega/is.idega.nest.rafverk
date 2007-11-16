@@ -69,7 +69,8 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#sendApplicationReport
 	 */
-	public boolean sendApplicationReport(Rafverktaka rafverktaka) throws RemoteException;
+	public boolean sendApplicationReport(Rafverktaka rafverktaka, RafverktokuListi rafverktokuListi)
+			throws RemoteException;
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#storeApplication

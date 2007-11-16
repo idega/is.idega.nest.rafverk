@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.4 2007/11/13 16:25:19 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.5 2007/11/16 16:30:51 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -28,10 +28,10 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ChangeElectricianConfirmationBean {
 	
@@ -80,7 +80,6 @@ public class ChangeElectricianConfirmationBean {
 	
 	private void initialize() {
 		ElectricalInstallationCaseBusiness electricalInstallationCaseBusinessLocal = getElectricalInstallationCaseBusiness();
-		ElectricalInstallationBusiness electricalInstallationBusinessLocal = getElectricalInstallationBusiness();
 		try {
 			changeElectricanCase = electricalInstallationCaseBusinessLocal.getCase(sel_case_nr);
 			oldElectricalInstallation = 

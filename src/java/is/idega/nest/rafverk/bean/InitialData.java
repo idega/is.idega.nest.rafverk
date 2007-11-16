@@ -215,8 +215,8 @@ public class InitialData extends BaseBean {
 	public static final String LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY = "EKKI_TIL_STADAR";
 	
 	public static final String[] LEKASTRAUMSROFI = {
+		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY,
 		"í lagi", LEKASTRAUMSROFI_I_LAGI_KEY,
-		"ekki til staðar", LEKASTRAUMSROFI_EKKI_TIL_STADAR_KEY
 		};
 	
 	public static final List LEKASTRAUMSROFI_LIST = Arrays.asList(LEKASTRAUMSROFI);
