@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.36 2007/11/16 16:30:51 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.37 2007/11/22 16:24:04 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -14,6 +14,7 @@ import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
 import is.idega.nest.rafverk.business.ElectricalInstallationValidationBusiness;
+import is.idega.nest.rafverk.business.UserMessagesBusiness;
 import is.idega.nest.rafverk.data.Maelir;
 import is.idega.nest.rafverk.data.MaelirList;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
@@ -49,22 +50,24 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/22 16:24:04 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
 	private Rafverktaka rafverktaka;
 	
-	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
-	private GroupBusiness groupBusiness = null;
+	private GroupBusiness groupBusiness;
 	
-	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
+	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness;
 	
-	private ElectricalInstallationValidationBusiness electricalInstallationValidationBusiness = null;
+	private ElectricalInstallationValidationBusiness electricalInstallationValidationBusiness;
+	
+	private UserMessagesBusiness userMessagesBusiness;
 	
 	// special lock variables
 	
@@ -224,7 +227,12 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			// note: validation should not be done if wroking place is wrong
 			if (noOneIsAlreadyWorkingAtThisPlace() && validateTilkynningVertaka()) {
 				if (sendApplicationData()) {
-					messageStoring = "Þjónustubeiðni send";
+					try {
+						messageStoring = getUserMessagesBusiness().getMessageAfterSendingInApplication(getRafverktaka().getElectricalInstallation());
+					}
+					catch (RemoteException e) {
+						throw new IBORuntimeException();
+					}
 					createApplicationPDFSendEmails(true);
 				}
 				else {
@@ -267,7 +275,12 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			// note: validation should not be done if wroking place is wrong
 			if (noOneIsAlreadyWorkingAtThisPlace() && validateTilkynningLokVerks()) {
 				if (sendApplicationReportData()) {
-					messageStoring = "Skýrsla send";
+					try {
+						messageStoring = getUserMessagesBusiness().getMessageAfterSendingInApplicationReport(getRafverktaka().getElectricalInstallation());
+					}
+					catch (RemoteException e) {
+						throw new IBORuntimeException(e);
+					}
 					createApplicationReportPDF();
 				}
 				else {
@@ -306,17 +319,22 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			return getElectricalInstallationBusiness().sendApplicationReport(getRafverktaka(),rafverktokuListi);
 		}
 		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 	
 	public String storeApplication() {
 		isSuccessfullyStored = storeApplicationData();
 		if (isSuccessfullyStored) { 
-			messageStoring = "þjónustubeiðni geymd";
+			try {
+				messageStoring = getUserMessagesBusiness().getMessageAfterStoringApplication(getRafverktaka().getElectricalInstallation());
+			}
+			catch (RemoteException e) {
+				throw new IBORuntimeException(e);
+			}
 		}
 		else {
-			messageStoring = "þjónustubeiðni ekki geymd";
+			messageStoring = "Problem appeared: þjónustubeiðni ekki geymd";
 		}
 		return "store";
 	}
@@ -331,14 +349,19 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			return result;
 		}
 		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new IBORuntimeException(e);
 		}
 	}
 	
 	public String storeApplicationReport() {
 		isSuccessfullyStored = storeApplicationReportData();
 		if (isSuccessfullyStored) { 
-			messageStoring = "Skýrsla geymd";
+			try {
+				messageStoring = getUserMessagesBusiness().getMessageAfterStoringApplicationReport(getRafverktaka().getElectricalInstallation());
+			}
+			catch (RemoteException e) {
+				throw new IBORuntimeException(e);
+			}
 		}
 		else {
 			messageStoring = "Skýrsla ekki geymd";
@@ -355,7 +378,12 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		}
 		isSuccessfullyStored = checkOutWorkingPlaceData();
 		if (isSuccessfullyStored) { 
-			messageStoring = "Verk tekið";
+			try {
+				messageStoring = getUserMessagesBusiness().getMessageAfterCheckingOutWorkingPlace(getRafverktaka().getElectricalInstallation());
+			}
+			catch (RemoteException e) {
+				throw new IBORuntimeException(e);
+			}
 		}
 		else {
 			messageStoring = "Verk ekki tekið";
@@ -921,8 +949,11 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		return groupBusiness;
 	}
 	
-
-
+	public UserMessagesBusiness getUserMessagesBusiness() {
+		userMessagesBusiness = 
+			(UserMessagesBusiness) BaseBean.initializeServiceBean(userMessagesBusiness, UserMessagesBusiness.class);
+		return userMessagesBusiness;
+	}
 	
 	public Rafverktaka getRafverktaka() {
 		return rafverktaka;

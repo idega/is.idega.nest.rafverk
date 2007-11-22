@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBusinessBean.java,v 1.23 2007/11/16 16:30:51 thomas Exp $
+ * $Id: ElectricalInstallationBusinessBean.java,v 1.24 2007/11/22 16:23:44 thomas Exp $
  * Created on Mar 16, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,7 +29,6 @@ import is.postur.Gata;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,7 +58,6 @@ import com.idega.core.location.data.Street;
 import com.idega.core.location.data.StreetHome;
 import com.idega.data.IDOHome;
 import com.idega.data.IDOLookup;
-import com.idega.idegaweb.IWResourceBundle;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
@@ -68,10 +66,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class ElectricalInstallationBusinessBean extends IBOServiceBean implements ElectricalInstallationBusiness {
 	
@@ -80,6 +78,8 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness;
 	
 	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness;
+	
+	private UserMessagesBusiness userMessagesBusiness;
 	
 	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness;
 	
@@ -115,7 +115,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		return getElectricalInstallationCache().changesForUser(user);
 	}
 
-	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner, RafverktokuListi rafverktokuListi) {
+	public KeyValuePair changeElectrician(ElectricalInstallation electricalInstallation, User newOwner, RafverktokuListi rafverktokuListi) {
 		ElectricalInstallation newElectricalInstallation = null;
 		try {
 			newElectricalInstallation = getElectricalInstallationHome().create();
@@ -162,90 +162,16 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 			e.printStackTrace();
 		}
 		electricalInstallation.store();
-		sendUserMessageAfterChangingElectrician(electricalInstallation, newElectricalInstallation);
-		return newElectricalInstallation;
-	}
-	
-	private void sendUserMessageAfterChangingElectrician(ElectricalInstallation oldElectricalInstallation, ElectricalInstallation newElectricalInstallation) {
-		IWResourceBundle resourceBundle = BaseBean.getResourceBundle();
-		sendAcceptMessageToNewOwner(oldElectricalInstallation, newElectricalInstallation, resourceBundle);
-		sendHandshakingMessageToOldOwner(oldElectricalInstallation, newElectricalInstallation, resourceBundle);
-	}
-		
-	private void sendAcceptMessageToNewOwner(ElectricalInstallation oldElectricalInstallation, ElectricalInstallation newElectricalInstallation, IWResourceBundle resourceBundle ) {
-		// send accept message to new owner
-		String[] oldArguments = getArgumentsFrom(oldElectricalInstallation);	
-		String subject = "Request for taking over task was accepted";
-		String body = "Electrician {0} has accepted your request for taking over the following job: \r"+
-		"Working place: {2} \r" +
-		"Energy consumer: {3}  \r";
-		String localizedSubject = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_was_accepted_subject", subject);
-		String localizedBody = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_was_accepted_body", body);
-		String formatedLocalizedBody = MessageFormat.format(localizedBody, oldArguments);
-		User sender = oldElectricalInstallation.getElectrician();
-		User receiver = newElectricalInstallation.getElectrician();
 		try {
-			getElectricalInstallationMessageBusiness().createUserMessage(newElectricalInstallation, sender, receiver, localizedSubject, formatedLocalizedBody);
+			String result = getUserMessagesBusiness().sendUserMessageAfterChangingElectrician(electricalInstallation, newElectricalInstallation);
+			return new KeyValuePair(newElectricalInstallation, result);
 		}
 		catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			throw new IBORuntimeException(e);
 		}
-	}
-		
-	private void sendHandshakingMessageToOldOwner(ElectricalInstallation oldElectricalInstallation, ElectricalInstallation newElectricalInstallation, IWResourceBundle resourceBundle ) {
-		// // send handshaking to yourself
-		String[] arguments = getArgumentsFrom(newElectricalInstallation);
-		
-		// get verknumer (was not taken over)
-		String verknumer = oldElectricalInstallation.getExternalProjectID();
-		verknumer = StringHandler.replaceIfEmpty(verknumer, "");
-		arguments[1] = verknumer;
-		
-		String subject = "Request for taking over task accepted";
-		String body = "Electrician {0} has taken over the following job: \r"+
-		"Project number: {1} \r" +
-		"Working place: {2} \r" +
-		"Energy consumer: {3}  \r";
-		String localizedSubject = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_accepted_subject", subject);
-		String localizedBody = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_accepted_body", body);
-		String formatedLocalizedBody = MessageFormat.format(localizedBody, arguments);
-		User sender = oldElectricalInstallation.getElectrician();
-		User receiver = oldElectricalInstallation.getElectrician();
-		try {
-			getElectricalInstallationMessageBusiness().createUserMessage(newElectricalInstallation, sender, receiver, localizedSubject, formatedLocalizedBody);
-		}
-		catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			throw new IBORuntimeException(e);
-		}
+
 	}
 	
-	private String[] getArgumentsFrom(ElectricalInstallation electricalInstallation) {
-		// #0
-		User electrician = electricalInstallation.getElectrician();
-			
-		// #1
-		String externalProjectID = electricalInstallation.getExternalProjectID();
-		externalProjectID =  StringHandler.replaceIfEmpty(externalProjectID, "");
-		
-		// #2
-		RealEstate realEstate = electricalInstallation.getRealEstate();
-		String workingPlaceDisplay = null;
-		if (realEstate != null) {
-			Fasteign fasteign = new Fasteign(realEstate);
-			workingPlaceDisplay = fasteign.getDescription();
-			
-		}
-		workingPlaceDisplay = StringHandler.replaceIfEmpty(workingPlaceDisplay, "");
-		
-		// #3
-		String energyConsumerName = electricalInstallation.getEnergyConsumerName();
-		energyConsumerName = StringHandler.replaceIfEmpty(energyConsumerName, "");
-		
-		String[] arg = { electrician.getName(), electricalInstallation.getExternalProjectID(), workingPlaceDisplay, energyConsumerName };
-		return arg;
-	}
 	
 	
 	public ElectricalInstallation getChildElectricalInstallationOrNull(ElectricalInstallation electricalInstallation) {
@@ -966,20 +892,7 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 	
 	public KeyValuePair getPDFApplicationAndSendEmails(ElectricalInstallation electricalInstallation) throws IOException {
 		String downloadURL = getElectricalInstallationRendererBusiness().getPDFApplication(electricalInstallation);
-		User electrician = electricalInstallation.getElectrician();
-		String name = (electrician == null) ? null : electrician.getName();
-		String subject = "Þjónustubeiðni";
-		subject = (name == null) ? subject : subject + ": " + name;
-		String text = null;
-		RealEstate realEstate = electricalInstallation.getRealEstate();
-		if (realEstate != null) {
-			Fasteign fasteign = new Fasteign(realEstate);
-			text = fasteign.getDescription();
-		}
-		else {
-			text = StringHandler.EMPTY_STRING;
-		}
-		String result = getElectricalInstallationMessageBusiness().sendDataToEnergyCompany(electricalInstallation, subject, text, downloadURL);
+		String result = getUserMessagesBusiness().sendDataToEnergyCompany(electricalInstallation, downloadURL);
 		return new KeyValuePair(downloadURL, result);
 	}
 	
@@ -1285,13 +1198,15 @@ public class ElectricalInstallationBusinessBean extends IBOServiceBean implement
 		}
 		return electricalInstallationRendererBusiness;
 	}
+
 	
-	private ElectricalInstallationMessageBusiness  getElectricalInstallationMessageBusiness() {
-		if (electricalInstallationMessageBusiness == null) {
-			electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness) getServiceBean(ElectricalInstallationMessageBusiness.class);
+	private UserMessagesBusiness  getUserMessagesBusiness() {
+		if (userMessagesBusiness == null) {
+			userMessagesBusiness = (UserMessagesBusiness) getServiceBean(UserMessagesBusiness.class);
 		}
-		return electricalInstallationMessageBusiness;
+		return userMessagesBusiness;
 	}
+
 	
 	public ElectricalInstallationCaseBusiness getElectricalInstallationCaseBusiness() {
 		if (electricalInstallationCaseBusiness == null) { 

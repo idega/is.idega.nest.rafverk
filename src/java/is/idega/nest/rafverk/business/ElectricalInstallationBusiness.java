@@ -34,7 +34,7 @@ public interface ElectricalInstallationBusiness extends IBOService {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationBusinessBean#changeElectrician
 	 */
-	public ElectricalInstallation changeElectrician(ElectricalInstallation electricalInstallation, User newOwner,
+	public KeyValuePair changeElectrician(ElectricalInstallation electricalInstallation, User newOwner,
 			RafverktokuListi rafverktokuListi) throws RemoteException;
 
 	/**

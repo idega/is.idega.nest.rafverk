@@ -1,18 +1,17 @@
 package is.idega.nest.rafverk.business;
 
 
-import is.idega.nest.rafverk.domain.ElectricalInstallation;
-
-import java.rmi.RemoteException;
-import java.util.List;
-
-import javax.ejb.FinderException;
-
+import com.idega.util.datastructures.list.KeyValuePair;
 import com.idega.block.process.business.CaseBusiness;
 import com.idega.block.process.data.Case;
+import javax.ejb.FinderException;
 import com.idega.block.process.data.CaseCode;
+import com.idega.business.IBOService;
+import java.util.List;
+import is.idega.nest.rafverk.domain.ElectricalInstallation;
+import java.rmi.RemoteException;
 
-public interface ElectricalInstallationCaseBusiness extends CaseBusiness {
+public interface ElectricalInstallationCaseBusiness extends IBOService, CaseBusiness {
 
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationCaseBusinessBean#getCaseCodeForElectricalInstallationChange
@@ -33,6 +32,6 @@ public interface ElectricalInstallationCaseBusiness extends CaseBusiness {
 	/**
 	 * @see is.idega.nest.rafverk.business.ElectricalInstallationCaseBusinessBean#sendRequestForChangingElectrician
 	 */
-	public String sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation)
+	public KeyValuePair sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation)
 			throws RemoteException;
 }

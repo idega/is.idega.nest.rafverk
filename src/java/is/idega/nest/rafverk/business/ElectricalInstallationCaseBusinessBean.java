@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.6 2007/11/16 16:30:50 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.7 2007/11/22 16:23:44 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -9,13 +9,11 @@
  */
 package is.idega.nest.rafverk.business;
 
-import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.bean.constants.CaseConstants;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 
 import java.rmi.RemoteException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,24 +26,22 @@ import javax.ejb.FinderException;
 import com.idega.block.process.business.CaseBusinessBean;
 import com.idega.block.process.data.Case;
 import com.idega.block.process.data.CaseCode;
-import com.idega.core.location.data.RealEstate;
-import com.idega.idegaweb.IWResourceBundle;
 import com.idega.user.data.User;
-import com.idega.util.StringHandler;
+import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:50 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	
-	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness = null;
+	private UserMessagesBusiness userMessagesBusiness;
 	
 	/**
 	 * Can be overrided in subclasses
@@ -95,62 +91,29 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 		return result;
 	}
 	
-	public String sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation) {
-		// #0
+	public KeyValuePair sendRequestForChangingElectrician(ElectricalInstallation electricalInstallation) {
 		User sender = BaseBean.getCurrentUser();
-		IWResourceBundle resourceBundle = BaseBean.getResourceBundle();
-			
-		// #1
-		String externalProjectID = electricalInstallation.getExternalProjectID();
-		externalProjectID =  StringHandler.replaceIfEmpty(externalProjectID, "");
-		
-		// #2
-		RealEstate realEstate = electricalInstallation.getRealEstate();
-		String workingPlaceDisplay = null;
-		if (realEstate != null) {
-			Fasteign fasteign = new Fasteign(realEstate);
-			workingPlaceDisplay = fasteign.getDescription();
-			
-		}
-		workingPlaceDisplay = StringHandler.replaceIfEmpty(workingPlaceDisplay, "");
-		
-		// #3
-		String energyConsumerName = electricalInstallation.getEnergyConsumerName();
-		energyConsumerName = StringHandler.replaceIfEmpty(energyConsumerName, "");
-		
-		String[] arg = { sender.getName(), electricalInstallation.getExternalProjectID(), workingPlaceDisplay, energyConsumerName };
-		String subject = "Request for taking over task";
-		String body = "Electrician {0} would like to take over the following job: \r"+
-		"Number: {1} \r" +
-		"Working place: {2} \r" +
-		"Energy consumer: {3}  \r" +
-		"Please confirm the request as soon as possible";
-		
-		String localizedSubject = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_subject", subject);
-		String localizedBody = resourceBundle.getLocalizedString("rafverk_request_for_taking_over_task_body", body);
-		
-		String formatedLocalizedBody = MessageFormat.format(localizedBody, arg);
 
 		String result = null;
+		Case newCase = null;
 		try {
 			CaseCode caseCode = getCaseCodeForElectricalInstallationChange();
-			Case newCase = createSubCase(electricalInstallation, caseCode);
+			newCase = createSubCase(electricalInstallation, caseCode);
 			getElectricalInstallationBusiness().getElectricalInstallationState().sendRequestForChange(newCase);
 			newCase.setCreator(sender);
 			newCase.setParentCase(electricalInstallation);
 			newCase.store();
 			// note: if a create exception is thrown a user message is not created
-			User receiver = electricalInstallation.getElectrician();
-			result = getElectricalInstallationMessageBusiness().createUserMessage(electricalInstallation, sender, receiver, localizedSubject, formatedLocalizedBody);
-			result = (result == null) ? "Successfully sent" : "Successfully sent request but problems occurred sending email";
+			result = getUserMessagesBusiness().sendUserMessageRequestingChangeOfElectrician(electricalInstallation, sender);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
 		catch (CreateException e) {
+			newCase = null;
 			result = "An error occurred: Request was not sent.";
 		}
-		return result;
+		return new KeyValuePair(newCase, result);
 	}
 		
 	private ElectricalInstallationBusiness getElectricalInstallationBusiness() {
@@ -158,11 +121,12 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 			BaseBean.initializeServiceBean(electricalInstallationBusiness, ElectricalInstallationBusiness.class);
 		return electricalInstallationBusiness;
 	}
+
 	
-	private ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness() {
-		electricalInstallationMessageBusiness = (ElectricalInstallationMessageBusiness)  
-			BaseBean.initializeServiceBean(electricalInstallationMessageBusiness, ElectricalInstallationMessageBusinessBean.class);
-		return electricalInstallationMessageBusiness;
+	private UserMessagesBusiness getUserMessagesBusiness() {
+		userMessagesBusiness = (UserMessagesBusiness)  
+			BaseBean.initializeServiceBean(userMessagesBusiness, UserMessagesBusiness.class);
+		return userMessagesBusiness;
 	}
 	
 }

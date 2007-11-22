@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.5 2007/11/16 16:30:51 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.6 2007/11/22 16:23:44 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.bean;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationState;
+import is.idega.nest.rafverk.business.UserMessagesBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 
@@ -23,15 +24,17 @@ import javax.ejb.FinderException;
 import javax.faces.context.FacesContext;
 
 import com.idega.block.process.data.Case;
+import com.idega.business.IBORuntimeException;
 import com.idega.user.data.User;
+import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ChangeElectricianConfirmationBean {
 	
@@ -47,9 +50,11 @@ public class ChangeElectricianConfirmationBean {
 	
 	private User requestSender = null;
 	
-	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
-	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness = null;
+	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness;
+	
+	private UserMessagesBusiness userMessagesBusiness;
 	
 	public void setSel_case_nr(String sel_case_nr) {
 		// coming to the first page of wizard from overview (that is block UserCases) 
@@ -135,22 +140,27 @@ public class ChangeElectricianConfirmationBean {
 		ElectricalInstallationBusiness electricalInstallationBusinessLocal = getElectricalInstallationBusiness();
 		try {
 			RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
-			ElectricalInstallation newElectricalInstallation = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender, rafverktokuListi);
+			KeyValuePair newElectricalInstallationResult = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender, rafverktokuListi);
+			ElectricalInstallation newElectricalInstallation = (ElectricalInstallation) newElectricalInstallationResult.getKey();
 			if (newElectricalInstallation == null) {
+				// new electrical installation could not be created
 				messageStoring = "Error occurred";
+				return "next";
 			}
-			else {
-				messageStoring = "Successfully sent"; 
-				
-				// flag change-electrician case as deleted
-				String deleted = getElectricalInstallationCaseBusiness().getCaseStatusDeletedString();
-				changeElectricanCase.setStatus(deleted);
-				changeElectricanCase.store();
-				
-				// mark changes for the user that sent the request
-				electricalInstallationBusinessLocal.addChangeForUser(requestSender);
-				
+			messageStoring = getUserMessagesBusiness().getMessageAfterAcceptingRequestForChangeOfElectrician(newElectricalInstallation);
+			String result = (String) newElectricalInstallationResult.getValue();
+			if (result != null) {
+				// should not happen, result indicates a small but not serious problem
+				messageStoring = result + messageStoring;
 			}
+			// flag change-electrician case as deleted
+			String deleted = getElectricalInstallationCaseBusiness().getCaseStatusDeletedString();
+			changeElectricanCase.setStatus(deleted);
+			changeElectricanCase.store();
+			
+			// mark changes for the user that sent the request
+			electricalInstallationBusinessLocal.addChangeForUser(requestSender);
+
 			// reset everything here
 			sel_case_nr = null;
 			rafverktaka = null;
@@ -162,7 +172,7 @@ public class ChangeElectricianConfirmationBean {
 			return "next";
 		}
 		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new IBORuntimeException(e.getMessage());
 		}
 	}
 	
@@ -178,5 +188,10 @@ public class ChangeElectricianConfirmationBean {
 		return electricalInstallationCaseBusiness;
 	}
 
+	public UserMessagesBusiness getUserMessagesBusiness() {
+		userMessagesBusiness = 
+			(UserMessagesBusiness) BaseBean.initializeServiceBean(userMessagesBusiness, UserMessagesBusiness.class);
+		return userMessagesBusiness;
+	}
 
 }

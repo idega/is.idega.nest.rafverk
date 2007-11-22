@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.8 2007/11/13 16:25:18 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.9 2007/11/22 16:23:44 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -12,6 +12,7 @@ package is.idega.nest.rafverk.bean;
 import is.fmr.landskra.Fasteign;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationCaseBusiness;
+import is.idega.nest.rafverk.business.UserMessagesBusiness;
 import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Orkukaupandi;
@@ -34,28 +35,32 @@ import java.util.TreeMap;
 
 import javax.ejb.FinderException;
 
+import com.idega.block.process.data.Case;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
+import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/13 16:25:18 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
-	private Map electricalInstallationList = null;
+	private Map electricalInstallationList;
 	
-	private Map electricalInstallationMap = null; 
+	private Map electricalInstallationMap; 
 	
-	private String electricalInstallationIDSelection = null;
+	private String electricalInstallationIDSelection;
 	
-	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
+	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
-	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness = null;
+	private ElectricalInstallationCaseBusiness electricalInstallationCaseBusiness;
+	
+	private UserMessagesBusiness userMessagesBusiness;
 	
 	private String messageStoring = null;
 	
@@ -215,12 +220,24 @@ public class ChangeElectricianBean extends RealEstateBean {
 		ElectricalInstallation electricalInstallation = currentElectricalInstallation.getElectricalInstallation();
 		ElectricalInstallationCaseBusiness caseBusiness = getElectricalInstallationCaseBusiness();
 		try {
-			messageStoring = caseBusiness.sendRequestForChangingElectrician(electricalInstallation);
+			KeyValuePair pair = caseBusiness.sendRequestForChangingElectrician(electricalInstallation);
+			Case newCase = (Case) pair.getKey();
+			if (newCase == null) {
+				// case could not be created!!
+				messageStoring = "Sorry. Request could not be sent. Problems appeared.";
+				return "next";
+			}
+			messageStoring = getUserMessagesBusiness().getMessageAfterSendingRequestForChangeOfElectrician(electricalInstallation);
+			String result = (String) pair.getValue();
+			if (result != null) {
+				// minor problems (case could be created, some problems with user messages
+				messageStoring = result + messageStoring;
+			}
+			return "next";
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e.getMessage());
 		}
-		return "next";
 	}
 	
 	// message for third step
@@ -238,6 +255,12 @@ public class ChangeElectricianBean extends RealEstateBean {
 		electricalInstallationCaseBusiness = (ElectricalInstallationCaseBusiness) 
 			BaseBean.initializeServiceBean(electricalInstallationCaseBusiness, ElectricalInstallationCaseBusiness.class);
 		return electricalInstallationCaseBusiness;
+	}
+	
+	public UserMessagesBusiness getUserMessagesBusiness() {
+		userMessagesBusiness = (UserMessagesBusiness) 
+			BaseBean.initializeServiceBean(userMessagesBusiness, UserMessagesBusiness.class);
+		return userMessagesBusiness;
 	}
 	
 	/**
