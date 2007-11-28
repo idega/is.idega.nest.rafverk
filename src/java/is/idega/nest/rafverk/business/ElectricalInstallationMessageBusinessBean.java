@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.3 2007/11/16 16:30:50 thomas Exp $
+ * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.4 2007/11/28 17:54:19 thomas Exp $
  * Created on Jun 18, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,6 +10,7 @@
 package is.idega.nest.rafverk.business;
 
 import is.idega.idegaweb.egov.message.business.CommuneMessageBusiness;
+import is.idega.nest.rafverk.bean.BaseBean;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 
 import java.io.File;
@@ -39,10 +40,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:50 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/28 17:54:19 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean implements ElectricalInstallationMessageBusiness {
 	
@@ -68,7 +69,8 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 			throw new IBORuntimeException();
 		}
 		// composing email
-		String subject = StringHandler.concat("Bryett staða: ", statusDescription);
+		String subject = 
+			BaseBean.getResourceBundle().getLocalizedAndFormattedString("rafverk_status_change", "Status has changed to {0}.", new String[] {statusDescription});
 		return createUserMessage(electricalInstallation, sender, receiver, subject, text);
 	}
 		
@@ -86,6 +88,7 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 			getMessageBusiness().createMessage(messageValue);
 		}
 		catch (CreateException e) {
+			// rare problem, does not need to be localized
 			return "Error: User message for message box could not be created";
 		}
 		catch (RemoteException e) {
@@ -163,21 +166,37 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 	public String sendEmail(User fromUser, User toUser, String subject, String text, File resource, String smtpMailServer) {
 		String from = getUserMail(fromUser);
 		String to = getUserMail(toUser);
-		if (StringHandler.isEmpty(from)) {
-			return "No electrican's email found";
+		boolean fromAvailable = StringHandler.isNotEmpty(from);
+		boolean toAvailable = StringHandler.isNotEmpty(to);
+		if (fromAvailable && toAvailable) {
+			try {
+				SendMail.send(from, to, null, null, smtpMailServer, subject, text, resource);
+				return null;
+			}
+			catch (MessagingException e) {
+				return BaseBean.getResourceBundle().
+					getLocalizedAndFormattedString("rafverk_error_sending_mail", "Problems appeared sending mail from address {0} to address {1}.", (new String[] {from, to })); 
+			}
 		}
-		if (StringHandler.isEmpty(to)) {
-			return "Error: No energy company's email found";
+		else {
+			StringBuffer buffer = new StringBuffer();
+			if (! fromAvailable) {
+				String fromUserName = fromUser.getName();
+				buffer.append(
+						BaseBean.getResourceBundle()
+						.getLocalizedAndFormattedString("rafverk_error_mail_address_not_found", "Mail address of {0} not found.", (new String[] {fromUserName})));
+			}
+			if ((! fromAvailable) && (! toAvailable)) {
+				buffer.append(" ");
+			}
+			if (! toAvailable) {
+				String toUserName = toUser.getName();
+				buffer.append(
+						BaseBean.getResourceBundle()
+						.getLocalizedAndFormattedString("rafverk_error_mail_address_not_found", "Mail address of {0} not found.", (new String[] {toUserName})));
+			}
+			return buffer.toString();
 		}
-		try {
-			SendMail.send(from, to, null, null, smtpMailServer, subject, text, resource);
-		}
-		catch (MessagingException e) {
-			e.printStackTrace();
-			return "Error: Error sending email to energy company";
-		}
-		return null;
-		
 	}
 	
 	
