@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.37 2007/11/22 16:24:04 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.38 2007/11/28 17:58:02 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -50,10 +50,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/22 16:24:04 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/28 17:58:02 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -1073,7 +1073,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 			 downloadTilkynningVertakaPDF = (String) downloadURLMessage.getKey();
 			 String result = (String) downloadURLMessage.getValue();
 			 if (result != null) {
-				 messagePDF = (messagePDF == null) ? result : messagePDF + result;
+				 // note: normal case: result is null
+				 messagePDF = (messagePDF == null) ? result : messagePDF + " "  + result;
 			 }
 			 return true;
 		}
@@ -1156,11 +1157,21 @@ public class TilkynningVertakaBean extends RealEstateBean {
 	}
 			
 	private void setOptionsAndMessage(Map result, ElectricalInstallation electricalInstallation) {
-		List usersOfAvailableCases = (result == null) ? null : (List)result.get(ElectricalInstallationState.AVAILABLE_STATUS_KEY);
-		List usersOfClosedCases = (result == null) ? null : (List) result.get(ElectricalInstallationState.CLOSED_STATUS_KEY);
-		currentWorkingPlaceErrorMessage = getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(usersOfAvailableCases, usersOfClosedCases);
-		setShowChangeElectricianOption(usersOfAvailableCases, usersOfClosedCases);
-		setWorkingPlaceOptions(electricalInstallation);
+		// does the state allow to change the working place?
+		workingPlaceChangeable = isCheckingOutWorkingPlaceAllowedByState(electricalInstallation);
+		if (workingPlaceChangeable) {
+			List usersOfAvailableCases = (result == null) ? null : (List)result.get(ElectricalInstallationState.AVAILABLE_STATUS_KEY);
+			List usersOfClosedCases = (result == null) ? null : (List) result.get(ElectricalInstallationState.CLOSED_STATUS_KEY);
+			currentWorkingPlaceErrorMessage = getSomeoneIsAlreadyWorkingAtThisPlaceErrorMessage(usersOfAvailableCases, usersOfClosedCases);
+			setShowChangeElectricianOption(usersOfAvailableCases, usersOfClosedCases);
+		}
+		else {
+			// status does not allow to change the working place
+			currentWorkingPlaceErrorMessage = null;
+			showChangeElectricianOption = false;
+		}
+			// must be called at the end, currentWorkingPlaceErrorMessage is checked
+		setWorkingPlaceOptions(electricalInstallation, workingPlaceChangeable);
 	}
 	
 	private void setShowChangeElectricianOption(List usersOfAvailableCases, List usersOfClosedCases) {
@@ -1178,15 +1189,13 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		showChangeElectricianOption =  ! usersOfAvailableCases.contains(user);
 	}
 	
-	private void setWorkingPlaceOptions(ElectricalInstallation electricalInstallation) {
-		// does the state allow to change the working place?
-		workingPlaceChangeable = isCheckingOutWorkingPlaceAllowedByState(electricalInstallation);
+	private void setWorkingPlaceOptions(ElectricalInstallation electricalInstallation, boolean workingPlaceChangeableLocal) {
 		// is there a selection that can be check out?
 		// #1 has the right status
 		// #2 something is selected at all
 		// #3 selection is valid
 		showCheckingOutWorkingPlaceOption = 
-			workingPlaceChangeable &&
+			workingPlaceChangeableLocal &&
 			StringHandler.isNotEmpty(getFastanumer()) &&
 			(! isWorkingPlaceInvalid());
 	}
