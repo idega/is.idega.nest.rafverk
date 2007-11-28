@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.6 2007/11/22 16:23:44 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.7 2007/11/28 17:59:24 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -31,16 +31,18 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/28 17:59:24 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ChangeElectricianConfirmationBean {
 	
 	private String sel_case_nr = null;
 	
 	private String messageStoring = null;
+	
+	private boolean requestValid = true;
 	
 	private Rafverktaka rafverktaka = null;
 	
@@ -94,8 +96,8 @@ public class ChangeElectricianConfirmationBean {
 			List openStatusList = ElectricalInstallationState.getOpenStatuses();
 			if (! openStatusList.contains(status)) {
 				// this is an attempt to hack the system
-				System.err.print("[ChangeElectricianConfirmation] ERROR: Attempt to copy an electrical installation with wrong status");
-				return;
+				// System.err.print("[ChangeElectricianConfirmation] ERROR: Attempt to copy an electrical installation with wrong status");
+				requestValid = false;
 			}
 			requestSender = changeElectricanCase.getCreator();
 			String id = oldElectricalInstallation.getPrimaryKey().toString();
@@ -110,6 +112,10 @@ public class ChangeElectricianConfirmationBean {
 		catch (FinderException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isRequestValid() {
+		return requestValid;
 	}
 	
 	public String getRequestSender() {
@@ -139,27 +145,34 @@ public class ChangeElectricianConfirmationBean {
 	public String confirmChangeOfElectrician() {
 		ElectricalInstallationBusiness electricalInstallationBusinessLocal = getElectricalInstallationBusiness();
 		try {
-			RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
-			KeyValuePair newElectricalInstallationResult = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender, rafverktokuListi);
-			ElectricalInstallation newElectricalInstallation = (ElectricalInstallation) newElectricalInstallationResult.getKey();
-			if (newElectricalInstallation == null) {
-				// new electrical installation could not be created
-				messageStoring = "Error occurred";
-				return "next";
+			if (requestValid) {
+				RafverktokuListi rafverktokuListi = BaseBean.getRafverktokuListi();
+				KeyValuePair newElectricalInstallationResult = electricalInstallationBusinessLocal.changeElectrician(oldElectricalInstallation, requestSender, rafverktokuListi);
+				ElectricalInstallation newElectricalInstallation = (ElectricalInstallation) newElectricalInstallationResult.getKey();
+				if (newElectricalInstallation == null) {
+					// new electrical installation could not be created
+					messageStoring = "Error occurred";
+					return "next";
+				}
+			
+				// mark changes for the user that sent the request
+				electricalInstallationBusinessLocal.addChangeForUser(requestSender);
+			
+				messageStoring = getUserMessagesBusiness().getMessageAfterAcceptingRequestForChangeOfElectrician(newElectricalInstallation);
+				String result = (String) newElectricalInstallationResult.getValue();
+				if (result != null) {
+					// should not happen, result indicates a small but not serious problem
+					messageStoring = result + " " + messageStoring;
+				}
 			}
-			messageStoring = getUserMessagesBusiness().getMessageAfterAcceptingRequestForChangeOfElectrician(newElectricalInstallation);
-			String result = (String) newElectricalInstallationResult.getValue();
-			if (result != null) {
-				// should not happen, result indicates a small but not serious problem
-				messageStoring = result + messageStoring;
+			else {
+				// only destroy the request case do nothing else if request is not valid
+				messageStoring = getUserMessagesBusiness().getMessageAfterRemovingRequestForChangeOfElectrician(oldElectricalInstallation);
 			}
 			// flag change-electrician case as deleted
 			String deleted = getElectricalInstallationCaseBusiness().getCaseStatusDeletedString();
 			changeElectricanCase.setStatus(deleted);
 			changeElectricanCase.store();
-			
-			// mark changes for the user that sent the request
-			electricalInstallationBusinessLocal.addChangeForUser(requestSender);
 
 			// reset everything here
 			sel_case_nr = null;
