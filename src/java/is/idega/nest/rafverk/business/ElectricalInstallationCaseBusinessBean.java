@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.7 2007/11/22 16:23:44 thomas Exp $
+ * $Id: ElectricalInstallationCaseBusinessBean.java,v 1.8 2007/11/28 17:55:58 thomas Exp $
  * Created on Jun 6, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -18,24 +18,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 import javax.ejb.CreateException;
+import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
 import com.idega.block.process.business.CaseBusinessBean;
 import com.idega.block.process.data.Case;
 import com.idega.block.process.data.CaseCode;
+import com.idega.business.IBORuntimeException;
+import com.idega.core.location.data.RealEstate;
+import com.idega.core.location.data.Street;
 import com.idega.user.data.User;
+import com.idega.util.StringHandler;
 import com.idega.util.datastructures.list.KeyValuePair;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/28 17:55:58 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean implements ElectricalInstallationCaseBusiness{
 	
@@ -99,6 +105,10 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 		try {
 			CaseCode caseCode = getCaseCodeForElectricalInstallationChange();
 			newCase = createSubCase(electricalInstallation, caseCode);
+			// sometimes the owner is not set right in invoked code above
+			if (newCase.getOwner() == null) {
+				newCase.setOwner(electricalInstallation.getElectrician());
+			}
 			getElectricalInstallationBusiness().getElectricalInstallationState().sendRequestForChange(newCase);
 			newCase.setCreator(sender);
 			newCase.setParentCase(electricalInstallation);
@@ -111,9 +121,53 @@ public class ElectricalInstallationCaseBusinessBean extends CaseBusinessBean imp
 		}
 		catch (CreateException e) {
 			newCase = null;
+			// rare case, do not localize
 			result = "An error occurred: Request was not sent.";
 		}
 		return new KeyValuePair(newCase, result);
+	}
+	
+	public String getLocalizedCaseDescription(Case theCase, Locale locale) {
+		String result = super.getLocalizedCaseDescription(theCase, locale);
+		if (CaseConstants.CASE_CODE_KEY_ELCHN.equals(theCase.getCode())) {
+			theCase = theCase.getParentCase();
+			if (theCase == null) {
+				return result;
+			}
+		}
+		// add street and streetnumber to the result if available
+		ElectricalInstallation electricalInstallation = null;
+		try {
+			electricalInstallation = getElectricalInstallationBusiness().getElectricalInstallationByPrimaryKey(theCase.getPrimaryKey());
+		}
+		catch (RemoteException e) {
+			throw new IBORuntimeException();
+		}
+		catch (EJBException e) {
+			// ignore
+		}
+		catch (FinderException e) {
+			// ignore
+		}
+		if (electricalInstallation != null) {
+			RealEstate realEstate = electricalInstallation.getRealEstate();
+			if (realEstate != null) {
+				Street street = realEstate.getStreet();
+				if (street != null) {
+					String streetName = street.getName();
+					if (StringHandler.isNotEmpty(streetName)) {
+						StringBuffer buffer = new StringBuffer(result);
+						buffer.append(": ").append(streetName);
+						String streetNumber = realEstate.getStreetNumber();
+						if (StringHandler.isNotEmpty(streetNumber)) {
+							buffer.append(" ").append(streetNumber);
+						}
+						return buffer.toString();					
+					}
+				}
+			}
+		}
+		return result;
 	}
 		
 	private ElectricalInstallationBusiness getElectricalInstallationBusiness() {
