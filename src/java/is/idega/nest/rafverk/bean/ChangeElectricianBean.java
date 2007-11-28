@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianBean.java,v 1.9 2007/11/22 16:23:44 thomas Exp $
+ * $Id: ChangeElectricianBean.java,v 1.10 2007/11/28 17:59:55 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -43,10 +43,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/22 16:23:44 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/28 17:59:55 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class ChangeElectricianBean extends RealEstateBean {
 	
@@ -231,7 +231,7 @@ public class ChangeElectricianBean extends RealEstateBean {
 			String result = (String) pair.getValue();
 			if (result != null) {
 				// minor problems (case could be created, some problems with user messages
-				messageStoring = result + messageStoring;
+				messageStoring = result + " " + messageStoring;
 			}
 			return "next";
 		}
