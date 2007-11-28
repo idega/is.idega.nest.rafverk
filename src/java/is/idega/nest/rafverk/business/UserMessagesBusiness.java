@@ -15,6 +15,12 @@ public interface UserMessagesBusiness extends IBOService {
 			throws RemoteException;
 
 	/**
+	 * @see is.idega.nest.rafverk.business.UserMessagesBusinessBean#getMessageAfterRemovingRequestForChangeOfElectrician
+	 */
+	public String getMessageAfterRemovingRequestForChangeOfElectrician(ElectricalInstallation electricalInstallation)
+			throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.UserMessagesBusinessBean#getMessageAfterSendingRequestForChangeOfElectrician
 	 */
 	public String getMessageAfterSendingRequestForChangeOfElectrician(ElectricalInstallation electricalInstallation)
