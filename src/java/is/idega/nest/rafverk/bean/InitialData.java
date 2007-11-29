@@ -111,10 +111,10 @@ public class InitialData extends BaseBean {
 	public static final List BEIDNI_LIST = Arrays.asList(BEIDNI);
 	
 	public static final String[] SPENNUKERFI = {
-		"3-230V", "3-230V",
-		"2N-460/230V", "2N-460/230V",
-		"3N-400/230V", "3N-400/230V",
-		"IN-230V", "IN-230V",
+		"3~230V", "3-230V",
+		"2N~460/230V", "2N-460/230V",
+		"3N~400/230V", "3N-400/230V",
+		"IN~230V", "IN-230V",
 		"Annað", ANNAD
 		};
 	
