@@ -1,5 +1,5 @@
 /*
- * $Id: DataConverter.java,v 1.2 2007/04/18 17:56:14 thomas Exp $
+ * $Id: DataConverter.java,v 1.3 2007/11/29 13:01:01 thomas Exp $
  * Created on Mar 15, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -10,19 +10,19 @@
 package is.idega.nest.rafverk.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import com.idega.util.StringHandler;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/04/18 17:56:14 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/11/29 13:01:01 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DataConverter {
 	
@@ -80,9 +80,9 @@ public class DataConverter {
 	 * if value is not found returns key.
 	 */
 	public static String lookup(String[] myArray, String myKey) {
-		for (int i = 0; i < myArray.length; i++) {
+		for (int i = 1; i < myArray.length; i = i + 2) {
 			String string = myArray[i];
-			if (string.equals(myKey) && i > 0) {
+			if (string.equals(myKey)) {
 				return myArray[--i];
 			}
 		}
