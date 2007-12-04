@@ -9,6 +9,11 @@ import java.rmi.RemoteException;
 public interface UserMessagesBusiness extends IBOService {
 
 	/**
+	 * @see is.idega.nest.rafverk.business.UserMessagesBusinessBean#getMessageAfterChangingStatus
+	 */
+	public String getMessageAfterChangingStatus(ElectricalInstallation electricalInstallation) throws RemoteException;
+
+	/**
 	 * @see is.idega.nest.rafverk.business.UserMessagesBusinessBean#getMessageAfterAcceptingRequestForChangeOfElectrician
 	 */
 	public String getMessageAfterAcceptingRequestForChangeOfElectrician(ElectricalInstallation electricalInstallation)

@@ -1,5 +1,5 @@
 /*
- * $Id: UserMessagesBusinessBean.java,v 1.2 2007/11/28 17:52:12 thomas Exp $
+ * $Id: UserMessagesBusinessBean.java,v 1.3 2007/12/04 15:37:14 thomas Exp $
  * Created on Nov 19, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -29,14 +29,25 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/28 17:52:12 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:37:14 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class UserMessagesBusinessBean extends IBOServiceBean implements UserMessagesBusiness{
 	
 	private ElectricalInstallationMessageBusiness electricalInstallationMessageBusiness;
+	
+	/**
+	 * used on energy company page
+	 * 
+	 */
+	public String getMessageAfterChangingStatus(ElectricalInstallation electricalInstallation) {
+		IWResourceBundle resourceBundle = BaseBean.getResourceBundle();
+		String[] arguments = getArgumentsFrom(electricalInstallation);
+		String message = "Message has been sent to {0} <br>";
+		return resourceBundle.getLocalizedAndFormattedString("rafverk_message_after_changing_status", message, arguments);
+	}
 
 	/**
 	 * used on "rafverktakaskiptiskref3" jsf page

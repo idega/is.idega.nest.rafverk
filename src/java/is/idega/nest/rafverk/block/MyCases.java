@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.5 2007/11/16 16:30:51 thomas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.6 2007/12/04 15:36:37 thomas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -14,6 +14,7 @@ import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationMessageBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationRendererBusiness;
+import is.idega.nest.rafverk.business.UserMessagesBusiness;
 import is.idega.nest.rafverk.domain.ElectricalInstallation;
 import is.idega.nest.rafverk.domain.Rafverktaka;
 import is.idega.nest.rafverk.util.DataConverter;
@@ -412,7 +413,15 @@ public class MyCases extends CasesList {
 		ElectricalInstallationMessageBusiness messageBusiness = getElectricalInstallationMessageBusiness(iwc);
 		User sender = iwc.getCurrentUser();
 		User receiver = electricalInstallation.getElectrician();
-		return messageBusiness.createStatusChangedUserMessage(electricalInstallation, sender, receiver, reply);
+		String error = messageBusiness.createStatusChangedUserMessage(electricalInstallation, sender, receiver, reply);
+		String result = getUserMessagesBusiness(iwc).getMessageAfterChangingStatus(electricalInstallation);
+		if (StringHandler.isNotEmpty(error)) {
+			StringBuffer buffer = new StringBuffer(error);
+			buffer.append(" ");
+			buffer.append(result);
+			return buffer.toString();
+		}
+		return result;
 	}
 
 	protected boolean showCheckBox() {
@@ -462,6 +471,10 @@ public class MyCases extends CasesList {
 	
 	private ElectricalInstallationMessageBusiness getElectricalInstallationMessageBusiness(IWContext iwc) {
 		return (ElectricalInstallationMessageBusiness) getServiceBean(ElectricalInstallationMessageBusiness.class, iwc);
+	}
+	
+	private UserMessagesBusiness getUserMessagesBusiness(IWContext iwc) {
+		return (UserMessagesBusiness) getServiceBean(UserMessagesBusiness.class, iwc);
 	}
 	
 	private IBOService getServiceBean(Class serviceClass, IWContext iwc ) {

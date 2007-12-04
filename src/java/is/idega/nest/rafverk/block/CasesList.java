@@ -1,5 +1,5 @@
 /*
- * $Id: CasesList.java,v 1.2 2007/06/21 15:10:33 thomas Exp $
+ * $Id: CasesList.java,v 1.3 2007/12/04 15:36:07 thomas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -55,10 +55,10 @@ import com.idega.util.text.Name;
  * 
  * NOTE: This is a quick hack, need to be reviewed/refactored
  * 
- *  Last modified: $Date: 2007/06/21 15:10:33 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:36:07 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class CasesList extends CasesBlock {
 
@@ -90,13 +90,10 @@ public abstract class CasesList extends CasesBlock {
 				break;
 
 			case ACTION_SAVE:
-				String error = save(iwc);
-				if (error == null) {
-					showList(iwc);
-				}
-				else {
-					showError(error);
-				}
+				String result = save(iwc);
+				Text text = new Text(result);
+				add(text);
+				showList(iwc);
 				break;
 
 			case ACTION_MULTI_PROCESS_FORM:
@@ -121,10 +118,10 @@ public abstract class CasesList extends CasesBlock {
 		return ACTION_VIEW;
 	}
 
-	private void showError(String error) { 
-		Text text = new Text(error);
-		add(text);
-	}
+//	private void showError(String error) { 
+//		Text text = new Text(error);
+//		add(text);
+//	}
 	
 	
 	private void showList(IWContext iwc) throws RemoteException {
