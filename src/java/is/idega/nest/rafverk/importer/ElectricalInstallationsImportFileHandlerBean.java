@@ -177,15 +177,19 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			// variables
 			String id = getProperty(COLUMN_ID);//ID
 			String ssn = getProperty(COLUMN_SSN);//Kennitala
+
 			if(ssn==null){
 				throw new RuntimeException("Kennitala is null (Kennitala rafverktaka ekki sett í færslu)");
 			}
-			else if(ssn.length()!=10){
-				throw new RuntimeException("Kennitala is of invalid length, should be 10 digits (Kennitala rafverktaka ekki rétt)");
-			}
+				
 			if(ssn.endsWith(",00")){
 				ssn=ssn.substring(0,ssn.length()-3);
 			}
+			
+			if(ssn.length()!=10){
+				throw new RuntimeException("Kennitala is of invalid length, should be 10 digits (Kennitala rafverktaka ekki rétt)");
+			}
+
 			String name = getProperty(COLUMN_NAME);//Nafn verks
 			String installationNumber = getProperty(COLUMN_INSTALLATION_NUMBER);//Veitunumer
 			String userName = getProperty(COLUMN_ELECTRICAL_USER);//Notandi
