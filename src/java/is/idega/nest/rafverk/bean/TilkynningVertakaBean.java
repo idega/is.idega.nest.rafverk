@@ -1,5 +1,5 @@
 /*
- * $Id: TilkynningVertakaBean.java,v 1.38 2007/11/28 17:58:02 thomas Exp $
+ * $Id: TilkynningVertakaBean.java,v 1.39 2007/12/04 15:30:59 thomas Exp $
  * Created on Feb 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -50,10 +50,10 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/28 17:58:02 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:30:59 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class TilkynningVertakaBean extends RealEstateBean {
 	
@@ -192,6 +192,8 @@ public class TilkynningVertakaBean extends RealEstateBean {
 		stadurMaelir = MaelirList.getEmptyMaelirContextStadurMaelir();
 		// initialize list of maelir
 		maelirListMap = MaelirList.getEmptyMaelirMap(); 
+		// initialize rafverktaka
+		rafverktaka = new Rafverktaka();
 	}
 	
 	private void initializeSending() {
