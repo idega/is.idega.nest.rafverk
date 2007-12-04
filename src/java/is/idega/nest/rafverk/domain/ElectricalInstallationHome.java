@@ -11,29 +11,37 @@ import javax.ejb.FinderException;
 import com.idega.user.data.User;
 
 public interface ElectricalInstallationHome extends IDOHome {
-
 	public ElectricalInstallation create() throws CreateException;
 
-	public ElectricalInstallation findByPrimaryKey(Object pk) throws FinderException;
-
-	public Collection findElectricalInstallationByElectrician(User electrician) throws FinderException;
-
-	public Collection findElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException;
-
-	public Collection findElectricalInstallationByRealEstateNumber(String realEstateNumber) throws FinderException;
-
-	public Collection findNotFreeElectricalinstallationByRealEstate(RealEstate realEstate, User currentUser)
+	public ElectricalInstallation findByPrimaryKey(Object pk)
 			throws FinderException;
+
+	public Collection findElectricalInstallationByElectrician(User electrician)
+			throws FinderException;
+
+	public Collection findElectricalInstallationByEnergyCompany(
+			Group energyCompany) throws FinderException;
+
+	public Collection findElectricalInstallationByRealEstateNumber(
+			String realEstateNumber) throws FinderException;
+
+	public Collection findNotFreeElectricalinstallationByRealEstate(
+			RealEstate realEstate, User currentUser) throws FinderException;
 
 	public Collection findOtherOpenElectricalInstallationByRealEstateIdentifier(
-			RealEstateIdentifier realEstateIdentifier, User currentUser) throws FinderException;
-
-	public Collection findOtherOpenElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
+			RealEstateIdentifier realEstateIdentifier, User currentUser)
 			throws FinderException;
 
-	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
-			RealEstateIdentifier realEstateIdentifer, User currentUser) throws FinderException;
+	public Collection findOtherOpenElectricalInstallationByRealEstate(
+			RealEstate realEstate, User currentUser) throws FinderException;
 
-	public Collection findOtherClosedElectricalInstallationByRealEstate(RealEstate realEstate, User currentUser)
+	public Collection findOtherClosedElectricalInstallationByRealEstateIdentifer(
+			RealEstateIdentifier realEstateIdentifer, User currentUser)
+			throws FinderException;
+
+	public Collection findOtherClosedElectricalInstallationByRealEstate(
+			RealEstate realEstate, User currentUser) throws FinderException;
+
+	public ElectricalInstallation findByExternalId(String externalId)
 			throws FinderException;
 }

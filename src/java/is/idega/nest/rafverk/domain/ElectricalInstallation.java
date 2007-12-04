@@ -1,18 +1,18 @@
 package is.idega.nest.rafverk.domain;
 
 
-import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
-import is.idega.nest.rafverk.data.MaelirList;
-
-import java.util.List;
-
-import com.idega.block.process.data.Case;
 import com.idega.core.location.data.RealEstate;
 import com.idega.user.data.Group;
+import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
+import com.idega.block.process.data.Case;
 import com.idega.user.data.User;
+import java.util.List;
+import is.idega.nest.rafverk.data.MaelirList;
+import java.sql.Timestamp;
+import com.idega.data.IDOEntity;
 
-public interface ElectricalInstallation extends Case, SimpleElectricalInstallation {
-
+public interface ElectricalInstallation extends IDOEntity,
+		SimpleElectricalInstallation, Case {
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCaseCodeDescription
 	 */
@@ -116,7 +116,8 @@ public interface ElectricalInstallation extends Case, SimpleElectricalInstallati
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setCurrentLineConnectionModification
 	 */
-	public void setCurrentLineConnectionModification(String currentLineConnectionModification);
+	public void setCurrentLineConnectionModification(
+			String currentLineConnectionModification);
 
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getCurrentLineConnectionModification
@@ -506,5 +507,46 @@ public interface ElectricalInstallation extends Case, SimpleElectricalInstallati
 	/**
 	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getMaelirList
 	 */
-	public MaelirList getMaelirList(ElectricalInstallationBusiness electricalInstallationBusiness);
+	public MaelirList getMaelirList(
+			ElectricalInstallationBusiness electricalInstallationBusiness);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#isInspectionSample
+	 */
+	public boolean isInspectionSample();
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setInspectionSample
+	 */
+	public void setInspectionSample(boolean inspectionSample);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getInspectionAgencyId
+	 */
+	public int getInspectionAgencyId();
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setInspectionAgencyId
+	 */
+	public void setInspectionAgencyId(int inspectionAgencyId);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getDateOfInspection
+	 */
+	public Timestamp getDateOfInspection();
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setDateOfInspection
+	 */
+	public void setDateOfInspection(Timestamp dateOfInspection);
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#getFormDocumentId
+	 */
+	public int getFormDocumentId();
+
+	/**
+	 * @see is.idega.nest.rafverk.domain.ElectricalInstallationBMPBean#setFormDocumentId
+	 */
+	public void setFormDocumentId(int formDocumentId);
 }

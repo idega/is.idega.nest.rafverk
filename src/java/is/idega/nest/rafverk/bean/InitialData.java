@@ -24,6 +24,7 @@ public class InitialData extends BaseBean {
 	
 	// first step
 	
+
 	// navigation
 	public static final String TILKYNNING_VERTAKA_URI = "/pages/rafverktaki/rafverk/tilkynningvertaka/";
 	
@@ -51,25 +52,38 @@ public class InitialData extends BaseBean {
 	
 	// first step
 	
+	public static final String NOTKUNARFLOKKUR_BRADABIRGDANOTKUN = "BRADABIRGDANOTKUN";
+	public static final String NOTKUNARFLOKKUR_OPINBER_STOFNUN = "OPINBER_STOFNUN";
+	public static final String NOTKUNARFLOKKUR_THJONUSTA = "THJONUSTA";
+	public static final String NOTKUNARFLOKKUR_FISKIDNADUR = "FISKIDNADUR";
+	public static final String NOTKUNARFLOKKUR_IDNADUR = "IDNADUR";
+	public static final String NOTKUNARFLOKKUR_GARDYRKJA = "GARDYRKJA";
+	public static final String NOTKUNARFLOKKUR_SUMARHUS = "SUMARHUS";
+	public static final String NOTKUNARFLOKKUR_IBUDARHUSNAEDI = "IBUDARHUSNAEDI";
 	public static final String[] NOTKUNARFLOKKUR = {
 		"Veldu notkunarflokk", StringHandler.EMPTY_STRING,
-		"Íbúðarhúsnæði", "IBUDARHUSNAEDI", 
-		"Sumarhús", "SUMARHUS",
-		"Landb./Garðyrkja", "GARDYRKJA",
-		"Iðnaður", "IDNADUR", 
-		"Fiskiðnaður", "FISKIDNADUR",
-		"Verslun/Þjónusta", "THJONUSTA", 
-		"Opinber stofnun", "OPINBER_STOFNUN", 
-		"Bráðabirgðanotkun", "BRADABIRGDANOTKUN"
+		"Íbúðarhúsnæði", NOTKUNARFLOKKUR_IBUDARHUSNAEDI, 
+		"Sumarhús", NOTKUNARFLOKKUR_SUMARHUS,
+		"Landb./Garðyrkja", NOTKUNARFLOKKUR_GARDYRKJA,
+		"Iðnaður", NOTKUNARFLOKKUR_IDNADUR, 
+		"Fiskiðnaður", NOTKUNARFLOKKUR_FISKIDNADUR,
+		"Verslun/Þjónusta", NOTKUNARFLOKKUR_THJONUSTA, 
+		"Opinber stofnun", NOTKUNARFLOKKUR_OPINBER_STOFNUN, 
+		"Bráðabirgðanotkun", NOTKUNARFLOKKUR_BRADABIRGDANOTKUN
 		};
 	
 	public static final List NOTKUNARFLOKKUR_LIST = Arrays.asList(NOTKUNARFLOKKUR);
 	
+	
+	public static final String HEIMTAUG_NY="NY";
+	public static final String HEIMTAUG_OBREYTT="OBREYTT";
+	public static final String HEIMTAUG_BREYTT="BREYTT";
+	public static final String HEIMTAUG_TEKIN="TEKIN";
 	public static final String[] HEIMTAUG = {
-		"Ný", "NY",
-		"Óbreytt", "OBREYTT",
-		"Breytt", "BREYTT",
-		"Tekin", "TEKIN"
+		"Ný", HEIMTAUG_NY,
+		"Óbreytt", HEIMTAUG_OBREYTT,
+		"Breytt", HEIMTAUG_BREYTT,
+		"Tekin", HEIMTAUG_TEKIN
 		};
 	
 	public static final List HEIMTAUG_LIST = Arrays.asList(HEIMTAUG);
@@ -87,11 +101,16 @@ public class InitialData extends BaseBean {
 	
 	public static final List HEIMTAUG_TENGIST_LIST = Arrays.asList(HEIMTAUG_TENGIST);
 
+	
+	public final static String VARNARRADSTOEFUN_NULLUN="NULLUN";
+	public final static String VARNARRADSTOEFUN_UM_SERSKAUT="UM_SERSKAUT";
+	public final static String VARNARRADSTOEFUN_LEKASTRAUMSROFVOERN="LEKASTRAUMSROFVOERN";
+	public final static String VARNARRADSTOEFUN_OENNUR="OENNUR";
 	public static final String[] VARNARRADSTOEFUN = {
-		"Núllun", "NULLUN",
-		"um sérskaut", "UM_SERSKAUT",
-		"Lekastraumsrofvörn", "LEKASTRAUMSROFVOERN",
-		"Önnur", "OENNUR"
+		"Núllun", VARNARRADSTOEFUN_NULLUN,
+		"um sérskaut", VARNARRADSTOEFUN_UM_SERSKAUT,
+		"Lekastraumsrofvörn", VARNARRADSTOEFUN_LEKASTRAUMSROFVOERN,
+		"Önnur", VARNARRADSTOEFUN_OENNUR
 		};
 	
 	public static final List VARNARRADSTOEFUN_LIST = Arrays.asList(VARNARRADSTOEFUN);
@@ -110,11 +129,16 @@ public class InitialData extends BaseBean {
 
 	public static final List BEIDNI_LIST = Arrays.asList(BEIDNI);
 	
+	
+	public static final String SPENNUKERFI_3_230V="3-230V";
+	public static final String SPENNUKERFI_2N_460_230V="2N-460/230V";
+	public static final String SPENNUKERFI_3N_400_230V="3N-400/230V";
+	public static final String SPENNUKERFI_IN_230V="IN-230V";
 	public static final String[] SPENNUKERFI = {
-		"3~230V", "3-230V",
-		"2N~460/230V", "2N-460/230V",
-		"3N~400/230V", "3N-400/230V",
-		"IN~230V", "IN-230V",
+		"3~230V", SPENNUKERFI_3_230V,
+		"2N~460/230V", SPENNUKERFI_2N_460_230V,
+		"3N~400/230V", SPENNUKERFI_3N_400_230V,
+		"IN~230V", SPENNUKERFI_IN_230V,
 		"Annað", ANNAD
 		};
 	
@@ -187,27 +211,36 @@ public class InitialData extends BaseBean {
 	
 	// tilkynning lok verks
 	
+	public static final String TILKYNNT_NYLOEGN="NYLOEGN";
+	public static final String TILKYNNT_BREYING="BREYING";
+	public static final String TILKYNNT_VIDBOT="VIDBOT";
+	public static final String TILKYNNT_ANNAD=ANNAD;
+	
 	public static final String[] TILKYNNT = {
-		"Nýlögn", "NYLOEGN",
-		"Breyting", "BREYING",
-		"Viðbót", "VIDBOT",
-		"Annað", ANNAD
+		"Nýlögn", TILKYNNT_NYLOEGN,
+		"Breyting", TILKYNNT_BREYING,
+		"Viðbót", TILKYNNT_VIDBOT,
+		"Annað", TILKYNNT_ANNAD
 		};
 	
 	public static final List TILKYNNT_LIST = Arrays.asList(TILKYNNT);
 	
 	public static final String[] HUSNAEDIS = {
 		"Íbúð", "IBUD",
-		"Sumarhús", "SUMARHUS",
-		"Þjónusta/Iðnaður", "THJONUSTA"
+		"Sumarhús", NOTKUNARFLOKKUR_SUMARHUS,
+		"Þjónusta/Iðnaður", NOTKUNARFLOKKUR_THJONUSTA
 		};
 	
 	public static final List HUSNAEDIS_LIST = Arrays.asList(HUSNAEDIS);
 	
+	public static final String JARDSKAUT_VATNSPIPUKERFI="VATNSPIPUKERFI";
+	public static final String JARDSKAUT_SOEKKULSKAUT="SOEKKULSKAUT";
+	public static final String JARDSKAUT_SERSKAUT="SERSKAUT";
 	public static final String[] JARDSKAUT = {
-		"Vatnspípukerfi", "VATNSPIPUKERFI",
-		"Sökkulskaut", "SOEKKULSKAUT"
-		};
+		"Vatnspípukerfi", JARDSKAUT_VATNSPIPUKERFI,
+		"Sökkulsskaut", JARDSKAUT_SOEKKULSKAUT,
+		"Sérskaut", JARDSKAUT_SERSKAUT
+	};
 	
 	public static final List JARDSKAUT_LIST = Arrays.asList(JARDSKAUT);
 	

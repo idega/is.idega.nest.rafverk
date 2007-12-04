@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.14 2007/11/13 16:25:19 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.15 2007/12/04 04:40:49 tryggvil Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -17,12 +17,14 @@ import is.idega.nest.rafverk.data.RealEstateIdentifier;
 import is.idega.nest.rafverk.util.DataConverter;
 
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.FinderException;
 
 import com.idega.block.process.data.AbstractCaseBMPBean;
+import com.idega.block.process.data.Case;
 import com.idega.business.IBORuntimeException;
 import com.idega.core.location.data.RealEstate;
 import com.idega.data.IDOQuery;
@@ -33,12 +35,12 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 04:40:49 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
-public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation {
+public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation,SimpleElectricalInstallation,Case {
 	
 	/* Following fields are in application as well as in report -
 	At the beginning the fields are set to be the same that is 
@@ -203,8 +205,18 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	// stadur maelir 
 	private static final String COLUMN_REPORT_METER_ID = "REPORT_METER_ID";
 	
+	//Added for import from Access:
+	//Urtak
+	private static final String COLUMN_INSPECTION_SAMPLE = "INSPECTION_SAMPLE";
+	//Skodunarstofa
+	private static final String COLUMN_INSPECTION_AGENCY_ID = "INSPECTION_AGENCY_ID";
+	//DagsSkodunar
+	private static final String COLUMN_DATE_OF_INSPECTION = "DATE_OF_INSPECTION";
+	//DOCUMENT_ID
+	private static final String COLUMN_FORM_DOCUMENT_ID = "FORM_DOCUMENT_ID";
 	// end form Tilkynning lok verks
-
+	
+	
 	/* (non-Javadoc)
 	 * @see com.idega.block.process.data.AbstractCaseBMPBean#getCaseCodeDescription()
 	 */
@@ -290,6 +302,12 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		addAttribute(COLUMN_FUSE_TIME, "fuse time", String.class, SHORT_INPUT_FIELDS);
 	
 		addAttribute(COLUMN_MEASUREMENT_REMARKS, "measurement remarks", String.class, DESCRIPTION);
+		
+		//Added for import from Access:
+		addAttribute(COLUMN_INSPECTION_SAMPLE, "inspection sample", Boolean.class);
+		addAttribute(COLUMN_INSPECTION_AGENCY_ID, "inspection agency id", Integer.class);
+		addAttribute(COLUMN_DATE_OF_INSPECTION, "inspection date", Timestamp.class);
+		addAttribute(COLUMN_FORM_DOCUMENT_ID, "form document id", Integer.class);
 		
 		// pointers to other entities
 		addManyToOneRelationship(COLUMN_ENERGY_COMPANY_ID, Group.class);
@@ -847,6 +865,42 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		catch (RemoteException e) {
 			throw new IBORuntimeException(e);
 		}
+	}
+	
+	public Object ejbFindByExternalId(String externalId)throws FinderException{
+		return super.ejbFindByExternalId(externalId);
+	}
+
+	public boolean isInspectionSample() {
+		return getBooleanColumnValue(COLUMN_INSPECTION_SAMPLE);
+	}
+
+	public void setInspectionSample(boolean inspectionSample) {
+		setColumn(COLUMN_INSPECTION_SAMPLE, inspectionSample);
+	}
+
+	public int getInspectionAgencyId() {
+		return getIntColumnValue(COLUMN_INSPECTION_AGENCY_ID);
+	}
+
+	public void setInspectionAgencyId(int inspectionAgencyId) {
+		setColumn(COLUMN_INSPECTION_AGENCY_ID, inspectionAgencyId);
+	}
+
+	public Timestamp getDateOfInspection() {
+		return getTimestampColumnValue(COLUMN_DATE_OF_INSPECTION);
+	}
+
+	public void setDateOfInspection(Timestamp dateOfInspection) {
+		setColumn(COLUMN_DATE_OF_INSPECTION,dateOfInspection);
+	}
+
+	public int getFormDocumentId() {
+		return getIntColumnValue(COLUMN_FORM_DOCUMENT_ID);
+	}
+
+	public void setFormDocumentId(int formDocumentId) {
+		setColumn(COLUMN_FORM_DOCUMENT_ID, formDocumentId);
 	}
 	
 }

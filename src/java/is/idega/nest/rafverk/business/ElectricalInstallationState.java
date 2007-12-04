@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.9 2007/10/18 16:32:39 thomas Exp $
+ * $Id: ElectricalInstallationState.java,v 1.10 2007/12/04 04:40:49 tryggvil Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/10/18 16:32:39 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 04:40:49 $ by $Author: tryggvil $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class ElectricalInstallationState {
 	
@@ -59,6 +59,7 @@ public class ElectricalInstallationState {
 	public static final String I_SKODUN = "ISKODUN";
 	public static final String SKODUN_LOKID = "SKODUN_LOID";
 	public static final String LOKID = "LOKID";
+	public static final String ELDRI_TILKYNNING = "ELDRI_TILKYNNING";
 	
 	// for changing the electrician
 	public static final String SKIPT_UM_RAFVERKTAKA = "SKIPT_UM_RAFVERKTAKA";
@@ -102,7 +103,8 @@ public class ElectricalInstallationState {
 		"í skoðun", I_SKODUN,
 		"Skoðun lokið", SKODUN_LOKID,
 		"Lokið", LOKID,
-		"Skipt um rafverktaka", SKIPT_UM_RAFVERKTAKA
+		"Skipt um rafverktaka", SKIPT_UM_RAFVERKTAKA,
+		"Eldri tilkynning", ELDRI_TILKYNNING
 	};
 	
 	// !! initialized in static block below !!
@@ -316,7 +318,7 @@ public class ElectricalInstallationState {
 		return ! isCheckingOutWorkingPlaceAllowed(electricalInstallation);
 	}
 	
-	private void setStatus(Case electricalInstallationCase, String status) {
+	public void setStatus(Case electricalInstallationCase, String status) {
 		try {
 			// get the right case business by the case code (case code is the corresponding entity of the case code key)
 			CaseBusiness caseBusiness  = CaseCodeManager.getInstance().getCaseBusiness(electricalInstallationCase.getCaseCode(), iwac);
