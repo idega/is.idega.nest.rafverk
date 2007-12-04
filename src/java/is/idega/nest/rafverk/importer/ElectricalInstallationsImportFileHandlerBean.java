@@ -277,6 +277,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			}
 			//street.store();
 			realEstate.store();
+			installation.setRealEstate(realEstate);
 			
 			installation.setEnergyConsumerName(userName);
 			installation.setEnergyConsumerPersonalID(ownerSSN);
