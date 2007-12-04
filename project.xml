@@ -9,6 +9,11 @@
   <shortDescription>rafverk</shortDescription>
   <description>rafverk</description>
   <versions>
+    <version>
+      <id>1.0</id>
+      <name>1.0</name>
+      <tag>RAFVERK_1_0</tag>
+    </version>
   </versions>
   <developers>
     <developer>
@@ -37,17 +42,17 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.process</artifactId>
       <version>3.1.15</version>
       <type>jar</type>
       <url>http://www.idega.com</url>
-            <properties>
+      <properties>
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
       <version>3.1.2</version>
@@ -57,7 +62,7 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.idegaweb.egov.cases</artifactId>
       <version>1.0.29</version>
@@ -132,8 +137,9 @@
       <properties>
         <idegaweb.bundle.include>true</idegaweb.bundle.include>
       </properties>
-      </dependency>
+    </dependency>
     <!-- because of an exception class we need javamail -->
+
     <dependency>
       <groupId>javamail</groupId>
       <artifactId>javamail</artifactId>
@@ -148,7 +154,7 @@
       <type>jar</type>
       <url>http://getahead.ltd.uk/dwr/</url>
     </dependency>
-   </dependencies>
+  </dependencies>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
