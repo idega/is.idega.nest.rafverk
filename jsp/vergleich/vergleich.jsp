@@ -118,66 +118,43 @@ errorHandler:function(message) { alert("Error: " + message); }
 function changeStreets(data) {
 DWRUtil.removeAllOptions("form1:gotuDrop");
 DWRUtil.addOptions("form1:gotuDrop", data);
-var streetNumberFreeTextLabel = document.getElementById("form1:gotunumerLabel");
-var streetNumberFreeText = document.getElementById("form1:gotunumer")
-var streetNumberDropDownLabel = document.getElementById("form1:streetNumberDropLabel");
-var streetNumberDropDown = document.getElementById("form1:streetNumberDrop");
 var streetDrop = document.getElementById("form1:gotuDrop");
+var streetNumberLabel = document.getElementById("form1:gotunumerLabel");
 if (streetDrop.options.length == 1) {
 var valueStreet = streetDrop.options[0].value;
-streetNumberFreeTextLabel.style.display="block"
-streetNumberFreeText.style.display="block"
-streetNumberDropDownLabel.style.display="none";
-streetNumberDropDown.style.display="none";
-<!--
 if (valueStreet != "") {
 streetNumberLabel.innerHTML = "Frjáls texti"
 }
 else {
 streetNumberLabel.innerHTML = ""
 }
--->
 }
 else {
 streetDrop.selectedIndex = 1;
-streetNumberFreeTextLabel.style.display="none"
-streetNumberFreeText.style.display="none"
-streetNumberDropDownLabel.style.display="block";
-streetNumberDropDown.style.display="block";
+streetNumberLabel.innerHTML= "Götunúmer"
 }
 }
 
 function updateStreetNumberLabel() {
-var streetNumberFreeTextLabel = document.getElementById("form1:gotunumerLabel");
-var streetNumberFreeText = document.getElementById("form1:gotunumer")
-var streetNumberDropDownLabel = document.getElementById("form1:streetNumberDropLabel");
-var streetNumberDropDown = document.getElementById("form1:streetNumberDrop");
 var streetDrop = document.getElementById("form1:gotuDrop");
+var streetNumberLabel = document.getElementById("form1:gotunumerLabel");
 var selection = streetDrop.options[streetDrop.selectedIndex].value;
 if (selection == "none_street") {
-streetNumberFreeTextLabel.style.display="block"
-streetNumberFreeText.style.display="block"
-streetNumberDropDownLabel.style.display="none";
-streetNumberDropDown.style.display="none";
+streetNumberLabel.innerHTML = "Frjáls texti"
 }
 else {
-streetNumberFreeTextLabel.style.display="none"
-streetNumberFreeText.style.display="none"
-streetNumberDropDownLabel.style.display="block";
-streetNumberDropDown.style.display="block";
+streetNumberLabel.innerHTML = "Götunúmer"
 }
 }
 
 function updateRealEstates() {
 var postalCodeDrop = document.getElementById("form1:postnumerDrop");
 var streetDrop = document.getElementById("form1:gotuDrop");
-var freetext = document.getElementById("form1:gotunumer");
-var streetNumberDrop = document.getElementById("form1:streetNumberDrop");
+var streetNumber = document.getElementById("form1:gotunumer");
 var postalCodeSelection = postalCodeDrop.options[postalCodeDrop.selectedIndex].value;
 var streetSelection = streetDrop.options[streetDrop.selectedIndex].value;
-var freetextValue = freetext.value;
-var streetNumber = streetNumberDrop.options[streetNumberDrop.selectedIndex].value;
-NestService.getRealEstatesByPostalCodeStreetStreetNumber(postalCodeSelection, streetSelection, streetNumber, freetextValue,
+var streetNumberValue = streetNumber.value;
+NestService.getRealEstatesByPostalCodeStreetStreetNumber(postalCodeSelection, streetSelection, streetNumberValue,
 {callback:changeRealEstates,
 errorHandler:function(message) { alert("Error: " + message); }
 });
@@ -207,8 +184,13 @@ realEstateDisplay.innerHTML = data[0];
 energyConsumer.value = data[1];
 personalIDEnergyConsumer.value = data[2];
 currentWorkingPlaceErrorMessage.innerHTML = data[3];
-checkOutWorkingPlaceButton.disabled=(data[3]!='' || data[0]=='');
-changeElectrician.style.display=data[4];
+checkOutWorkingPlaceButton.disabled=(data[3]!='' || data[0]!='');
+if (data[4]) {
+changeElectrician.style.display="block"
+}
+else {
+changeElectrician.style.display="none"
+}
 }
 
 </script>
@@ -334,7 +316,6 @@ Upplysingar um rafverktaka
 <wf:container styleClass="formItem floated">
 <h:outputLabel for="rafverktakaFyrirtaeki" value="Rafverktakafyrirtæki"/>
 <h:inputText
-disabled="#{! TilkynningVertakaBean.applicationStorable}"
 id="rafverktakaFyrirtaeki" value="#{TilkynningVertakaBean.rafverktaka.rafverktaki.nafnFyrirtaekis}"/>
 </wf:container>
 
@@ -393,36 +374,24 @@ value="Veldu veitustað"/>
 <wf:container styleClass="formItem required">
 <h:outputLabel for="postnumerDrop" value="Póstnúmer"/>
 <h:selectOneMenu
-disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+disabled="#{! TilkynningVertakaBean.checkingOutWorkingPlaceAllowed}"
 id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}" onchange="updateStreets();">
 <f:selectItems value="#{RafverktakaInitialdata.postnumeraListiSelects}"/>
 </h:selectOneMenu>
 <h:outputLabel for="gotuDrop" value="Gata" />
 <h:selectOneMenu
-disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+disabled="#{! TilkynningVertakaBean.checkingOutWorkingPlaceAllowed}"
 id="gotuDrop" value="#{TilkynningVertakaBean.gata}" onchange="updateStreetNumberLabel();">
 <f:selectItems value="#{TilkynningVertakaBean.gotuListiSelects}"/>
 </h:selectOneMenu>
-<h:outputLabel
-style="#{TilkynningVertakaBean.showFreetextGotunumer}"
-id="gotunumerLabel" for="gotunumer" value="Frjáls texti" />
+<h:outputLabel id="gotunumerLabel" for="gotunumer" value="Götunúmer" />
 <h:inputText
-style="#{TilkynningVertakaBean.showFreetextGotunumer}"
-disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
-id="gotunumer" value="#{TilkynningVertakaBean.freeText}"/>
-<h:outputLabel
-style="#{TilkynningVertakaBean.showStreetNumberSelects}"
-id="streetNumberDropLabel" for="streetNumberDrop" value="Götunúmer" />
-<h:selectOneMenu
-style="#{TilkynningVertakaBean.showStreetNumberSelects}"
-disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
-id="streetNumberDrop" value="#{TilkynningVertakaBean.streetNumber}">
-<f:selectItems value="#{RafverktakaInitialdata.streetNumberSelects}"/>
-</h:selectOneMenu>
+disabled="#{! TilkynningVertakaBean.checkingOutWorkingPlaceAllowed}"
+id="gotunumer" value="#{TilkynningVertakaBean.gotunumer}"/>
 </wf:container>
 
 <wf:container
-rendered="#{TilkynningVertakaBean.workingPlaceChangeable}"
+rendered="#{TilkynningVertakaBean.checkingOutWorkingPlaceAllowed}"
 styleClass="formItem required">
 <f:verbatim><input type="button" name="Text 1" value="Fletta upp í Landskrá Fasteigna" onclick="updateRealEstates();"></input></f:verbatim>
 <!--h:commandButton id="flettaUppIFasteignaskraButton" action="#{TilkynningVertakaBean.flettaUppIFasteignaskra}" value="Fletta upp í Landskrá Fasteigna"/-->
@@ -446,8 +415,8 @@ style="color:red" value="#{TilkynningVertakaBean.currentWorkingPlaceErrorMessage
 
 <wf:container styleClass="formItem">
 <h:commandButton
-style="#{TilkynningVertakaBean.showChangeElectricianOption}"
 id="changeElectrician"
+style="display:none"
 styleClass="buttonSpan"
 actionListener="#{TilkynningVertakaBean.changeElectrician}"
 action="rafverktakaskipti"
@@ -509,7 +478,7 @@ value="Geyma"/>
 styleClass="buttonSpan"
 id="checkOutWorkingPlaceButton"
 disabled="#{! TilkynningVertakaBean.checkingOutWorkingPlaceAllowed}"
-action="#{TilkynningVertakaBean.checkOutWorkingPlace}"
+action="#{TilkynningVertakaBean.store}"
 value="Taka verk"/>
 </wf:container>
 </h:form>
@@ -519,4 +488,4 @@ value="Taka verk"/>
 </builder:region>
 </builder:page>
 </f:view>
-</jsp:root>
+jsp:root>

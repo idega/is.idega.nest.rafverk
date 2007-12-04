@@ -6,106 +6,117 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:builder="http://xmlns.idega.com/com.idega.builder"
 xmlns:x="http://myfaces.apache.org/tomahawk"
 xmlns:wf="http://xmlns.idega.com/com.idega.webface"
-version="1.2">
+ version="1.2">
 <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
 <f:view>
 <builder:page id="builderpage_424242" template="93">
 <builder:region id="left" label="left">
-<h:form id="form1" styleClass="rafverk">
+<h:form id="form1" styleClass="rafverk citizenForm">
 
+<f:verbatim>
+<script type="text/javascript">
 
+function submitFilter() {
+document.getElementById("form1").submit();
+}
+</script>
+</f:verbatim>
 
-<wf:container styleClass="formSection">
-<!--h:outputText value="Mínar rafverktökur:"/-->
-<f:verbatim><h2>Mínar rafverktökur:</h2></f:verbatim>
-</wf:container>
+<f:verbatim><div class="header"><h1>Rafverktökur</h1></div></f:verbatim>
 
-<wf:container styleClass="formSection">
-<h:commandButton styleClass="jsfButton"
-id="welcome_1"
-action="#{TilkynningVertakaBean.startTilkynningVertaka}"
-immediate="true"
-value="Stofna þjónustubeiðni"/>
+<wf:container style="display:block" styleClass="formSection">
 
-<h:commandButton styleClass="jsfButton"
-id="welcome_2"
-action="#{TilkynningVertakaBean.startTilkynningLokVerks}"
-immediate="true"
-value="Skrá skýrslu um neysluveitu"/>
-
-<h:commandButton styleClass="jsfButton"
-id="welcome_3"
-action="rafverktakaskipti"
-immediate="true"
-value="Ósk um rafverktakaskipti"/>
-
-</wf:container>
-
-<wf:container styleClass="formSection">
 <wf:container styleClass="formItem">
-
-<wf:container>
-<h:outputText value="Hægt er að nota algildistákn (*,?) í leitarskilyrðum"/>
+<x:div styleClass="formItemHelp">
+<f:verbatim>
+<b>Athugið að í öllum textareitum er hægt að nota * sem tákn fyrir alla mögulega stafi og/eða ? sem tákn fyrir einn óþekktan staf</b>.<br /><br />
+Ef þú hefur fyllt inn þitt eigið verknúmer þá getur þú leitað hér samkvæmt því. <b>Athugið að hér skal ekki setja inn númer erindis í erindakerfinu sem slíku</b>.
+</f:verbatim>
+</x:div>
+<h:outputLabel for="verknumer" value="Verknúmer"/>
+<h:inputText id="verknumer" 
+valueChangeListener="#{RafverktokuListi.resetList}" 
+value="#{RafverktokuListi.searchForExternalProjectID}"/>
 </wf:container>
 
-<h:outputLabel for="verknumer" value="Verknúmer"/>
-<h:inputText id="verknumer" value="#{RafverktokuListi.searchForExternalProjectID}"/>
+<wf:container styleClass="formItem">
+<x:div styleClass="formItemHelp">
+<f:verbatim>
+Hér getur þú leitað eftir nafni orkukaupanda. Ef þú veist ekki fullt nafn hans þá skaltu setja * í leitarstrenginn. Athugið ef margir viðskiptamenn hafa sama nafn skilar leitin þeim öllum. Reynið því að þrengja leitina eins og unnt er.
+</f:verbatim>
+</x:div>
+<h:outputLabel for="orkukaupandi" value="Orkukaupandi"/>
+<h:inputText id="orkukaupandi" 
+valueChangeListener="#{RafverktokuListi.resetList}" 
+value="#{RafverktokuListi.searchForEnergyConsumer}"/>
+</wf:container>
 
-<h:outputLabel for="orkukaupandi" value="Orkukaupanði"/>
-<h:inputText id="orkukaupandi" value="#{RafverktokuListi.searchForEnergyConsumer}"/>
-
+<wf:container styleClass="formItem">
+<x:div styleClass="formItemHelp">
+<f:verbatim>
+Þegar leitað er að veitustað þá verður <b>alltaf að setja inn *</b> á eftir heimilisfangi.
+</f:verbatim>
+</x:div>
 <h:outputLabel for="veitustadur" value="Veitustaður"/>
-<h:inputText id="veitustadur" value="#{RafverktokuListi.searchForRealEstate}"/>
+<h:inputText id="veitustadur" 
+valueChangeListener="#{RafverktokuListi.resetList}" 
+value="#{RafverktokuListi.searchForRealEstate}"/>
+</wf:container>
 
+<wf:container styleClass="formItem">
+<x:div styleClass="formItemHelp">
+<f:verbatim>
+Hér getur þú valið í leitina verk eftir stöðu þeirra. Sjálfgefið er allar verktökur en smellir þú á felli listann þá síar leitarvélin nánar þína fyrirspurn.<br /><br />
+<b>Athugið að niðurstaða leitar birtist í töflunni neðst á síðunni</b>.
+</f:verbatim>
+</x:div>
 <h:outputLabel for="filterVerktakaStatuses" value="Staða verks"/>
-
-<h:selectOneMenu id="filterVerktakaStatuses" value="#{RafverktokuListi.selectedStatus}">
+<h:selectOneMenu id="filterVerktakaStatuses" 
+valueChangeListener="#{RafverktokuListi.resetList}" 
+value="#{RafverktokuListi.selectedStatus}">
 <f:selectItems value="#{RafverktokuListi.possibleStatusesSelects}"/>
 </h:selectOneMenu>
 </wf:container>
 
-<h:commandButton styleClass="jsfButton"
-id="filterVerktakaStatusesButton" action="#{RafverktakaListi.filter}" value="Finna"/>
+<wf:container styleClass="buttonLayer rafverkButtons">
+<h:commandLink id="filterVerktakaStatusesButton" action="#{RafverktokuListi.doFilter}">
+<f:verbatim><span>Finna</span></f:verbatim>
+</h:commandLink>
 
 </wf:container>
-<wf:container styleClass="formSection">
+</wf:container>
 
+<wf:container styleClass="formSection">
+<wf:container styleClass="buttonLayer rafverkButtons">
+<h:commandLink id="welcome_2" styleClass="rightButton" action="#{TilkynningVertakaBean. startTilkynningLokVerks}">
+<f:verbatim><span>Skrá skýrslu um neysluveitu</span></f:verbatim>
+</h:commandLink>
+
+<h:commandLink id="welcome_1" styleClass="rightButton" action="#{TilkynningVertakaBean.startTilkynningVertaka}">
+<f:verbatim><span>Stofna þjónustubeiðni</span></f:verbatim>
+</h:commandLink>
+</wf:container>
+</wf:container>
+
+<wf:container styleClass="caseHeader">
+<wf:container styleClass="caseNavigation">
 <h:selectOneMenu value="#{RafverktokuListi.numberOfRowsPerPage}" onchange="submit()">
 <f:selectItems
 value="#{InitialData.numberOfRowsPerPageSelects}" />
 </h:selectOneMenu>
+</wf:container>
 
+<wf:container styleClass="caseHeading">
+<h:outputText value="Rafverktökurnar mínar"/>
+</wf:container>
 
-<x:dataScroller for="myTable"
-fastStep="10"
-pageIndexVar="hello1"
-pageCountVar="hello2"
-paginator="true"
-paginatorMaxPages="9">
-<f:facet name="first" ><h:outputText value="fyrsti"/>
-</f:facet>
-<f:facet name="last"><h:outputText value="seinasti"/>
-</f:facet>
-<f:facet name="previous"><h:outputText value="fyrri"/>
-</f:facet>
-<f:facet name="next"><h:outputText value="næsti"/>
-</f:facet>
-<f:facet name="fastforward"><h:outputText value="spóla áfram"/>
-</f:facet>
-<f:facet name="fastrewind"><h:outputText value="spóla til baka"/>
-</f:facet>
-
-</x:dataScroller>
-
-
-
-
+</wf:container>
 
 <h:dataTable id="myTable" rows="#{RafverktokuListi.numberOfRowsPerPageAsInt}" value="#{RafverktokuListi.rafverktokur}" var="verktaka" columnClasses="oddRow evenRow" styleClass="caseTable ruler" >
 <h:column>
 <f:facet name="header">
-<h:outputText value=""/>
+<h:outputText value="Aðgerð"/>
 </f:facet>
 <h:selectOneMenu onchange="submit()" valueChangeListener="#{RafverktokuListi.populateFormsForForms}">
 <f:selectItems value="#{InitialData.optionsPerElectricalInstallationListiSelects}">
@@ -141,11 +152,23 @@ value="#{verktaka.veitustadurDisplay}"/>
 value="#{verktaka.stadaDisplay}"/>
 </h:column>
 
-
 </h:dataTable>
+
+<wf:container styleClass="tableNavigation">
+<x:dataScroller for="myTable" id="myDatascroller" fastStep="10" pageIndexVar="hello1" pageCountVar="hello2" paginator="true" paginatorMaxPages="9">
+<f:facet name="first" ><h:outputText value="&lt;&lt;"/>
+</f:facet>
+<f:facet name="last"><h:outputText value="&gt;&gt;"/>
+</f:facet>
+<f:facet name="previous"><h:outputText value="&lt;"/>
+</f:facet>
+<f:facet name="next"><h:outputText value="&gt;"/>
+</f:facet>
+</x:dataScroller>
 </wf:container>
 
-</h:form></builder:region>
+</h:form>
+</builder:region>
 </builder:page>
 </f:view>
 

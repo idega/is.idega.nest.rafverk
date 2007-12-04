@@ -37,6 +37,19 @@ id="veitustadur" value="#{TilkynningVertakaBean.veitustadurDisplay}"/>
 id="stada" value="#{TilkynningVertakaBean.rafverktaka.stadaDisplay}"/>
 </wf:container>
 
+<wf:container
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+styleClass="formItem">
+<h:outputText
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+value="Þetta mál er núna í vinnslu hjá: "/>
+</wf:container>
+<wf:container styleClass="formItem">
+<h:outputText
+rendered="#{TilkynningVertakaBean.newOwnerOfCase != null}"
+id="newOwner" value="#{TilkynningVertakaBean.newOwnerOfCase.nafn}"/>
+</wf:container>
+
 <wf:container rendered="#{TilkynningVertakaBean.downloadTilkynningVertaka}"> <!-- 3 -->
 
 <wf:container>

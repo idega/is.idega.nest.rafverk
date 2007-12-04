@@ -320,53 +320,104 @@ id="newOwner" value="#{TilkynningVertakaBean.newOwnerOfCase.nafn}"/>
 <h1 class="subHeader">Veitustaður</h1>
 </f:verbatim>
 
-<x:div styleClass="formSection">
-<x:div styleClass="helperText">
-<f:verbatim>
+					<!-- form section -->
+					<x:div styleClass="formSection">
+
+						<x:div styleClass="helperText">
+							<f:verbatim>
 Veldu fyrst póstnúmer, þá verður fellilistinn fyrir neðan endurhlaðinn með mögulegum götunöfnum.  Veldu því næst götu, skráðu inn götunúmer (má sleppa) og smelltu því næst á 'Fletta í Landskrá Fasteigna'.  Niðurstaða leitarinnar birtist þá í fellilistanum 'Fasteign'.  Veldu að lokum fasteignina sem við á. 
 </f:verbatim>
+						</x:div>
 
-</x:div>
-<x:div styleClass="formItem"
-rendered="#{TilkynningVertakaBean.invalid['workingPlace'] != null}">
-<h:outputText
-style="#{TilkynningVertakaBean.invalid['workingPlace'] == null ? 'color:black' : 'color:red'}"
-value="Veldu veitustað"/>
-</x:div>
+						<x:div styleClass="formItem "
+							rendered="#{TilkynningVertakaBean.invalid['workingPlace'] != null}">
+							<h:outputText value="Veldu veitustað" />
+						</x:div>
 
-<x:div styleClass="formItem required">
-<h:outputLabel for="postnumerDrop" value="Póstnúmer"/>
-<h:selectOneMenu disabled="#{! TilkynningVertakaBean.applicationReportStorable}" id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}" onchange="updateStreets();">
-<f:selectItems value="#{RafverktakaInitialdata.postnumeraListiSelects}"/>
-</h:selectOneMenu>
-</x:div>
+						<x:div styleClass="formItem required">
+							<h:outputLabel for="postnumerDrop" value="Póstnúmer" />
+							<h:selectOneMenu
+								disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+								id="postnumerDrop" value="#{TilkynningVertakaBean.postnumer}"
+								onchange="updateStreets();">
+								<f:selectItems
+									value="#{RafverktakaInitialdata.postnumeraListiSelects}" />
+							</h:selectOneMenu>
+						</x:div>
 
-<x:div styleClass="formItem required">
-<h:outputLabel for="gotuDrop" value="Gata" />
-<h:selectOneMenu disabled="#{! TilkynningVertakaBean.applicationReportStorable}" id="gotuDrop" value="#{TilkynningVertakaBean.gata}" onchange="updateStreetNumberLabel();">
-<f:selectItems value="#{TilkynningVertakaBean.gotuListiSelects}"/>
-</h:selectOneMenu>
-</x:div>
+						<x:div styleClass="formItem required">
+							<h:outputLabel for="gotuDrop" value="Gata" />
+							<h:selectOneMenu
+								disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+								id="gotuDrop" value="#{TilkynningVertakaBean.gata}"
+								onchange="updateStreetNumberLabel();">
+								<f:selectItems value="#{TilkynningVertakaBean.gotuListiSelects}" />
+							</h:selectOneMenu>
+						</x:div>
 
-<x:div styleClass="formItem required">
-<h:outputLabel id="gotunumerLabel" for="gotunumer" value="Götunúmer" />
-<h:inputText disabled="#{! TilkynningVertakaBean.applicationReportStorable}" id="gotunumer" value="#{TilkynningVertakaBean.gotunumer}"/>
-</x:div>
+						<x:div styleClass="formItem required">
+							<h:outputLabel
+								style="#{TilkynningVertakaBean.showFreetextGotunumer}"
+								id="gotunumerLabel" for="gotunumer" value="Frjáls texti" />
+							<h:inputText
+								style="#{TilkynningVertakaBean.showFreetextGotunumer}"
+								disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+								id="gotunumer" value="#{TilkynningVertakaBean.freeText}" />
+							<h:outputLabel
+								style="#{TilkynningVertakaBean.showStreetNumberSelects}"
+								id="streetNumberDropLabel" for="streetNumberDrop"
+								value="Götunúmer" />
+							<h:selectOneMenu
+								style="#{TilkynningVertakaBean.showStreetNumberSelects}"
+								disabled="#{! TilkynningVertakaBean.workingPlaceChangeable}"
+								id="streetNumberDrop"
+								value="#{TilkynningVertakaBean.streetNumber}">
+								<f:selectItems
+									value="#{RafverktakaInitialdata.streetNumberSelects}" />
+							</h:selectOneMenu>
+						</x:div>
 
-<x:div rendered="#{TilkynningVertakaBean.applicationReportStorable}" styleClass="#{TilkynningVertakaBean.invalid['workingPlace'] != null ? 'formItem required hasError' : 'formItem required'}">
-<h:outputLabel id="fasteignirDropLabel" for="fasteignirDrop" value="Fasteign" />
-<h:selectOneMenu styleClass="bigSelect" disabled="#{! TilkynningVertakaBean.applicationReportStorable}" id="fasteignirDrop" value="#{TilkynningVertakaBean.fastanumer}" onclick="updateEnergyConsumerFields();" >
-<f:selectItems value="#{TilkynningVertakaBean.fasteignaListiSelects}"/>
-</h:selectOneMenu>
-<f:verbatim><input type="button" class="floatingButton" name="updateRealEstatesButton" value="Fletta í Landskrá Fasteigna" onclick="updateRealEstates();" /></f:verbatim>
-</x:div>
+						<x:div rendered="#{TilkynningVertakaBean.workingPlaceChangeable}"
+							styleClass="#{TilkynningVertakaBean.invalid['workingPlace'] != null ? 'formItem required hasError' : 'formItem required'}">
+							<h:outputLabel id="fasteignLabel" for="fasteignirDrop"
+								value="Fasteign" />
+							<h:selectOneMenu
+								disabled="#{!TilkynningVertakaBean.applicationStorable}"
+								styleClass="bigSelect" id="fasteignirDrop"
+								value="#{TilkynningVertakaBean.fastanumer}"
+								onclick="updateEnergyConsumerFields();">
+								<f:selectItems
+									value="#{TilkynningVertakaBean.fasteignaListiSelects}" />
+							</h:selectOneMenu>
+							<f:verbatim>
+								<input type="button" class="floatingButton"
+									name="updateRealEstatesButton"
+									value="Fletta í Landskrá Fasteigna"
+									onclick="updateRealEstates();" />
+							</f:verbatim>
+						</x:div>
 
-<x:div styleClass="formItem">
-<h:outputText id="veitustadurDisplay" value="#{TilkynningVertakaBean.veitustadurDisplay}" />
-</x:div>
+						<x:div styleClass="formItem">
+							<h:outputText id="veitustadurDisplay"
+								value="#{TilkynningVertakaBean.veitustadurDisplay}" />
+						</x:div>
 
-<x:div styleClass="Clear"></x:div>
-</x:div>
+						<x:div styleClass="formItem">
+							<h:outputText id="currentWorkingPlaceErrorMessage"
+								style="color:red"
+								value="#{TilkynningVertakaBean.currentWorkingPlaceErrorMessage}" />
+						</x:div>
+
+						<x:div styleClass="formItem">
+							<h:commandButton
+								style="#{TilkynningVertakaBean.showChangeElectricianOption}"
+								id="changeElectrician" styleClass="buttonSpan"
+								actionListener="#{TilkynningVertakaBean.changeElectrician}"
+								action="rafverktakaskipti" value="Ósk um rafverktakaskipti" />
+						</x:div>
+
+					</x:div>
+					<!-- end of formsection-->
 
 <f:verbatim>
 <h1 class="subHeader">Orkukaupandi</h1>
