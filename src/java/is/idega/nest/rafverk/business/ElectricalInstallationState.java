@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationState.java,v 1.10 2007/12/04 04:40:49 tryggvil Exp $
+ * $Id: ElectricalInstallationState.java,v 1.11 2007/12/04 15:37:59 thomas Exp $
  * Created on Jun 5, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 /**
  * Handles state of ElectricalInstallation
  * 
- *  Last modified: $Date: 2007/12/04 04:40:49 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/12/04 15:37:59 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class ElectricalInstallationState {
 	
@@ -92,15 +92,25 @@ public class ElectricalInstallationState {
 	// !! initialized in static block below !!
 	public static final List FREE_STATUS_LIST;
 	
+	public static final String[] NOT_VISIBLE_FOR_ENERY_COMPANY = {
+		VERK_TEKID,
+		THJONUSTUBEIDNI_GEYMD,
+		SKYRSLA_GEYMD,
+		SKIPT_UM_RAFVERKTAKA
+	};
+	
+	// !! initialized in static block below !!
+	public static final List NOT_VISIBLE_FOR_ENERY_COMPANY_LIST;
+	
 	public static final String[] STADA = {
 		"Þjónustubeiðni geymd", THJONUSTUBEIDNI_GEYMD,
 		"Skýrsla geymd", SKYRSLA_GEYMD,
 		"Verk tekið", VERK_TEKID,
-		"Verk tekið og Skýrsla geymd", VERK_TEKID_SKYRSLA_GEYMD,
+		"Verk tekið og skýrsla geymd", VERK_TEKID_SKYRSLA_GEYMD,
 		"Móttekin", MOTTEKIN,
-		"Móttekin og Skýrsla geymd", MOTTEKIN_SKYRSLA_GEYMD,
+		"Móttekin og skýrsla geymd", MOTTEKIN_SKYRSLA_GEYMD,
 		"Tilkynnt lok", TILKYNNT_LOK,
-		"í skoðun", I_SKODUN,
+		"Í skoðun", I_SKODUN,
 		"Skoðun lokið", SKODUN_LOKID,
 		"Lokið", LOKID,
 		"Skipt um rafverktaka", SKIPT_UM_RAFVERKTAKA,
@@ -128,6 +138,10 @@ public class ElectricalInstallationState {
 		return FREE_OR_OPEN_STATUS_LIST;
 	}
 	
+	public static List getNotVisbibleForEnergyCompany() {
+		return NOT_VISIBLE_FOR_ENERY_COMPANY_LIST;
+	}
+	
 	static 
 	{
 		OPEN_STATUS_LIST = new ArrayList(OPEN_STATUS.length);
@@ -141,6 +155,11 @@ public class ElectricalInstallationState {
 		FREE_OR_OPEN_STATUS_LIST = new ArrayList(FREE_STATUS_LIST.size() + OPEN_STATUS_LIST.size());
 		FREE_OR_OPEN_STATUS_LIST.addAll(FREE_STATUS_LIST);
 		FREE_OR_OPEN_STATUS_LIST.addAll(OPEN_STATUS_LIST);
+		
+		NOT_VISIBLE_FOR_ENERY_COMPANY_LIST = new ArrayList(NOT_VISIBLE_FOR_ENERY_COMPANY.length);
+		for (int i = 0; i < NOT_VISIBLE_FOR_ENERY_COMPANY.length; i++) {
+			NOT_VISIBLE_FOR_ENERY_COMPANY_LIST.add(NOT_VISIBLE_FOR_ENERY_COMPANY[i].substring(0,4));
+		}
 	}
 	
 	private IWApplicationContext iwac = null;
