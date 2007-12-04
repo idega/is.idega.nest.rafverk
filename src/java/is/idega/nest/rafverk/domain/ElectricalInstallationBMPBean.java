@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.15 2007/12/04 04:40:49 tryggvil Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.16 2007/12/04 15:38:52 thomas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/12/04 04:40:49 $ by $Author: tryggvil $
+ *  Last modified: $Date: 2007/12/04 15:38:52 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation,SimpleElectricalInstallation,Case {
 	
@@ -712,9 +712,15 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	}
 	
 	public Collection ejbFindElectricalInstallationByEnergyCompany(Group energyCompany) throws FinderException {
-	    IDOQuery query = idoQueryGetSelect();
-	    query.appendWhere();
-	    query.appendEqualsQuoted(COLUMN_ENERGY_COMPANY_ID, energyCompany.getPrimaryKey().toString());
+		IDOQuery query = idoQuery("select n.* from nest_el_install n, proc_case c");
+		query.appendWhere();
+	    query.appendEqualsQuoted("n.energy_company_id", energyCompany.getPrimaryKey().toString());
+	    query.appendAnd();
+	    query.append("n.nest_el_install_id").appendEqualSign().append("c.proc_case_id");
+		query.appendAnd();
+		query.append("c.case_status");
+		List openCases = ElectricalInstallationState.getNotVisbibleForEnergyCompany();
+		query.appendNotInForStringCollectionWithSingleQuotes(openCases);
 	    return idoFindPKsByQuery(query);
 	}
 	
