@@ -4,7 +4,7 @@
   <extend>${base.project.dir}/base-dependencies.xml</extend>
   <name>idega rafverk</name>
   <artifactId>is.idega.nest.rafverk</artifactId>
-  <currentVersion>SNAPSHOT</currentVersion>
+  <currentVersion>1.0</currentVersion>
   <inceptionYear>2007</inceptionYear>
   <shortDescription>rafverk</shortDescription>
   <description>rafverk</description>
@@ -70,7 +70,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.fmr.landskra</artifactId>
-      <version>SNAPSHOT</version>
+      <version>1.1</version>
       <type>jar</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.iceland</artifactId>
-      <version>SNAPSHOT</version>
+      <version>1.1</version>
       <type>jar</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
@@ -88,7 +88,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.fop</artifactId>
-      <version>SNAPSHOT</version>
+      <version>1.0</version>
       <type>jar</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>

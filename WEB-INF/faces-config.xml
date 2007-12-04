@@ -119,6 +119,17 @@
 		</managed-property>
 	</managed-bean>
 
+<!--  second overview bean -->
+  	<managed-bean>
+		<managed-bean-name>OverviewBean</managed-bean-name>
+		<managed-bean-class>is.idega.nest.rafverk.bean.OverviewBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>sel_case_nr</property-name>
+			<value>#{param.sel_case_nr}</value>
+		</managed-property>
+	</managed-bean>  
+  
   
   <navigation-rule>
     	<description>
@@ -203,6 +214,10 @@
   		<from-outcome>firstWizardPage</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>
   	</navigation-case>
+  	<navigation-case>
+  		<from-outcome>secondWizardPage</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertakaskref2/</to-view-id>
+  	</navigation-case>
   </navigation-rule>
 
  
@@ -273,7 +288,32 @@
   		<from-outcome>firstWizardPage</from-outcome>
   		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
   	</navigation-case>
+  	<navigation-case>
+  		<from-outcome>secondWizardPage</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverksskref2/</to-view-id>
+  	</navigation-case>
   	 </navigation-rule>
+  
+  <!-- for all last steps of all wizards -->
+    <navigation-rule>
+    	<description>
+  		end of all wizards
+  		</description>
+  	<from-view-id>/pages/rafverktaki/rafverk/*</from-view-id>
+  	<navigation-case>
+  		<from-outcome>tilkynningvertaka</from-outcome>
+  			<to-view-id>/pages/rafverktaki/rafverk/tilkynningvertaka/</to-view-id>
+  	</navigation-case>
+   	<navigation-case>
+  		<from-outcome>tilkynninglokverks</from-outcome>
+  		  	<to-view-id>/pages/rafverktaki/rafverk/tilkynninglokverks/</to-view-id>
+  	</navigation-case>
+  	  	 <navigation-case>
+  		<from-outcome>rafverk</from-outcome>
+  		<to-view-id>/pages/rafverktaki/rafverk/</to-view-id>
+  	</navigation-case>
+  	</navigation-rule>
+  
   
      <navigation-rule>
     	<description>

@@ -13,6 +13,7 @@
     <project>com.idega.fop</project>
     <project>com.idega.faces</project>
     <project>is.idega.idegaweb.egov.message</project>
+    <project>com.idega.block.importer</project>
   </projects>
   <buildSpec>
     <buildCommand>
