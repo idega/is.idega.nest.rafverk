@@ -186,7 +186,11 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				ssn=ssn.substring(0,ssn.length()-3);
 			}
 			
-			if(ssn.length()!=10){
+			if(ssn.length()==9){
+				//Access problem that cut's the front zero off because it was a Number field
+				ssn="0"+ssn;
+			}
+			else if(ssn.length()!=10){
 				throw new RuntimeException("Kennitala is of invalid length, should be 10 digits (Kennitala rafverktaka ekki rétt)");
 			}
 
