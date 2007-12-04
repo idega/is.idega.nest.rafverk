@@ -180,6 +180,9 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			if(ssn==null){
 				throw new RuntimeException("Kennitala is null (Kennitala rafverktaka ekki sett í færslu)");
 			}
+			else if(ssn.length()!=10){
+				throw new RuntimeException("Kennitala is of invalid length, should be 10 digits (Kennitala rafverktaka ekki rétt)");
+			}
 			if(ssn.endsWith(",00")){
 				ssn=ssn.substring(0,ssn.length()-3);
 			}
