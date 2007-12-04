@@ -1,5 +1,5 @@
 /*
- * $Id: RealEstateBean.java,v 1.9 2007/11/13 16:25:19 thomas Exp $
+ * $Id: RealEstateBean.java,v 1.10 2007/12/04 15:30:22 thomas Exp $
  * Created on Aug 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -36,10 +36,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/13 16:25:19 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:30:22 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class RealEstateBean {
 	
@@ -159,7 +159,7 @@ public class RealEstateBean {
 		Map realEstates = new LinkedHashMap(size);
 
 		if (realEstateList == null || realEstateList.isEmpty()) {
-			realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Fletta í Landskrá Fasteigna fyrst");
+			realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Fletta í Landskrá fasteigna fyrst");
 			return realEstates;
 		}
 		realEstates.put(InitialData.NONE_REAL_ESTATE_SELECTION, "Vinsamlegast veldu rétta fasteign:");
