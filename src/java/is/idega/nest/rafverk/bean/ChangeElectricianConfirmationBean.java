@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeElectricianConfirmationBean.java,v 1.7 2007/11/28 17:59:24 thomas Exp $
+ * $Id: ChangeElectricianConfirmationBean.java,v 1.8 2007/12/04 15:29:28 thomas Exp $
  * Created on Aug 20, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -31,15 +31,15 @@ import com.idega.util.datastructures.list.KeyValuePair;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/28 17:59:24 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:29:28 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ChangeElectricianConfirmationBean {
 	
-	private String sel_case_nr = null;
-	
+	private String sel_case_nr = null; 
+		
 	private String messageStoring = null;
 	
 	private boolean requestValid = true;
@@ -72,25 +72,38 @@ public class ChangeElectricianConfirmationBean {
 		// coming from second page of wizard going to the third page (selection is not set at all, not necessary)
 		
 		if (this.sel_case_nr != null) {
-			initialize();
+			initialize(this.sel_case_nr);
 		}
+	}
+	
+	public String getSel_case_nr() {
+		return sel_case_nr;
 	}
 	
 	public void setSelectionCaseNumber() {
 		// dummy method otherwise jsf is complaining, hidden input is used during initialization
 	}
 	
-	
-	public String getSel_case_nr() {
-		return sel_case_nr;
-	}
-	
-	private void initialize() {
+	private void initialize(String caseId) {
 		ElectricalInstallationCaseBusiness electricalInstallationCaseBusinessLocal = getElectricalInstallationCaseBusiness();
 		try {
-			changeElectricanCase = electricalInstallationCaseBusinessLocal.getCase(sel_case_nr);
-			oldElectricalInstallation = 
-				(ElectricalInstallation) electricalInstallationCaseBusinessLocal.getParentCaseAsElectricalInstallation(changeElectricanCase);
+			// security check - the user might have changed the sel_case_nr by himself in the url
+			// check if the electrical installation is owned by the user
+			changeElectricanCase = electricalInstallationCaseBusinessLocal.getCase(caseId);
+			User user = BaseBean.getCurrentUser();
+			User owner = changeElectricanCase.getOwner();
+			if (! user.equals(owner)) {
+				// someone is hacking or using out of date url
+				initialize();
+				return;
+			}
+			Case parentCase = electricalInstallationCaseBusinessLocal.getParentCaseAsElectricalInstallation(changeElectricanCase);
+			if (! (parentCase instanceof ElectricalInstallation)) {
+				// someone is hacking or using out of date url
+				initialize();
+				return;
+			}
+			oldElectricalInstallation = (ElectricalInstallation) parentCase;
 			// security check - do not go further if the status is wrong
 			String status = oldElectricalInstallation.getStatus();
 			List openStatusList = ElectricalInstallationState.getOpenStatuses();
@@ -102,7 +115,7 @@ public class ChangeElectricianConfirmationBean {
 			requestSender = changeElectricanCase.getCreator();
 			String id = oldElectricalInstallation.getPrimaryKey().toString();
 			
-			// use the one that is stored in managed bean
+			// use the one that is stored in managed bean to keep the display synchronized
 			rafverktaka = BaseBean.getRafverktokuListi().getRafverktaka(id);
 			oldElectricalInstallation = rafverktaka.getElectricalInstallation();
 		}
@@ -110,7 +123,8 @@ public class ChangeElectricianConfirmationBean {
 			throw new RuntimeException(e.getMessage());
 		}
 		catch (FinderException e) {
-			e.printStackTrace();
+			// someone is hacking or using out of data url
+			initialize();
 		}
 	}
 	
@@ -175,18 +189,22 @@ public class ChangeElectricianConfirmationBean {
 			changeElectricanCase.store();
 
 			// reset everything here
-			sel_case_nr = null;
-			rafverktaka = null;
-			changeElectricanCase = null;
-			oldElectricalInstallation = null;
-			requestSender = null;
-			electricalInstallationBusiness = null;
-			electricalInstallationCaseBusiness = null;
+			initialize();
 			return "next";
 		}
 		catch (RemoteException e) {
 			throw new IBORuntimeException(e.getMessage());
 		}
+	}
+	
+	private void initialize() {
+		sel_case_nr = null;
+		rafverktaka = null;
+		changeElectricanCase = null;
+		oldElectricalInstallation = null;
+		requestSender = null;
+		electricalInstallationBusiness = null;
+		electricalInstallationCaseBusiness = null;
 	}
 	
 	private ElectricalInstallationBusiness getElectricalInstallationBusiness() {

@@ -1,5 +1,5 @@
 /*
- * $Id: OverviewBean.java,v 1.1 2007/11/16 16:30:51 thomas Exp $
+ * $Id: OverviewBean.java,v 1.2 2007/12/04 15:29:45 thomas Exp $
  * Created on Nov 14, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -18,26 +18,26 @@ import java.rmi.RemoteException;
 import javax.ejb.FinderException;
 
 import com.idega.business.IBORuntimeException;
+import com.idega.core.user.data.User;
 
 
 /**
  * 
- *  Last modified: $Date: 2007/11/16 16:30:51 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/04 15:29:45 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OverviewBean {
-	
-	private String sel_case_nr = null;
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness;
 	
 	public void setSel_case_nr(String sel_case_nr) {
+		String caseId = null;
 		// coming to the first page of wizard from overview (that is block UserCases) 
 		// (look at faces-config.xml, sel_case_nr is defined as initial parameter, this bean has scope "request")
 		if (sel_case_nr != null) {
-			this.sel_case_nr = sel_case_nr;
+			caseId = sel_case_nr;
 		}
 //		else {
 //		// NOT USED HERE AT THE MOMENT 	
@@ -47,30 +47,41 @@ public class OverviewBean {
 //		}
 		// coming from second page of wizard going to the third page (selection is not set at all, not necessary)
 		
-		if (this.sel_case_nr != null) {
-			initialize();
+		if (caseId != null) {
+			initialize(caseId);
 		}
 	}
 	
 	
 	// initialize the bean that is actually doing the work
-	private void initialize() {
+	private void initialize(String caseId) {
+		TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
+		TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
 		try {
-			ElectricalInstallation electricalInstallation = getElectricalInstallationBusiness().getElectricalInstallationByPrimaryKey(sel_case_nr);
+			ElectricalInstallation electricalInstallation = getElectricalInstallationBusiness().getElectricalInstallationByPrimaryKey(caseId);
+			// security check - the user might have changed the sel_case_nr by himself in the url
+			// or using out of data url
+			// check if the electrical installation is owned by the user
 			Rafverktaka rafverktaka = Rafverktaka.getInstanceFromElectricalInstallation(electricalInstallation, getElectricalInstallationBusiness());
-			TilkynningVertakaBean tilkynningVertakaBean = BaseBean.getTilkynningVertakaBean();
-			TilkynningLokVerksBean tilkynningLokVerksBean = BaseBean.getTilkynningLokVerksBean();
-			getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
-			tilkynningVertakaBean.createApplicationPDF();
-			tilkynningVertakaBean.createApplicationReportPDF();
+			User user = BaseBean.getCurrentUser();
+			User electrician = rafverktaka.getElectricalInstallation().getElectrician();
+			if (user.equals(electrician)) {
+				getElectricalInstallationBusiness().initializeManagedBeans(rafverktaka, tilkynningVertakaBean, tilkynningLokVerksBean);
+				tilkynningVertakaBean.createApplicationPDF();
+				tilkynningVertakaBean.createApplicationReportPDF();
+			}
+			else {
+				tilkynningVertakaBean.initialize();
+				tilkynningLokVerksBean.initialize();
+			}
 		}
 		catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			throw new IBORuntimeException(e);
 		}
 		catch (FinderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// someone is hacking or using out of data url
+			tilkynningVertakaBean.initialize();
+			tilkynningLokVerksBean.initialize();
 		}
 	}
 	
