@@ -692,11 +692,11 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			electricCompaniesMap.put("11", "Rafveita Reyðarfjarðar");
 			electricCompaniesMap.put("12", "Hitaveita Suðurnesja hf.");//HSÁrb
 			electricCompaniesMap.put("13", "Hitaveita Suðurnesja hf.");//BV
-			electricCompaniesMap.put("14", "RARIK hf.");//Rarik suðurlandi
-			electricCompaniesMap.put("15", "RARIK hf.");//Rarik vesturlandi
-			electricCompaniesMap.put("16", "RARIK hf.");//Rarik norðurlandi vestra
-			electricCompaniesMap.put("17", "RARIK hf.");//Rarik norðurlandi eystra
-			electricCompaniesMap.put("18", "RARIK hf.");//Rarik austurlandi
+			electricCompaniesMap.put("14", "Orkusalan");//Rarik suðurlandi
+			electricCompaniesMap.put("15", "Orkusalan");//Rarik vesturlandi
+			electricCompaniesMap.put("16", "Orkusalan");//Rarik norðurlandi vestra
+			electricCompaniesMap.put("17", "Orkusalan");//Rarik norðurlandi eystra
+			electricCompaniesMap.put("18", "Orkusalan");//Rarik austurlandi
 			electricCompaniesMap.put("19", "Einkarafstöðvar");//Einkarafstöðvar
 			electricCompaniesMap.put("20", "Orkuveita Húsavíkur ehf.");//
 			electricCompaniesMap.put("21", "Landsvirkjun");//
