@@ -14,6 +14,11 @@
       <name>1.0</name>
       <tag>RAFVERK_1_0</tag>
     </version>
+    <version>
+      <id>1.0.1</id>
+      <name>1.0.1</name>
+      <tag>RAFVERK_1_0_1</tag>
+    </version>
   </versions>
   <developers>
     <developer>
