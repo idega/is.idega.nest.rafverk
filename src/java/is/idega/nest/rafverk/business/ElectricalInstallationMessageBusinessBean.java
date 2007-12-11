@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.4 2007/11/28 17:54:19 thomas Exp $
+ * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.5 2007/12/11 17:14:55 palli Exp $
  * Created on Jun 18, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -40,10 +40,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/11/28 17:54:19 $ by $Author: thomas $
+ *  Last modified: $Date: 2007/12/11 17:14:55 $ by $Author: palli $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean implements ElectricalInstallationMessageBusiness {
 	
@@ -173,7 +173,15 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 				SendMail.send(from, to, null, null, smtpMailServer, subject, text, resource);
 				return null;
 			}
-			catch (MessagingException e) {
+			catch (Exception e) {
+				if (from == null) {
+					from = "null";
+				}
+				
+				if (to == null) {
+					to = null;
+				}
+				
 				return BaseBean.getResourceBundle().
 					getLocalizedAndFormattedString("rafverk_error_sending_mail", "Problems appeared sending mail from address {0} to address {1}.", (new String[] {from, to })); 
 			}

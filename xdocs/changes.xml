@@ -4,6 +4,12 @@
     <author email="tryggvil@idega.com">Tryggvi Larusson</author>
   </properties>
   <body>
+    <release version="1.0.1" date="2007-12-11">
+      <action dev="palli" type="fix">
+      	Added Exception handling when sending mail that has faulty to or from addresses.
+      </action>
+    </release>
+
     <release version="1.0" date="2007-12-04">
       <action dev="thomas" type="update">
       </action>
