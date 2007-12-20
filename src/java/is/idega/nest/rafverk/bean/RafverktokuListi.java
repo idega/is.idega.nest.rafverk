@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +85,24 @@ public class RafverktokuListi extends BaseBean  {
 	}
 		
 	private void initializeList() {
-		rafverktokuListi = new TreeMap(Collections.reverseOrder());
+		Comparator comparator = new Comparator() {
+
+			// reverse order
+			public int compare(Object o1, Object o2) {
+				String s1 = (String) o1;
+				String s2 = (String) o2;
+				int i1 = Integer.parseInt(s1);
+				int i2 = Integer.parseInt(s2);
+				if (i1 < i2) {
+					return 1;
+				}
+				else if (i1 > i2) {
+					return -1;
+				}
+				return 0;
+			}
+		};
+		rafverktokuListi = new TreeMap(comparator);
 		Collection verktokur = null;
 		try {
 			verktokur = getElectricalInstallationBusiness().getElectricalInstallationByElectrician(electrician);
