@@ -4,7 +4,12 @@
     <author email="tryggvil@idega.com">Tryggvi Larusson</author>
   </properties>
 
-  <body>    
+  <body>
+  	<release version="1.0.3" date="2007-12-28">
+      <action dev="thomas" type="update">
+      	Updated localization. 
+      </action>
+    </release>    
   	<release version="1.0.2" date="2007-12-20">
       <action dev="thomas" type="update">
       	Fixing problem with sorting list of electrical installations. 

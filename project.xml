@@ -4,7 +4,7 @@
   <extend>${base.project.dir}/base-dependencies.xml</extend>
   <name>idega rafverk</name>
   <artifactId>is.idega.nest.rafverk</artifactId>
-  <currentVersion>1.0.2</currentVersion>
+  <currentVersion>1.0.3</currentVersion>
   <inceptionYear>2007</inceptionYear>
   <shortDescription>rafverk</shortDescription>
   <description>rafverk</description>
