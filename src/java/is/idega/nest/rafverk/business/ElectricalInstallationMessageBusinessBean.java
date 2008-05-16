@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.5 2007/12/11 17:14:55 palli Exp $
+ * $Id: ElectricalInstallationMessageBusinessBean.java,v 1.6 2008/05/16 08:01:43 alexis Exp $
  * Created on Jun 18, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -40,10 +40,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/12/11 17:14:55 $ by $Author: palli $
+ *  Last modified: $Date: 2008/05/16 08:01:43 $ by $Author: alexis $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean implements ElectricalInstallationMessageBusiness {
 	
@@ -148,13 +148,15 @@ public class ElectricalInstallationMessageBusinessBean extends IBOServiceBean im
 		return null;
 	}
 	
+	//TODO fix this
 	private boolean userPrefersMessageByEmail(User user) {
-		try {
-			return getCommuneMessageBusiness().getIfUserPreferesMessageByEmail(user);
-		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+//		try {
+//			return getCommuneMessageBusiness().getIfUserPreferesMessageByEmail(user);
+//		}
+//		catch (RemoteException e) {
+//			throw new RuntimeException(e.getMessage());
+//		}
+		return false;
 	}
 
 	
