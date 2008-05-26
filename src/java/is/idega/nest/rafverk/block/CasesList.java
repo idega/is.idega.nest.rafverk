@@ -1,5 +1,5 @@
 /*
- * $Id: CasesList.java,v 1.3 2007/12/04 15:36:07 thomas Exp $
+ * $Id: CasesList.java,v 1.4 2008/05/26 08:20:21 valdas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -55,10 +55,10 @@ import com.idega.util.text.Name;
  * 
  * NOTE: This is a quick hack, need to be reviewed/refactored
  * 
- *  Last modified: $Date: 2007/12/04 15:36:07 $ by $Author: thomas $
+ *  Last modified: $Date: 2008/05/26 08:20:21 $ by $Author: valdas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public abstract class CasesList extends CasesBlock {
 
@@ -124,7 +124,7 @@ public abstract class CasesList extends CasesBlock {
 //	}
 	
 	
-	private void showList(IWContext iwc) throws RemoteException {
+	protected void showList(IWContext iwc) throws RemoteException {
 		Form form = new Form();
 		form.addParameter(PARAMETER_ACTION, ACTION_MULTI_PROCESS_FORM);
 
@@ -158,7 +158,7 @@ public abstract class CasesList extends CasesBlock {
 		cell.setStyleClass("sender");
 		cell.add(new Text(getResourceBundle().getLocalizedString("sender", "Sender")));
 
-		if (getBusiness().useTypes()) {
+		if (getCasesBusiness().useTypes()) {
 			cell = row.createHeaderCell();
 			cell.setStyleClass("caseType");
 			cell.add(new Text(getResourceBundle().getLocalizedString("case_type", "Case type")));
@@ -290,9 +290,9 @@ public abstract class CasesList extends CasesBlock {
 		section.add(helpLayer);
 
 		DropdownMenu statuses = new DropdownMenu(PARAMETER_STATUS);
-		statuses.addMenuElement(getBusiness().getCaseStatusReady().getStatus(), getBusiness().getLocalizedCaseStatusDescription(getBusiness().getCaseStatusReady(), iwc.getCurrentLocale()));
-		statuses.addMenuElement(getBusiness().getCaseStatusWaiting().getStatus(), getBusiness().getLocalizedCaseStatusDescription(getBusiness().getCaseStatusWaiting(), iwc.getCurrentLocale()));
-		statuses.addMenuElement(getBusiness().getCaseStatusPending().getStatus(), getBusiness().getLocalizedCaseStatusDescription(getBusiness().getCaseStatusPending(), iwc.getCurrentLocale()));
+		statuses.addMenuElement(getCasesBusiness().getCaseStatusReady().getStatus(), getCasesBusiness().getLocalizedCaseStatusDescription(getCasesBusiness().getCaseStatusReady(), iwc.getCurrentLocale()));
+		statuses.addMenuElement(getCasesBusiness().getCaseStatusWaiting().getStatus(), getCasesBusiness().getLocalizedCaseStatusDescription(getCasesBusiness().getCaseStatusWaiting(), iwc.getCurrentLocale()));
+		statuses.addMenuElement(getCasesBusiness().getCaseStatusPending().getStatus(), getCasesBusiness().getLocalizedCaseStatusDescription(getCasesBusiness().getCaseStatusPending(), iwc.getCurrentLocale()));
 
 		TextArea reply = new TextArea(PARAMETER_REPLY);
 		reply.setStyleClass("textarea");
@@ -352,7 +352,7 @@ public abstract class CasesList extends CasesBlock {
 
 		GeneralCase theCase = null;
 		try {
-			theCase = getBusiness().getGeneralCase(casePK);
+			theCase = getCasesBusiness().getGeneralCase(casePK);
 		}
 		catch (FinderException fe) {
 			fe.printStackTrace();
