@@ -1,5 +1,5 @@
 /*
- * $Id: EnergyCompanyCasesList.java,v 1.1 2007/06/08 17:08:21 thomas Exp $
+ * $Id: EnergyCompanyCasesList.java,v 1.2 2008/05/26 16:45:28 valdas Exp $
  * Created on May 29, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -22,20 +22,16 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/08 17:08:21 $ by $Author: thomas $
+ *  Last modified: $Date: 2008/05/26 16:45:28 $ by $Author: valdas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class EnergyCompanyCasesList extends MyCases {
 	
 	private ElectricalInstallationBusiness electricalInstallationBusiness = null;
 	private ElectricalInstallationRendererBusiness electricalInstallationRendererBusiness = null;
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see is.idega.nest.rafverk.block.OpenCases#getCases(com.idega.user.data.User)
-	 */
+
 	protected Collection getCases(User user) {
 		Collection cases;
 		try {

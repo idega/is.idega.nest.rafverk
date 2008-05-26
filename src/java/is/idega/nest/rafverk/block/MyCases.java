@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.7 2008/05/26 08:20:21 valdas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.8 2008/05/26 16:46:35 valdas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -10,6 +10,7 @@
  */
 package is.idega.nest.rafverk.block;
 
+import is.idega.idegaweb.egov.cases.data.GeneralCase;
 import is.idega.nest.rafverk.bean.InitialData;
 import is.idega.nest.rafverk.business.ElectricalInstallationBusiness;
 import is.idega.nest.rafverk.business.ElectricalInstallationMessageBusiness;
@@ -21,10 +22,13 @@ import is.idega.nest.rafverk.util.DataConverter;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.FinderException;
 
+import com.idega.block.process.data.Case;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOService;
@@ -40,23 +44,31 @@ import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.Form;
 import com.idega.presentation.ui.Label;
 import com.idega.presentation.ui.TextArea;
-import com.idega.presentation.ui.util.SelectorUtility;
 import com.idega.user.data.User;
 import com.idega.util.IWTimestamp;
 import com.idega.util.StringHandler;
 
 public class MyCases extends CasesList {
 
-	private static final String PARAMETER_CASE_CATEGORY_PK = "prm_case_category_pk";
-	private static final String PARAMETER_SUB_CASE_CATEGORY_PK = "prm_sub_case_category_pk";
-	private static final String PARAMETER_CASE_TYPE_PK = "prm_case_type_pk";
-
 	protected String getBlockID() {
 		return "myCases";
 	}
 
-	protected Collection getCases(User user) throws RemoteException {
-		return getCasesBusiness().getMyCases(user);
+	@Override
+	protected Collection<Case> getCases(User user) throws RemoteException {
+		Collection<GeneralCase> generalCases = getCasesBusiness().getMyCases(user);
+		if (generalCases == null || generalCases.isEmpty()) {
+			return new ArrayList<Case>(0);
+		}
+		
+		List<Case> allCases = new ArrayList<Case>();
+		for (GeneralCase theCase: generalCases) {
+			if (theCase instanceof Case) {
+				allCases.add((Case) theCase);
+			}
+		}
+		
+		return allCases;
 	}
 
 	protected void showProcessor(IWContext iwc, Object casePK) throws RemoteException {
@@ -65,8 +77,6 @@ public class MyCases extends CasesList {
 		form.setStyleClass("overview");
 		form.maintainParameter(PARAMETER_CASE_PK);
 		form.addParameter(PARAMETER_ACTION, "");
-
-		boolean useSubCategories = getCasesBusiness(iwc).useSubCategories();
 
 		ElectricalInstallation theCase = getElectricalInstallation(casePK, iwc);
 		if (theCase == null) {
@@ -100,7 +110,7 @@ public class MyCases extends CasesList {
 		Layer clear = new Layer(Layer.DIV);
 		clear.setStyleClass("Clear");
 
-		SelectorUtility util = new SelectorUtility();
+//		SelectorUtility util = new SelectorUtility();
 //		DropdownMenu categories = (DropdownMenu) util.getSelectorFromIDOEntities(new DropdownMenu(PARAMETER_CASE_CATEGORY_PK), getBusiness().getCaseCategories(), "getName");
 //		categories.keepStatusOnAction(true);
 //		categories.setSelectedElement(parentCategory != null ? parentCategory.getPrimaryKey().toString() : category.getPrimaryKey().toString());
@@ -247,7 +257,6 @@ public class MyCases extends CasesList {
 			url = getElectricalInstallationRendererBusiness(iwc).getPDFApplication(rafverktaka.getElectricalInstallation());
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -477,7 +486,7 @@ public class MyCases extends CasesList {
 		return (UserMessagesBusiness) getServiceBean(UserMessagesBusiness.class, iwc);
 	}
 	
-	private IBOService getServiceBean(Class serviceClass, IWContext iwc ) {
+	private IBOService getServiceBean(Class<?> serviceClass, IWContext iwc ) {
 		IBOService service = null;
 		try {
 			service = IBOLookup.getServiceInstance(iwc.getApplicationContext(), serviceClass);

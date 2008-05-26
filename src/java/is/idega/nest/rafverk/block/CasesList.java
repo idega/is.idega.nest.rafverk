@@ -1,5 +1,5 @@
 /*
- * $Id: CasesList.java,v 1.4 2008/05/26 08:20:21 valdas Exp $
+ * $Id: CasesList.java,v 1.5 2008/05/26 16:46:35 valdas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -55,10 +55,10 @@ import com.idega.util.text.Name;
  * 
  * NOTE: This is a quick hack, need to be reviewed/refactored
  * 
- *  Last modified: $Date: 2008/05/26 08:20:21 $ by $Author: valdas $
+ *  Last modified: $Date: 2008/05/26 16:46:35 $ by $Author: valdas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public abstract class CasesList extends CasesBlock {
 
@@ -118,12 +118,6 @@ public abstract class CasesList extends CasesBlock {
 		return ACTION_VIEW;
 	}
 
-//	private void showError(String error) { 
-//		Text text = new Text(error);
-//		add(text);
-//	}
-	
-	
 	protected void showList(IWContext iwc) throws RemoteException {
 		Form form = new Form();
 		form.addParameter(PARAMETER_ACTION, ACTION_MULTI_PROCESS_FORM);
@@ -143,7 +137,7 @@ public abstract class CasesList extends CasesBlock {
 		column.setSpan(1);
 		column.setWidth("12");
 
-		Collection cases = getCases(iwc.getCurrentUser());
+		Collection<Case> cases = getCases(iwc.getCurrentUser());
 
 		TableRowGroup group = table.createHeaderRowGroup();
 		TableRow row = group.createRow();
@@ -189,7 +183,7 @@ public abstract class CasesList extends CasesBlock {
 		group = table.createBodyRowGroup();
 		int iRow = 1;
 
-		Iterator iter = cases.iterator();
+		Iterator<Case> iter = cases.iterator();
 		while (iter.hasNext()) {
 			ElectricalInstallation theCase = (ElectricalInstallation) iter.next();
 			CaseBusiness caseBusiness = CaseCodeManager.getInstance().getCaseBusinessOrDefault(theCase.getCaseCode(), iwc);
@@ -447,7 +441,7 @@ public abstract class CasesList extends CasesBlock {
 //		return process;
 //	}
 
-	protected abstract Collection getCases(User user) throws RemoteException;
+	protected abstract Collection<Case> getCases(User user) throws RemoteException;
 
 	protected abstract void showProcessor(IWContext iwc, Object casePK) throws RemoteException;
 
