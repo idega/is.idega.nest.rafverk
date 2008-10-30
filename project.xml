@@ -92,9 +92,6 @@
       <artifactId>is.fmr.landskra</artifactId>
       <version>1.1</version>
       <type>jar</type>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
@@ -126,7 +123,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.idegaweb.egov.message</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.5</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
