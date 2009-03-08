@@ -35,7 +35,7 @@ var loadingMessage;
 if (message) loadingMessage = message;
 else loadingMessage = "please wait";
 
-DWREngine.setPreHook(function() {
+dwr.engine.setPreHook(function() {
 var disabledZone = $('busybuddy');
 if (!disabledZone) {
 var outer = document.createElement('div');
@@ -82,7 +82,7 @@ disabledZone.style.visibility = 'visible';
 }
 });
 
-DWREngine.setPostHook(function() {
+dwr.engine.setPostHook(function() {
 $('busybuddy').style.visibility = 'hidden';
 });
 }
@@ -114,8 +114,8 @@ errorHandler:function(message) { alert("Error: " + message); }
 }
 
 function changeStreets(data) {
-DWRUtil.removeAllOptions("form1:gotuDrop");
-DWRUtil.addOptions("form1:gotuDrop", data);
+dwr.util.removeAllOptions("form1:gotuDrop");
+dwr.util.addOptions("form1:gotuDrop", data);
 var streetDrop = document.getElementById("form1:gotuDrop");
 var streetNumberLabel = document.getElementById("form1:gotunumerLabel");
 if (streetDrop.options.length == 1) {
@@ -159,8 +159,8 @@ errorHandler:function(message) { alert("Error: " + message); }
 }
 
 function changeRealEstates(data) {
-DWRUtil.removeAllOptions("form1:fasteignirDrop");
-DWRUtil.addOptions("form1:fasteignirDrop", data);
+dwr.util.removeAllOptions("form1:fasteignirDrop");
+dwr.util.addOptions("form1:fasteignirDrop", data);
 }
 
 function updateEnergyConsumerFields() {

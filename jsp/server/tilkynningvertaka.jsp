@@ -37,7 +37,7 @@ var loadingMessage;
 if (message) loadingMessage = message;
 else loadingMessage = "please wait";
 
-DWREngine.setPreHook(function() {
+dwr.engine.setPreHook(function() {
 var disabledZone = $('busybuddy');
 if (!disabledZone) {
 var outer = document.createElement('div');
@@ -84,7 +84,7 @@ disabledZone.style.visibility = 'visible';
 }
 });
 
-DWREngine.setPostHook(function() {
+dwr.engine.setPostHook(function() {
 $('busybuddy').style.visibility = 'hidden';
 });
 }
@@ -116,8 +116,8 @@ errorHandler:function(message) { alert("Error: " + message); }
 }
 
 function changeStreets(data) {
-DWRUtil.removeAllOptions("form1:gotuDrop");
-DWRUtil.addOptions("form1:gotuDrop", data);
+dwr.util.removeAllOptions("form1:gotuDrop");
+dwr.util.addOptions("form1:gotuDrop", data);
 var streetNumberFreeTextLabel = document.getElementById("form1:gotunumerLabel");
 var streetNumberFreeText = document.getElementById("form1:gotunumer")
 var streetNumberDropDownLabel = document.getElementById("form1:streetNumberDropLabel");
@@ -184,8 +184,8 @@ errorHandler:function(message) { alert("Error: " + message); }
 }
 
 function changeRealEstates(data) {
-DWRUtil.removeAllOptions("form1:fasteignirDrop");
-DWRUtil.addOptions("form1:fasteignirDrop", data);
+dwr.util.removeAllOptions("form1:fasteignirDrop");
+dwr.util.addOptions("form1:fasteignirDrop", data);
 }
 
 function updateEnergyConsumerFields() {
