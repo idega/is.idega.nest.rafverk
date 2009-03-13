@@ -5,13 +5,13 @@
   <parent>
   	<groupId>com.idega.block.egov</groupId>
   	<artifactId>com.idega.block.egov</artifactId>
-  	<version>4.1.1-SNAPSHOT</version>
+  	<version>4.1.3-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
   <groupId>com.idega.block.egov</groupId>
   <name>Idega Rafverk</name>
   <artifactId>is.idega.nest.rafverk</artifactId>
-  <version>4.1.1-SNAPSHOT</version>
+  <version>4.1.3-SNAPSHOT</version>
   <inceptionYear>2007</inceptionYear>
   <scm>
     <!--
@@ -20,6 +20,7 @@
     -->
     <connection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/is.idega.nest.rafverk/</connection>
     <developerConnection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/is.idega.nest.rafverk/</developerConnection>
+    <tag>4.1.3-SNAPSHOT</tag>
   </scm>
 
   <developers>
