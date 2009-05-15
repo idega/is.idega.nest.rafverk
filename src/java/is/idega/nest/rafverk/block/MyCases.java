@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.8 2008/05/26 16:46:35 valdas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.9 2009/05/15 07:29:22 valdas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -50,6 +50,7 @@ import com.idega.util.StringHandler;
 
 public class MyCases extends CasesList {
 
+	@Override
 	protected String getBlockID() {
 		return "myCases";
 	}
@@ -64,13 +65,14 @@ public class MyCases extends CasesList {
 		List<Case> allCases = new ArrayList<Case>();
 		for (GeneralCase theCase: generalCases) {
 			if (theCase instanceof Case) {
-				allCases.add((Case) theCase);
+				allCases.add(theCase);
 			}
 		}
 		
 		return allCases;
 	}
 
+	@Override
 	protected void showProcessor(IWContext iwc, Object casePK) throws RemoteException {
 		Form form = new Form();
 		form.setStyleClass("adminForm");
@@ -402,6 +404,7 @@ public class MyCases extends CasesList {
 		add(form);
 	}
 
+	@Override
 	protected String save(IWContext iwc) throws RemoteException {
 		Object casePK = iwc.getParameter(PARAMETER_CASE_PK);
 //		Object caseCategoryPK = iwc.getParameter(PARAMETER_CASE_CATEGORY_PK);
@@ -433,6 +436,7 @@ public class MyCases extends CasesList {
 		return result;
 	}
 
+	@Override
 	protected boolean showCheckBox() {
 		return false;
 	}
@@ -486,7 +490,7 @@ public class MyCases extends CasesList {
 		return (UserMessagesBusiness) getServiceBean(UserMessagesBusiness.class, iwc);
 	}
 	
-	private IBOService getServiceBean(Class<?> serviceClass, IWContext iwc ) {
+	private IBOService getServiceBean(Class<? extends IBOService> serviceClass, IWContext iwc ) {
 		IBOService service = null;
 		try {
 			service = IBOLookup.getServiceInstance(iwc.getApplicationContext(), serviceClass);
