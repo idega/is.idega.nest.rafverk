@@ -1,5 +1,5 @@
 /*
- * $Id: ElectricalInstallationBMPBean.java,v 1.16 2007/12/04 15:38:52 thomas Exp $
+ * $Id: ElectricalInstallationBMPBean.java,v 1.17 2009/05/25 13:43:17 valdas Exp $
  * Created on Mar 13, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -27,7 +27,9 @@ import com.idega.block.process.data.AbstractCaseBMPBean;
 import com.idega.block.process.data.Case;
 import com.idega.business.IBORuntimeException;
 import com.idega.core.location.data.RealEstate;
+import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOQuery;
+import com.idega.data.IDORemoveRelationshipException;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.StringHandler;
@@ -35,10 +37,10 @@ import com.idega.util.StringHandler;
 
 /**
  * 
- *  Last modified: $Date: 2007/12/04 15:38:52 $ by $Author: thomas $
+ *  Last modified: $Date: 2009/05/25 13:43:17 $ by $Author: valdas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implements ElectricalInstallation,SimpleElectricalInstallation,Case {
 	
@@ -220,6 +222,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	/* (non-Javadoc)
 	 * @see com.idega.block.process.data.AbstractCaseBMPBean#getCaseCodeDescription()
 	 */
+	@Override
 	public String getCaseCodeDescription() {
 		return "Electrical installation";
 	}
@@ -227,6 +230,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	/* (non-Javadoc)
 	 * @see com.idega.block.process.data.AbstractCaseBMPBean#getCaseCodeKey()
 	 */
+	@Override
 	public String getCaseCodeKey() {
 		return CaseConstants.CASE_CODE_KEY_ELINST;
 	}
@@ -234,6 +238,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	/* (non-Javadoc)
 	 * @see com.idega.data.GenericEntity#getEntityName()
 	 */
+	@Override
 	public String getEntityName() {
 		// TODO Auto-generated method stub
 		return "nest_el_install";
@@ -242,6 +247,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 	/* (non-Javadoc)
 	 * @see com.idega.data.GenericEntity#initializeAttributes()
 	 */
+	@Override
 	public void initializeAttributes() {
 		addGeneralCaseRelation();
 		
@@ -873,6 +879,7 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 		}
 	}
 	
+	@Override
 	public Object ejbFindByExternalId(String externalId)throws FinderException{
 		return super.ejbFindByExternalId(externalId);
 	}
@@ -907,6 +914,20 @@ public class ElectricalInstallationBMPBean extends AbstractCaseBMPBean implement
 
 	public void setFormDocumentId(int formDocumentId) {
 		setColumn(COLUMN_FORM_DOCUMENT_ID, formDocumentId);
+	}
+
+	public void addSubscriber(User subscriber)
+			throws IDOAddRelationshipException {
+		throw new UnsupportedOperationException("This method is not implemented!");
+	}
+
+	public Collection<User> getSubscribers() {
+		throw new UnsupportedOperationException("This method is not implemented!");
+	}
+
+	public void removeSubscriber(User subscriber)
+			throws IDORemoveRelationshipException {
+		throw new UnsupportedOperationException("This method is not implemented!");
 	}
 	
 }
