@@ -2,7 +2,7 @@
  * Modified is.idega.idegaweb.egov.cases.presentation.MyCases - 
  * NOTE: that is a quick hack, need to be reviewed/refactored
  * 
- * $Id: MyCases.java,v 1.9 2009/05/15 07:29:22 valdas Exp $ Created on Nov 7, 2005
+ * $Id: MyCases.java,v 1.10 2009/06/30 09:35:55 valdas Exp $ Created on Nov 7, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
  * 
@@ -25,6 +25,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.FinderException;
 
@@ -437,11 +438,14 @@ public class MyCases extends CasesList {
 	}
 
 	@Override
-	protected boolean showCheckBox() {
+	public boolean showCheckBox() {
 		return false;
 	}
 	
-	//+++++++++++++++++++ added by thomas
+	@Override
+	public boolean showCheckBoxes() {
+		return showCheckBox();
+	}
 	
 	private void addLabelWithValue(String label, String value, Layer section) {
 		Layer valueLayer = new Layer(Layer.SPAN);
@@ -499,6 +503,16 @@ public class MyCases extends CasesList {
 			throw new RuntimeException(rme.getMessage());
 		}
 		return service;
+	}
+
+	@Override
+	public String getCasesProcessorType() {
+		return null;
+	}
+
+	@Override
+	public Map<Object, Object> getUserCasesPageMap() {
+		return null;
 	}	
 	
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CasesList.java,v 1.5 2008/05/26 16:46:35 valdas Exp $
+ * $Id: CasesList.java,v 1.6 2009/06/30 09:35:55 valdas Exp $
  * Created on May 30, 2007
  *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
@@ -55,10 +55,10 @@ import com.idega.util.text.Name;
  * 
  * NOTE: This is a quick hack, need to be reviewed/refactored
  * 
- *  Last modified: $Date: 2008/05/26 16:46:35 $ by $Author: valdas $
+ *  Last modified: $Date: 2009/06/30 09:35:55 $ by $Author: valdas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public abstract class CasesList extends CasesBlock {
 
@@ -79,6 +79,7 @@ public abstract class CasesList extends CasesBlock {
 
 	protected abstract String getBlockID();
 
+	@Override
 	protected void present(IWContext iwc) throws Exception {
 		switch (parseAction(iwc)) {
 			case ACTION_VIEW:
@@ -433,20 +434,10 @@ public abstract class CasesList extends CasesBlock {
 		return process;
 	}
 
-//	private Link getProcessLink(PresentationObject object, Case theCase) {
-//		Link process = new Link(object);
-//		process.addParameter(PARAMETER_CASE_PK, theCase.getPrimaryKey().toString());
-//		process.addParameter(PARAMETER_ACTION, ACTION_PROCESS);
-//		process.setWindowToOpen(URLDisplayer.class);
-//		return process;
-//	}
-
 	protected abstract Collection<Case> getCases(User user) throws RemoteException;
 
 	protected abstract void showProcessor(IWContext iwc, Object casePK) throws RemoteException;
 
 	protected abstract String save(IWContext iwc) throws RemoteException;
-
-	protected abstract boolean showCheckBox();
 
 }
