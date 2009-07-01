@@ -132,7 +132,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 	}
 	
 	public List getSuccessRecords() throws RemoteException {
-		return null;
+		return new ArrayList();
 	}
 
 	public boolean handleRecords() throws RemoteException {
