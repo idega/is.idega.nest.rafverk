@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,10 +46,12 @@ import com.idega.util.IWTimestamp;
 public class ElectricalInstallationsImportFileHandlerBean extends
 		IBOServiceBean implements ElectricalInstallationsImportFileHandler,ImportFileHandler{
 
+	private static final long serialVersionUID = -509378757578920357L;
+
 	//private ImportFile importFile;
 	//private List failedRecords=new ArrayList();
-	private ArrayList failedRecordList = new ArrayList();
-	private ArrayList valueList;
+	private List<String> failedRecordList = new ArrayList<String>();
+	private List<String> valueList;
 	private ImportFile file;
 	private Gotuskra gotuskra;
 	private Map electricCompaniesMap;
@@ -126,15 +126,18 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 	public final static int COLUMN_FORM_DOCUMENT_ID=48;//DOCUMENT_ID
 	public final static int COLUMN_STATUS2=49;//STATUS
 	//See record with id=29890
-	
-	public List getFailedRecords() throws RemoteException {
+
+	@Override
+	public List<String> getFailedRecords() throws RemoteException {
 		return failedRecordList;
 	}
-	
-	public List getSuccessRecords() throws RemoteException {
-		return new ArrayList();
+
+	@Override
+	public List<String> getSuccessRecords() throws RemoteException {
+		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean handleRecords() throws RemoteException {
 		int count = 0;
 		String item;
@@ -152,18 +155,20 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				//return false;
 			}
 		}
-		
+
 		return true;
 	}
 
+	@Override
 	public void setImportFile(ImportFile file) throws RemoteException {
 		this.file=file;
 	}
 
+	@Override
 	public void setRootGroup(Group rootGroup) throws RemoteException {
-		// TODO: Do wee need to implement this?	
+		// TODO: Do wee need to implement this?
 	}
-	
+
 	private boolean processRecord(String record) throws RemoteException,
 	CreateException {
 		this.valueList = this.file.getValuesFromRecordString(record);
@@ -174,7 +179,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 
 		return success;
 	}
-	
+
 	protected boolean storeElectricalInstallationRecord() throws RemoteException,
 	CreateException {
 		try{
@@ -185,11 +190,11 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			if(ssn==null){
 				throw new RuntimeException("Kennitala is null (Kennitala rafverktaka ekki sett í færslu)");
 			}
-				
+
 			if(ssn.endsWith(",00")){
 				ssn=ssn.substring(0,ssn.length()-3);
 			}
-			
+
 			if(ssn.length()==9){
 				//Access problem that cut's the front zero off because it was a Number field
 				ssn="0"+ssn;
@@ -246,24 +251,24 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			String measurementsRemarks = getProperty(COLUMN_MEASUREMENTS_REMARKS);//Mael_AdrarSkyr
 			String formDocumentId = getProperty(COLUMN_FORM_DOCUMENT_ID);//DOCUMENT_ID
 			String status2 = getProperty(COLUMN_STATUS2);//STATUS
-			
-			
+
+
 			if(postalCode==null){
 				//System.out.println("PostalCode is null for record with id:"+id);
 			}
-			
+
 			//UserBusiness business = getUserBusiness();
 			//UserHome userHome = getUserHome();
-	
+
 			User electrician = getElectrician(ssn);
-			
+
 			//ElectricalInstallationHome elHome = getElectricalInstallationHome();
 			ElectricalInstallation installation = getElecticalInstallation(id);
 			installation.setElectrician(electrician);
 			installation.setOwner(electrician);
-			
+
 			installation.setExternalId(id);
-			
+
 			RealEstate realEstate = installation.getRealEstate();
 			if(realEstate==null){
 				RealEstateHome realEstateHome = getRealEstateHome();
@@ -271,7 +276,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				installation.setRealEstate(realEstate);
 			}
 			realEstate.setName(name);
-		
+
 			Street street = realEstate.getStreet();
 			if(street==null){
 				if(postalCode!=null){
@@ -282,23 +287,23 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			//street.store();
 			realEstate.store();
 			installation.setRealEstate(realEstate);
-			
+
 			installation.setEnergyConsumerName(userName);
 			installation.setEnergyConsumerPersonalID(ownerSSN);
 			installation.setEnergyConsumerHomePhone(ownerPhone);
-			
+
 			Group energyCompany = getElectricCompany(electricCompanyId);
 			installation.setEnergyCompany(energyCompany);
-			
+
 			String announcedTypeParsed = getAnnouncedTypeParsed(announcedType,announcedTypeOther);
 			installation.setType(announcedTypeParsed);
 			installation.setTypeInReport(announcedTypeParsed);
-			
+
 			installation.setAnnouncementRemarks(announcedDescription);
-			
+
 			Timestamp dateRegisteredParsed = getDateRegisteredParsed(dateRegistered);
 			installation.setCreated(dateRegisteredParsed);
-			
+
 			try{
 				String announcementParsed = getAnnouncementParsed(announcement);
 				installation.setAnnouncement(announcementParsed);
@@ -307,39 +312,39 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				installation.setAnnouncement(InitialData.TILKYNNT_ANNAD);
 				installation.setAnnouncementOther(announcement);
 			}
-			
+
 			String electricSystemParsed = getElectricSystemParsed(electricSystem);
 			installation.setVoltageSystem(electricSystemParsed);
-			
+
 			installation.setVoltageSystemOther(electricSystemOther);
-			
+
 			List protectionParsed = getProtectionParsed(protection,protectionOther);
 			installation.setElectronicalProtectiveMeasuresInReport(protectionParsed);
 			installation.setElectronicalProtectiveMeasures(protectionParsed);
-			
+
 
 			List groundingParsed = parseGrounding(grounding);
 			installation.setGrounding(groundingParsed);
 
-			installation.setGroundingOther(groundingOther);	
-			
+			installation.setGroundingOther(groundingOther);
+
 			installation.setVoltagePhaseN(measurementsVoltagePhaseN);
 			installation.setVoltagePhasePhase(measurementsVoltagePhasePhase);
-			
+
 			installation.setShortCircuitAmpere(measurementsShortCircuitCurrentElectricalLine);
 			installation.setResistence(measurementsCResistanceElectricalLine);
-			
+
 			installation.setSwitchPanelResistence(measurementsCResistanceSwitchPanel);
 			installation.setSwitchPanelAmpere(measurementsShortCircuitCurrentSwitchPanel);
-			
+
 			installation.setInsulationResistence(measurementsInsulation);
 			installation.setGroundingResistence(measurementsGroundingResistance);
-			
+
 			Boolean fuseTested = getMeasurementsFuseCommentsParsed(measurementsFuseComments);
 			installation.setFuseAttached(fuseTested);
 			installation.setFuseTime(measurementsFuseTime);
 			//TODO: setFuseVoltage() should probably be setFuseCurrent() - not set because not found in import
-			
+
 			boolean inspectionSampleParsed = getInspectionSampleParsed(inspectionSample);
 			installation.setInspectionSample(inspectionSampleParsed);
 			int inspectionAgencyIdParsed = getInspectionAgencyIdParsed(inspectionAgencyId);
@@ -352,22 +357,22 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			if(formDocumentIdParsed>0){
 				installation.setFormDocumentId(formDocumentIdParsed);
 			}
-			
+
 			installation.setMeasurementRemarks(measurementsRemarks);
-			
+
 			ElectricalInstallationState stateManager = new ElectricalInstallationState(getIWApplicationContext());
 			stateManager.setStatus(installation, ElectricalInstallationState.ELDRI_TILKYNNING);
-			
+
 			installation.store();
-			
-			
+
+
 			return true;
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 
@@ -421,7 +426,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 		List returnList=new ArrayList();
 		if(grounding!=null){
 			String oldSeparator = ";";
-			
+
 			StringTokenizer tokenizer = new StringTokenizer(grounding,oldSeparator);
 			while(tokenizer.hasMoreElements()){
 				String element = tokenizer.nextToken();
@@ -442,30 +447,30 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				else{
 					throw new RuntimeException("Unexpected value: "+element);
 				}
-				
+
 			}
 		}
 		return returnList;
 
 	}
-	
+
 	private Timestamp getDateRegisteredParsed(String dateRegistered) {
 		return parseDateString(dateRegistered);
 	}
-	
+
 	private Timestamp parseDateString(String dateRegistered) {
-		
+
 		if(dateRegistered!=null&&!dateRegistered.equals("")){
-			
+
 			String sDay = dateRegistered.substring(0,dateRegistered.indexOf("."));
 			dateRegistered= dateRegistered.substring(dateRegistered.indexOf(".")+1,dateRegistered.length());
-			
+
 			String sMonth = dateRegistered.substring(0,dateRegistered.indexOf("."));
 			dateRegistered= dateRegistered.substring(dateRegistered.indexOf(".")+1,dateRegistered.length());
-			
+
 			String sYear = dateRegistered.substring(0,dateRegistered.indexOf(" "));
 			dateRegistered= dateRegistered.substring(dateRegistered.indexOf(".")+1,dateRegistered.length());
-			
+
 			IWTimestamp timestamp = new IWTimestamp(Integer.parseInt(sDay),Integer.parseInt(sMonth),Integer.parseInt(sYear));
 			return timestamp.getTimestamp();
 		}
@@ -512,7 +517,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 		List returnList=new ArrayList();
 		if(protection!=null){
 			String oldSeparator = ";";
-			
+
 			StringTokenizer tokenizer = new StringTokenizer(protection,oldSeparator);
 			while(tokenizer.hasMoreElements()){
 				String element = tokenizer.nextToken();
@@ -543,7 +548,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				else{
 					throw new RuntimeException("Unexpected value for protection: "+element);
 				}
-				
+
 			}
 		}
 		return returnList;
@@ -652,7 +657,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 		//If no groups found:
 		Group group;
 		try {
-			
+
 			GroupBusiness gBusiness = getGroupBusiness();
 			group = gBusiness.createGroup(InitialData.RAFVEITUR);
 			//group = gHome.create();
@@ -711,11 +716,11 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 
 	private ElectricalInstallation getElecticalInstallation(String id) {
 		ElectricalInstallationHome elHome = getElectricalInstallationHome();
-		
+
 		try {
 			ElectricalInstallation elInstallation = elHome.findByExternalId(id);
 			return elInstallation;
-			
+
 		} catch (FinderException e) {
 			ElectricalInstallation elInstallation;
 			try {
@@ -727,7 +732,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 				throw new RuntimeException(e1);
 			}
 		}
-		
+
 	}
 
 	private User getElectrician(String ssn) {
@@ -755,7 +760,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 	}
 
 	private Street getStreet(String address, String sPostalCode) {
-		
+
 		Gotuskra skra = Gotuskra.getCached();
 		StreetHome streetHome = getStreetHome();
 		PostalCodeHome postalCodeHome = getPostalCodeHome();
@@ -781,7 +786,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 		else{
 			streetName = address;
 		}
-		
+
 		Gata gata = skra.getGataByNafnOrNafnThagufallAndPostnumer(streetName, sPostalCode);
 		if(gata==null){
 			Street street = null;
@@ -815,7 +820,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 			}
 			return street;
 		}
-		
+
 	}
 
 	private PostalCodeHome getPostalCodeHome() {
@@ -856,7 +861,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 	private UserHome getUserHome() throws RemoteException{
 		return (UserHome) getIDOHome(User.class);
 	}
-	
+
 	private UserBusiness getUserBusiness() throws IBOLookupException {
 		return (UserBusiness) getServiceInstance(UserBusiness.class);
 	}
@@ -875,7 +880,7 @@ public class ElectricalInstallationsImportFileHandlerBean extends
 		if (this.valueList != null) {
 
 			try {
-				value = (String) this.valueList.get(columnIndex);
+				value = this.valueList.get(columnIndex);
 			} catch (RuntimeException e) {
 				return null;
 			}
