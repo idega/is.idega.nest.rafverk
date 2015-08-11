@@ -9,9 +9,6 @@ import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
-
-import uk.ltd.getahead.dwr.WebContextFactory;
 
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOService;
@@ -78,8 +75,9 @@ public class BaseBean implements Serializable{
 	}
 
 	public static Object getBeanByDWR(String bean) {
-		HttpSession session = WebContextFactory.get().getSession();
-		return session.getAttribute(bean);
+//		HttpSession session = WebContextFactory.get().getSession();
+//		return session.getAttribute(bean);
+		throw new UnsupportedOperationException();
 	}
 	
 	public static Object initializeServiceBean(Object myServiceBeanVariable, Class serviceBeanClass) {
